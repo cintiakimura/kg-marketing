@@ -1,4 +1,11 @@
 # KG Marketing — single Web Service: API + React app (landing at /)
+# REQUIRED: link Postgres so DATABASE_URL is injected (see RENDER-SETUP.md)
+
+databases:
+  - name: kg-marketing-db
+    plan: free
+    databaseName: kg_marketing_db
+    user: kg_marketing_db_user
 
 services:
   - type: web
@@ -8,6 +15,10 @@ services:
     buildCommand: npm install --no-audit --no-fund && npm run build
     startCommand: cd backend && node server.js
     envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: kg-marketing-db
+          property: connectionString
       - key: NODE_VERSION
         value: "20"
       - key: INIT_DB
