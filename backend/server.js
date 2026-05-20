@@ -24,7 +24,7 @@ try {
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import { initDatabase, ping } from './db.js';
+import { initDatabase, ensureUsersTable, ping, query } from './db.js';
 import { uploadFile } from './r2.js';
 import leadsRouter from './routes/leads.js';
 import campaignsRouter from './routes/campaigns.js';
@@ -62,10 +62,18 @@ app.use(express.json({ limit: '2mb' }));
 // ---------------------------------------------------------------------------
 app.get('/api/health', async (_req, res) => {
   let database = 'disconnected';
+  let usersTable = false;
   try {
     if (process.env.DATABASE_URL) {
       await ping();
       database = 'connected';
+      const { rows } = await query(
+        `SELECT EXISTS (
+          SELECT FROM information_schema.tables
+          WHERE table_schema = 'public' AND table_name = 'users'
+        ) AS ok`
+      );
+      usersTable = Boolean(rows[0]?.ok);
     }
   } catch (err) {
     database = 'error';
@@ -77,6 +85,7 @@ app.get('/api/health', async (_req, res) => {
       status: 'ok',
       service: 'kg-marketing-api',
       database,
+      users_table: usersTable,
       timestamp: new Date().toISOString(),
     },
   });
@@ -177,10 +186,13 @@ function start() {
     process.exit(1);
   });
 
-  if (process.env.INIT_DB === 'true' && process.env.DATABASE_URL) {
-    initDatabase()
-      .then(() => console.log('[db] Schema ready'))
+  if (process.env.DATABASE_URL) {
+    const runInit = process.env.INIT_DB === 'true' ? initDatabase() : ensureUsersTable();
+    runInit
+      .then(() => console.log('[db] Auth tables ready'))
       .catch((err) => console.error('[db] Init failed (server still running):', err.message));
+  } else {
+    console.warn('[startup] DATABASE_URL is not set — sign up / leads API will not work');
   }
 }
 

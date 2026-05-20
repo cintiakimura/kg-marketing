@@ -3,7 +3,7 @@
  */
 import { Router } from 'express';
 import crypto from 'crypto';
-import { query } from '../db.js';
+import { query, ensureUsersTable } from '../db.js';
 import { hashPassword, verifyPassword } from '../lib/password.js';
 
 const router = Router();
@@ -77,8 +77,33 @@ function emailAllowed(email) {
  * POST /api/auth/signup
  * Body: { email, password, full_name? }
  */
+function mapAuthDbError(err, res, next) {
+  console.error('[auth]', err.code, err.message);
+  if (err.status === 503) {
+    return res.status(503).json({ success: false, error: err.message });
+  }
+  if (err.code === '42P01') {
+    return res.status(503).json({
+      success: false,
+      error: 'Database not initialized. Set DATABASE_URL and INIT_DB=true on Render, then redeploy.',
+    });
+  }
+  if (err.code === 'ENOTFOUND' || err.code === 'ECONNREFUSED' || err.code === '57P03') {
+    return res.status(503).json({
+      success: false,
+      error: 'Cannot reach the database. Check DATABASE_URL on Render.',
+    });
+  }
+  if (err.code === '23505') {
+    return res.status(409).json({ success: false, error: 'An account with this email already exists' });
+  }
+  return next(err);
+}
+
 router.post('/signup', async (req, res, next) => {
   try {
+    await ensureUsersTable();
+
     const { email, password, full_name } = req.body || {};
     const normalized = normalizeEmail(email);
 
@@ -124,13 +149,7 @@ router.post('/signup', async (req, res, next) => {
 
     res.status(201).json({ success: true, data: { token, user } });
   } catch (err) {
-    if (err.code === '42P01') {
-      return res.status(503).json({
-        success: false,
-        error: 'Users table not ready — set INIT_DB=true and redeploy',
-      });
-    }
-    next(err);
+    return mapAuthDbError(err, res, next);
   }
 });
 
@@ -139,6 +158,8 @@ router.post('/signup', async (req, res, next) => {
  */
 router.post('/login', async (req, res, next) => {
   try {
+    await ensureUsersTable();
+
     const { email, password } = req.body || {};
     const normalized = normalizeEmail(email);
 
@@ -171,13 +192,7 @@ router.post('/login', async (req, res, next) => {
 
     res.json({ success: true, data: { token, user } });
   } catch (err) {
-    if (err.code === '42P01') {
-      return res.status(503).json({
-        success: false,
-        error: 'Users table not ready — set INIT_DB=true and redeploy',
-      });
-    }
-    next(err);
+    return mapAuthDbError(err, res, next);
   }
 });
 

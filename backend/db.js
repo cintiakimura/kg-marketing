@@ -14,7 +14,54 @@ export const pool = new Pool({
 pool.on('error', (err) => console.error('[db] Pool error:', err.message));
 
 export async function query(text, params) {
+  if (!process.env.DATABASE_URL) {
+    const err = new Error('DATABASE_URL is not configured on the server');
+    err.status = 503;
+    throw err;
+  }
   return pool.query(text, params);
+}
+
+const USERS_TABLE_SQL = `
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  full_name VARCHAR(255),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+`;
+
+/** Ensure users table exists (auth) — safe to run on every deploy. */
+export async function ensureUsersTable() {
+  if (!process.env.DATABASE_URL) {
+    console.warn('[db] DATABASE_URL missing — skip users table');
+    return false;
+  }
+  await pool.query(USERS_TABLE_SQL);
+  try {
+    await pool.query(`
+      CREATE OR REPLACE FUNCTION set_updated_at()
+      RETURNS TRIGGER AS $$
+      BEGIN
+        NEW.updated_at = NOW();
+        RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+    `);
+    await pool.query('DROP TRIGGER IF EXISTS trg_users_updated ON users');
+    await pool.query(`
+      CREATE TRIGGER trg_users_updated
+      BEFORE UPDATE ON users
+      FOR EACH ROW
+      EXECUTE PROCEDURE set_updated_at();
+    `);
+  } catch (err) {
+    console.warn('[db] users trigger (non-fatal):', err.message);
+  }
+  return true;
 }
 
 const SCHEMA_SQL = `
@@ -115,7 +162,7 @@ BEGIN
   FOREACH t IN ARRAY ARRAY['clients','campaigns','leads','email_messages','users'] LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS trg_%s_updated ON %I', t, t);
     EXECUTE format(
-      'CREATE TRIGGER trg_%s_updated BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION set_updated_at()',
+      'CREATE TRIGGER trg_%s_updated BEFORE UPDATE ON %I FOR EACH ROW EXECUTE PROCEDURE set_updated_at()',
       t, t
     );
   END LOOP;
@@ -124,22 +171,20 @@ END $$;
 
 /** Create tables if they do not exist. */
 export async function initDatabase() {
-  await pool.query(SCHEMA_SQL);
-  await pool.query(`
-    ALTER TABLE leads ADD COLUMN IF NOT EXISTS next_followup_date DATE;
-    ALTER TABLE leads ADD COLUMN IF NOT EXISTS last_contact_at TIMESTAMPTZ;
-  `);
-  await pool.query(`
-    CREATE TABLE IF NOT EXISTS users (
-      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-      email VARCHAR(255) NOT NULL UNIQUE,
-      password_hash TEXT NOT NULL,
-      full_name VARCHAR(255),
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    );
-    CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
-  `);
+  try {
+    await pool.query(SCHEMA_SQL);
+  } catch (err) {
+    console.error('[db] Full schema init warning:', err.message);
+  }
+  try {
+    await pool.query(`
+      ALTER TABLE leads ADD COLUMN IF NOT EXISTS next_followup_date DATE;
+      ALTER TABLE leads ADD COLUMN IF NOT EXISTS last_contact_at TIMESTAMPTZ;
+    `);
+  } catch (err) {
+    console.warn('[db] leads columns:', err.message);
+  }
+  await ensureUsersTable();
   console.log('[db] Tables ready');
 }
 

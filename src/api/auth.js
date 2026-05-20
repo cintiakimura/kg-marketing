@@ -72,7 +72,7 @@ export async function signup(email, password, fullName = '') {
 
   const json = await res.json();
   if (!res.ok || !json.success) {
-    throw createAuthError(json.error || 'Sign up failed', res.status);
+    throw createAuthError(json.error || `Sign up failed (${res.status})`, res.status);
   }
 
   const { token, user } = json.data;
