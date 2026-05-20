@@ -2,11 +2,14 @@
  * KG Marketing API
  * Express + PostgreSQL (pg) + Cloudflare R2 (@aws-sdk/client-s3)
  */
+import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const DIST_DIR = path.resolve(__dirname, '../dist');
+const HAS_FRONTEND = fs.existsSync(path.join(DIST_DIR, 'index.html'));
 
 // Load .env locally; on Render, env vars are injected — dotenv optional
 try {
@@ -115,12 +118,37 @@ app.use('/api/leads', leadsRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/ai', aiRouter);
 
-app.get('/', (_req, res) => {
-  res.json({
-    success: true,
-    data: { name: 'KG Marketing API', health: '/api/health' },
-  });
+// Favicon (browsers request .ico by default)
+app.get('/favicon.ico', (_req, res) => {
+  const svg = path.join(DIST_DIR, 'favicon.svg');
+  const ico = path.join(DIST_DIR, 'favicon.ico');
+  if (fs.existsSync(ico)) return res.sendFile(ico);
+  if (fs.existsSync(svg)) return res.type('image/svg+xml').sendFile(svg);
+  res.status(204).end();
 });
+
+// React app (production build) — landing page at /
+if (HAS_FRONTEND) {
+  app.use(express.static(DIST_DIR, { index: false, maxAge: '1h' }));
+
+  app.get('/', (_req, res) => {
+    res.sendFile(path.join(DIST_DIR, 'index.html'));
+  });
+
+  app.get('*', (req, res, next) => {
+    if (req.path.startsWith('/api')) return next();
+    res.sendFile(path.join(DIST_DIR, 'index.html'), (err) => {
+      if (err) next(err);
+    });
+  });
+} else {
+  app.get('/', (_req, res) => {
+    res.json({
+      success: true,
+      data: { name: 'KG Marketing API', health: '/api/health' },
+    });
+  });
+}
 
 app.use((_req, res) => {
   res.status(404).json({ success: false, error: 'Not found' });

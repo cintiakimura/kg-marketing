@@ -59,19 +59,17 @@ npm run dev                          # or from root: npm run dev:backend
 
 Production: `npm start` (runs backend from repo root).
 
-## Deploy on Render
+## Deploy on Render (one Web Service — landing + API)
 
-**Recommended: Static Site**
+Use `render.yaml` or configure manually:
 
-1. New → **Static Site** → connect this repo
-2. **Build command:** `npm install && npm run build`
-3. **Publish directory:** `dist`
-4. Add a rewrite: `/*` → `/index.html` (SPA routing)
+1. **Web Service** → connect this repo
+2. **Build command:** `npm install && npm run build` (builds `dist/` + backend deps)
+3. **Start command:** `cd backend && node server.js`
+4. **Node:** 20
 
-**Alternative: Web Service**
+Visiting your service URL serves the **landing page** at `/` and the API at `/api/*`.
 
-1. **Build command:** `npm install && npm run build`
-2. **Start command:** `npm start` (serves `dist/` via `serve`)
-3. Set **Node version** to 20
+Set on Render: `DATABASE_URL`, `GROK_API_KEY_LUMEN`, `AUTH_SECRET`, `INIT_DB=true`, `CORS_ORIGIN` (include your Render URL).
 
-If deploy fails with “exited early”, the start command was likely missing — `npm start` is now defined in `package.json`.
+`VITE_KG_MARKETING_API_URL` should match your Render URL (see `render.yaml`).

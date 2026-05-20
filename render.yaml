@@ -1,13 +1,11 @@
-# KG Marketing — Render Blueprint
-# Use ONE web service for the API (backend). Deploy frontend as a separate Static Site if needed.
+# KG Marketing — single Web Service: API + React app (landing at /)
 
 services:
   - type: web
-    name: kg-marketing-api
+    name: kg-marketing
     runtime: node
     plan: free
-    # Leave rootDir empty — build installs backend deps explicitly
-    buildCommand: cd backend && npm install --omit=dev --no-audit --no-fund
+    buildCommand: npm install --no-audit --no-fund && npm run build
     startCommand: cd backend && node server.js
     envVars:
       - key: NODE_VERSION
@@ -16,13 +14,10 @@ services:
         value: "true"
       - key: DATABASE_SSL
         value: "true"
-
-# Optional: React frontend as static site (separate Render service)
-# staticSites:
-#   - name: kg-marketing-app
-#     buildCommand: npm install && npm run build
-#     staticPublishPath: ./dist
-#     routes:
-#       - type: rewrite
-#         source: /*
-#         destination: /index.html
+      # Baked into Vite build — same host as API
+      - key: VITE_KG_MARKETING_API_URL
+        value: https://kg-marketing.onrender.com
+      - key: VITE_GROK_USE_BACKEND_PROXY
+        value: "true"
+      - key: CORS_ORIGIN
+        value: https://kg-marketing.onrender.com,http://localhost:5173,http://localhost:4173

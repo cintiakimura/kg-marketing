@@ -3,9 +3,12 @@
  */
 
 function getApiBase() {
-  const url =
+  const envUrl =
     import.meta.env.VITE_KG_MARKETING_API_URL || import.meta.env.VITE_API_URL;
-  return url ? url.replace(/\/$/, '') : '';
+  if (envUrl) return envUrl.replace(/\/$/, '');
+  // Same-origin production (Express serves dist + /api)
+  if (typeof window !== 'undefined') return window.location.origin;
+  return '';
 }
 
 async function apiRequest(path, options = {}) {
