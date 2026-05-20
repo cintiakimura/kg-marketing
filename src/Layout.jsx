@@ -37,8 +37,6 @@ export default function Layout({ children, currentPageName }) {
   return (
     <div className="min-h-screen bg-[#212121]">
       <style>{`
-        @import url('https://fonts.cdnfonts.com/css/akkurat');
-        
         :root {
           --primary-green: #00c600;
           --dark-bg: #212121;
@@ -47,7 +45,7 @@ export default function Layout({ children, currentPageName }) {
         }
         
         * {
-          font-family: 'Akkurat', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
         }
         
         body {

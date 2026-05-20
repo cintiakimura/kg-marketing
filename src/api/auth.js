@@ -51,36 +51,58 @@ export function clearSession() {
 /**
  * @param {string} email
  * @param {string} password
+ * @param {string} [fullName]
+ * @returns {Promise<{ token: string, user: object }>}
+ */
+export async function signup(email, password, fullName = '') {
+  const base = getApiBase();
+  if (!base) {
+    throw createAuthError('Set VITE_KG_MARKETING_API_URL to sign up');
+  }
+
+  const res = await fetch(`${base}/api/auth/signup`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: email.trim(),
+      password,
+      full_name: fullName.trim() || undefined,
+    }),
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw createAuthError(json.error || 'Sign up failed', res.status);
+  }
+
+  const { token, user } = json.data;
+  persistSession(token, user);
+  return { token, user };
+}
+
+/**
+ * @param {string} email
+ * @param {string} password
  * @returns {Promise<{ token: string, user: object }>}
  */
 export async function login(email, password) {
   const base = getApiBase();
-
-  if (base) {
-    const res = await fetch(`${base}/api/auth/login`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
-    });
-
-    const json = await res.json();
-    if (!res.ok || !json.success) {
-      throw createAuthError(json.error || 'Login failed', res.status);
-    }
-
-    const { token, user } = json.data;
-    persistSession(token, user);
-    return { token, user };
+  if (!base) {
+    throw createAuthError('Set VITE_KG_MARKETING_API_URL to log in');
   }
 
-  // Offline dev fallback (no backend URL)
-  const demoEmail = 'admin@kgprotech.com';
-  if (email.toLowerCase().trim() !== demoEmail || password !== 'kgmarketing2026') {
-    throw createAuthError('Invalid email or password', 401);
+  const res = await fetch(`${base}/api/auth/login`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+
+  const json = await res.json();
+  if (!res.ok || !json.success) {
+    throw createAuthError(json.error || 'Login failed', res.status);
   }
 
-  const user = { id: 'demo', email: demoEmail, name: 'Demo User', role: 'admin' };
-  const token = `demo_${Date.now()}`;
+  const { token, user } = json.data;
   persistSession(token, user);
   return { token, user };
 }
@@ -93,7 +115,7 @@ export async function getCurrentUser() {
   }
 
   const base = getApiBase();
-  if (base && !token.startsWith('demo_')) {
+  if (base) {
     const res = await fetch(`${base}/api/auth/me`, {
       headers: { Authorization: `Bearer ${token}` },
     });
@@ -126,7 +148,7 @@ export async function logout(_redirectUrl) {
   const base = getApiBase();
   const token = getStoredToken();
 
-  if (base && token && !token.startsWith('demo_')) {
+  if (base && token) {
     try {
       await fetch(`${base}/api/auth/logout`, {
         method: 'POST',

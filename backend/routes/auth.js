@@ -1,8 +1,10 @@
 /**
- * Auth routes — email/password login with signed session tokens.
+ * Auth — sign up (save hashed password) + login (verify against DB).
  */
 import { Router } from 'express';
 import crypto from 'crypto';
+import { query } from '../db.js';
+import { hashPassword, verifyPassword } from '../lib/password.js';
 
 const router = Router();
 
@@ -10,15 +12,6 @@ const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000;
 
 function getAuthSecret() {
   return process.env.AUTH_SECRET || 'kg-marketing-change-in-production';
-}
-
-function getDemoCredentials() {
-  return {
-    email: (process.env.AUTH_ADMIN_EMAIL || 'admin@kgprotech.com').toLowerCase().trim(),
-    password: process.env.AUTH_ADMIN_PASSWORD || 'kgmarketing2026',
-    name: process.env.AUTH_ADMIN_NAME || 'KG Admin',
-    role: process.env.AUTH_ADMIN_ROLE || 'admin',
-  };
 }
 
 function signToken(payload) {
@@ -52,46 +45,140 @@ function verifyToken(token) {
   }
 }
 
-function userFromPayload(payload) {
+function formatUser(row) {
   return {
-    id: payload.sub,
-    email: payload.email,
-    name: payload.name,
-    role: payload.role,
+    id: row.id,
+    email: row.email,
+    name: row.full_name || row.email.split('@')[0],
+    role: 'member',
   };
 }
+
+function normalizeEmail(email) {
+  return email?.toLowerCase().trim() || '';
+}
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function allowedEmailDomain() {
+  const domain = (process.env.AUTH_ALLOWED_EMAIL_DOMAIN || '').trim().toLowerCase();
+  return domain || null;
+}
+
+function emailAllowed(email) {
+  const domain = allowedEmailDomain();
+  if (!domain) return true;
+  return email.endsWith(`@${domain}`);
+}
+
+/**
+ * POST /api/auth/signup
+ * Body: { email, password, full_name? }
+ */
+router.post('/signup', async (req, res, next) => {
+  try {
+    const { email, password, full_name } = req.body || {};
+    const normalized = normalizeEmail(email);
+
+    if (!normalized || !password) {
+      return res.status(400).json({ success: false, error: 'Email and password are required' });
+    }
+    if (!isValidEmail(normalized)) {
+      return res.status(400).json({ success: false, error: 'Invalid email address' });
+    }
+    if (password.length < 8) {
+      return res.status(400).json({ success: false, error: 'Password must be at least 8 characters' });
+    }
+    if (!emailAllowed(normalized)) {
+      const domain = allowedEmailDomain();
+      return res.status(400).json({
+        success: false,
+        error: `Use your company email (@${domain})`,
+      });
+    }
+
+    const existing = await query('SELECT id FROM users WHERE email = $1', [normalized]);
+    if (existing.rows[0]) {
+      return res.status(409).json({ success: false, error: 'An account with this email already exists' });
+    }
+
+    const passwordHash = await hashPassword(password);
+    const name = (full_name || '').trim() || normalized.split('@')[0];
+
+    const { rows } = await query(
+      `INSERT INTO users (email, password_hash, full_name)
+       VALUES ($1, $2, $3)
+       RETURNING id, email, full_name, created_at`,
+      [normalized, passwordHash, name]
+    );
+
+    const user = formatUser(rows[0]);
+    const token = signToken({
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+
+    res.status(201).json({ success: true, data: { token, user } });
+  } catch (err) {
+    if (err.code === '42P01') {
+      return res.status(503).json({
+        success: false,
+        error: 'Users table not ready — set INIT_DB=true and redeploy',
+      });
+    }
+    next(err);
+  }
+});
 
 /**
  * POST /api/auth/login
  */
-router.post('/login', (req, res) => {
-  const { email, password } = req.body || {};
-  const creds = getDemoCredentials();
+router.post('/login', async (req, res, next) => {
+  try {
+    const { email, password } = req.body || {};
+    const normalized = normalizeEmail(email);
 
-  if (!email?.trim() || !password) {
-    return res.status(400).json({ success: false, error: 'Email and password are required' });
+    if (!normalized || !password) {
+      return res.status(400).json({ success: false, error: 'Email and password are required' });
+    }
+
+    const { rows } = await query(
+      'SELECT id, email, full_name, password_hash FROM users WHERE email = $1',
+      [normalized]
+    );
+
+    const row = rows[0];
+    if (!row) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+
+    const valid = await verifyPassword(password, row.password_hash);
+    if (!valid) {
+      return res.status(401).json({ success: false, error: 'Invalid email or password' });
+    }
+
+    const user = formatUser(row);
+    const token = signToken({
+      sub: user.id,
+      email: user.email,
+      name: user.name,
+      role: user.role,
+    });
+
+    res.json({ success: true, data: { token, user } });
+  } catch (err) {
+    if (err.code === '42P01') {
+      return res.status(503).json({
+        success: false,
+        error: 'Users table not ready — set INIT_DB=true and redeploy',
+      });
+    }
+    next(err);
   }
-
-  const normalized = email.toLowerCase().trim();
-  if (normalized !== creds.email || password !== creds.password) {
-    return res.status(401).json({ success: false, error: 'Invalid email or password' });
-  }
-
-  const user = {
-    id: 'admin-1',
-    email: creds.email,
-    name: creds.name,
-    role: creds.role,
-  };
-
-  const token = signToken({
-    sub: user.id,
-    email: user.email,
-    name: user.name,
-    role: user.role,
-  });
-
-  res.json({ success: true, data: { token, user } });
 });
 
 /**
@@ -108,6 +195,15 @@ router.get('/me', (req, res) => {
 
   res.json({ success: true, data: { user: userFromPayload(payload) } });
 });
+
+function userFromPayload(payload) {
+  return {
+    id: payload.sub,
+    email: payload.email,
+    name: payload.name,
+    role: payload.role || 'member',
+  };
+}
 
 /**
  * POST /api/auth/logout

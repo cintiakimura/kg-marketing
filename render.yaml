@@ -15,9 +15,14 @@ services:
       - key: DATABASE_SSL
         value: "true"
       # Baked into Vite build — same host as API
+      # Use your actual Render URL (e.g. kg-marketing-api.onrender.com)
       - key: VITE_KG_MARKETING_API_URL
-        value: https://kg-marketing.onrender.com
+        sync: false
       - key: VITE_GROK_USE_BACKEND_PROXY
         value: "true"
       - key: CORS_ORIGIN
-        value: https://kg-marketing.onrender.com,http://localhost:5173,http://localhost:4173
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true
+      - key: AUTH_ALLOWED_EMAIL_DOMAIN
+        value: kgprotech.com

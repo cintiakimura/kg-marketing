@@ -27,8 +27,8 @@ Optional:
 **Auth (backend):**
 
 - `AUTH_SECRET` — signing key for session tokens (required in production)
-- `AUTH_ADMIN_EMAIL` — default `admin@kgprotech.com`
-- `AUTH_ADMIN_PASSWORD` — default `kgmarketing2026`
+- `AUTH_ALLOWED_EMAIL_DOMAIN` — optional; e.g. `kgprotech.com` limits signups to company email
+- Users sign up via the landing page; passwords are hashed and stored in the `users` table
 
 **Smart Lead Finder (Grok):**
 

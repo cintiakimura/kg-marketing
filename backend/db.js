@@ -90,6 +90,17 @@ CREATE INDEX IF NOT EXISTS idx_campaigns_created_at ON campaigns (created_at DES
 CREATE INDEX IF NOT EXISTS idx_clients_created_at ON clients (created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_email_messages_created_at ON email_messages (created_at DESC);
 
+CREATE TABLE IF NOT EXISTS users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  full_name VARCHAR(255),
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
+
 CREATE OR REPLACE FUNCTION set_updated_at()
 RETURNS TRIGGER AS $$
 BEGIN
@@ -101,7 +112,7 @@ $$ LANGUAGE plpgsql;
 DO $$
 DECLARE t TEXT;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['clients','campaigns','leads','email_messages'] LOOP
+  FOREACH t IN ARRAY ARRAY['clients','campaigns','leads','email_messages','users'] LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS trg_%s_updated ON %I', t, t);
     EXECUTE format(
       'CREATE TRIGGER trg_%s_updated BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION set_updated_at()',
@@ -117,6 +128,17 @@ export async function initDatabase() {
   await pool.query(`
     ALTER TABLE leads ADD COLUMN IF NOT EXISTS next_followup_date DATE;
     ALTER TABLE leads ADD COLUMN IF NOT EXISTS last_contact_at TIMESTAMPTZ;
+  `);
+  await pool.query(`
+    CREATE TABLE IF NOT EXISTS users (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      email VARCHAR(255) NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      full_name VARCHAR(255),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );
+    CREATE INDEX IF NOT EXISTS idx_users_email ON users (email);
   `);
   console.log('[db] Tables ready');
 }

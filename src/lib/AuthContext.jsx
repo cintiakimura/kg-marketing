@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   getCurrentUser,
   login as authLogin,
+  signup as authSignup,
   logout as authLogout,
   clearSession,
   getStoredUser,
@@ -61,6 +62,14 @@ export const AuthProvider = ({ children }) => {
     return loggedInUser;
   };
 
+  const signup = async (email, password, fullName) => {
+    setAuthError(null);
+    const { user: newUser } = await authSignup(email, password, fullName);
+    setUser(newUser);
+    setIsAuthenticated(true);
+    return newUser;
+  };
+
   const logout = async (shouldRedirect = true) => {
     setUser(null);
     setIsAuthenticated(false);
@@ -84,6 +93,7 @@ export const AuthProvider = ({ children }) => {
         isLoadingAuth,
         authError,
         login,
+        signup,
         logout,
         navigateToLogin,
         checkAppState: checkUserAuth,
@@ -105,10 +115,15 @@ export const useAuth = () => {
 /** Hook for post-login navigation (must be inside Router). */
 export function useAuthNavigate() {
   const navigate = useNavigate();
-  const { login, logout } = useAuth();
+  const { login, signup, logout } = useAuth();
 
   const loginAndGoToDashboard = async (email, password) => {
     await login(email, password);
+    navigate('/dashboard', { replace: true });
+  };
+
+  const signupAndGoToDashboard = async (email, password, fullName) => {
+    await signup(email, password, fullName);
     navigate('/dashboard', { replace: true });
   };
 
@@ -117,5 +132,5 @@ export function useAuthNavigate() {
     navigate('/', { replace: true });
   };
 
-  return { loginAndGoToDashboard, logoutAndGoHome };
+  return { loginAndGoToDashboard, signupAndGoToDashboard, logoutAndGoHome };
 }
