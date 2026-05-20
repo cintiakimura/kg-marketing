@@ -7,9 +7,9 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// Load root .env (user often places it there) then backend/.env overrides
+// backend/.env wins over root .env (dotenv does not override by default)
 dotenv.config({ path: path.resolve(__dirname, '../.env') });
-dotenv.config({ path: path.resolve(__dirname, '.env') });
+dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
