@@ -5,21 +5,30 @@ import { S3Client, PutObjectCommand } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
 import path from 'path';
 
-const accountId = process.env.R2_ACCOUNT_ID;
-const accessKeyId = process.env.R2_ACCESS_KEY_ID;
-const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
-const bucketName = process.env.R2_BUCKET_NAME;
 const publicBaseUrl = (process.env.R2_PUBLIC_URL || '').replace(/\/$/, '');
+const bucketName = process.env.R2_BUCKET_NAME;
 
-/** S3 client pointed at R2 endpoint. */
-export const r2Client = new S3Client({
-  region: 'auto',
-  endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
-  credentials: {
-    accessKeyId,
-    secretAccessKey,
-  },
-});
+let _r2Client = null;
+
+/** Lazy S3 client — avoids crash at import if R2 env vars are missing. */
+function getR2Client() {
+  if (_r2Client) return _r2Client;
+
+  const accountId = process.env.R2_ACCOUNT_ID;
+  const accessKeyId = process.env.R2_ACCESS_KEY_ID;
+  const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY;
+
+  if (!accountId || !accessKeyId || !secretAccessKey) {
+    throw new Error('R2 is not configured. Set R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY.');
+  }
+
+  _r2Client = new S3Client({
+    region: 'auto',
+    endpoint: `https://${accountId}.r2.cloudflarestorage.com`,
+    credentials: { accessKeyId, secretAccessKey },
+  });
+  return _r2Client;
+}
 
 /**
  * Build public URL for an object key.
@@ -47,7 +56,7 @@ export async function uploadFile(buffer, originalName, mimeType) {
   const ext = path.extname(originalName || '') || '';
   const key = `uploads/${new Date().toISOString().slice(0, 10)}/${randomUUID()}${ext}`;
 
-  await r2Client.send(
+  await getR2Client().send(
     new PutObjectCommand({
       Bucket: bucketName,
       Key: key,

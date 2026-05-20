@@ -28,8 +28,19 @@ import campaignsRouter from './routes/campaigns.js';
 import aiRouter from './routes/ai.js';
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = Number(process.env.PORT) || 3001;
+const HOST = process.env.HOST || '0.0.0.0';
 const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 25 * 1024 * 1024 } });
+
+// ---------------------------------------------------------------------------
+// Startup checks (log only — do not exit; Render injects env at runtime)
+// ---------------------------------------------------------------------------
+if (!process.env.DATABASE_URL) {
+  console.warn('[startup] WARNING: DATABASE_URL is not set');
+}
+if (!process.env.R2_ACCOUNT_ID) {
+  console.warn('[startup] WARNING: R2_ACCOUNT_ID is not set (uploads will fail)');
+}
 
 // ---------------------------------------------------------------------------
 // Middleware
@@ -43,15 +54,18 @@ app.use(cors({ origin: origins, credentials: true }));
 app.use(express.json({ limit: '2mb' }));
 
 // ---------------------------------------------------------------------------
-// Health
+// Health (Render uses this to confirm the process is alive)
 // ---------------------------------------------------------------------------
 app.get('/api/health', async (_req, res) => {
   let database = 'disconnected';
   try {
-    await ping();
-    database = 'connected';
-  } catch {
+    if (process.env.DATABASE_URL) {
+      await ping();
+      database = 'connected';
+    }
+  } catch (err) {
     database = 'error';
+    console.error('[health] DB ping failed:', err.message);
   }
   res.json({
     success: true,
@@ -99,7 +113,6 @@ app.use('/api/leads', leadsRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/ai', aiRouter);
 
-// Root
 app.get('/', (_req, res) => {
   res.json({
     success: true,
@@ -107,12 +120,10 @@ app.get('/', (_req, res) => {
   });
 });
 
-// 404
 app.use((_req, res) => {
   res.status(404).json({ success: false, error: 'Not found' });
 });
 
-// Error handler
 app.use((err, _req, res, _next) => {
   console.error('[api]', err.message);
   const status = err.status || 500;
@@ -123,21 +134,33 @@ app.use((err, _req, res, _next) => {
 });
 
 // ---------------------------------------------------------------------------
-// Start
+// Start — listen FIRST so Render health checks pass, then init DB in background
 // ---------------------------------------------------------------------------
-async function start() {
-  if (process.env.INIT_DB === 'true') {
-    try {
-      await initDatabase();
-    } catch (e) {
-      console.error('[db] Init failed:', e.message);
-    }
-  }
-
-  app.listen(PORT, () => {
-    console.log(`[server] Running on http://localhost:${PORT}`);
-    console.log(`[server] Health → http://localhost:${PORT}/api/health`);
+function start() {
+  const server = app.listen(PORT, HOST, () => {
+    console.log(`[server] Listening on ${HOST}:${PORT}`);
+    console.log(`[server] Health → /api/health`);
   });
+
+  server.on('error', (err) => {
+    console.error('[server] Failed to start:', err.message);
+    process.exit(1);
+  });
+
+  if (process.env.INIT_DB === 'true' && process.env.DATABASE_URL) {
+    initDatabase()
+      .then(() => console.log('[db] Schema ready'))
+      .catch((err) => console.error('[db] Init failed (server still running):', err.message));
+  }
 }
+
+process.on('unhandledRejection', (err) => {
+  console.error('[fatal] Unhandled rejection:', err);
+});
+
+process.on('uncaughtException', (err) => {
+  console.error('[fatal] Uncaught exception:', err);
+  process.exit(1);
+});
 
 start();

@@ -102,7 +102,7 @@ BEGIN
   FOREACH t IN ARRAY ARRAY['clients','campaigns','leads','email_messages'] LOOP
     EXECUTE format('DROP TRIGGER IF EXISTS trg_%s_updated ON %I', t, t);
     EXECUTE format(
-      'CREATE TRIGGER trg_%s_updated BEFORE UPDATE ON %I FOR EACH ROW EXECUTE PROCEDURE set_updated_at()',
+      'CREATE TRIGGER trg_%s_updated BEFORE UPDATE ON %I FOR EACH ROW EXECUTE FUNCTION set_updated_at()',
       t, t
     );
   END LOOP;

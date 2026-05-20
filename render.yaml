@@ -7,7 +7,7 @@ services:
     runtime: node
     plan: free
     # Leave rootDir empty — build installs backend deps explicitly
-    buildCommand: cd backend && npm install --omit=dev
+    buildCommand: cd backend && npm install --omit=dev --no-audit --no-fund
     startCommand: cd backend && node server.js
     envVars:
       - key: NODE_VERSION

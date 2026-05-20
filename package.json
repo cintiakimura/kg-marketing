@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "dev:backend": "cd backend && nodemon server.js",
-    "build": "cd backend && npm install --omit=dev",
-    "postinstall": "cd backend && npm install --omit=dev",
+    "build": "cd backend && npm install --omit=dev --no-audit",
+    "postinstall": "cd backend && npm install --omit=dev --no-audit",
     "start": "cd backend && node server.js",
     "start:backend": "cd backend && node server.js",
     "start:frontend": "serve -s dist -l ${PORT:-10000}",

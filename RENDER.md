@@ -44,6 +44,32 @@ Required:
 - `CORS_ORIGIN` — include your frontend URL(s)
 - `PORT` — Render sets this automatically; you can omit it
 
+## "20 vulnerabilities" in build logs
+
+That message comes from the **frontend** `npm install` at the repo root (Vite, Rollup, etc.) — **not** the API.
+
+The **backend has 0 vulnerabilities**. If you still see 20 on deploy, your Render **Build Command** is wrong (e.g. `npm install` or `npm install && npm run build` at root).
+
+**API service — use only:**
+
+```bash
+cd backend && npm install --omit=dev --no-audit --no-fund
+```
+
+Do **not** run root `npm install` on the API web service.
+
+For a separate **Static Site** (frontend), vulnerabilities may still appear in logs; they do not block deploy unless the build exits with an error.
+
+## "Application exited early"
+
+Usually caused by:
+
+1. **Server not listening before DB init** — fixed: app now binds `0.0.0.0:PORT` immediately.
+2. **Missing env vars on Render** — add `DATABASE_URL`, `DATABASE_SSL=true`, R2 keys, `GROK_API_KEY_LUMEN` in Dashboard → Environment.
+3. **Wrong build command** — must be `cd backend && npm install --omit=dev --no-audit`.
+
+Check **Logs** tab for `[server] Listening on 0.0.0.0:...` — if missing, paste the error line above it.
+
 ## Verify
 
 After deploy:
@@ -52,7 +78,7 @@ After deploy:
 curl https://YOUR-SERVICE.onrender.com/api/health
 ```
 
-Expect: `"database": "connected"`
+Expect: `"status": "ok"`. `"database": "connected"` once `DATABASE_URL` is the Render **Internal** URL.
 
 ## Frontend (optional second service)
 
