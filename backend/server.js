@@ -2,14 +2,22 @@
  * KG Marketing API
  * Express + PostgreSQL (pg) + Cloudflare R2 (@aws-sdk/client-s3)
  */
-import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-// backend/.env wins over root .env (dotenv does not override by default)
-dotenv.config({ path: path.resolve(__dirname, '../.env') });
-dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+
+// Load .env locally; on Render, env vars are injected — dotenv optional
+try {
+  const require = createRequire(import.meta.url);
+  const dotenv = require('dotenv');
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+} catch {
+  console.log('[env] Using platform environment variables (Render/dashboard)');
+}
+
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';

@@ -6,9 +6,9 @@ services:
     name: kg-marketing-api
     runtime: node
     plan: free
-    rootDir: backend
-    buildCommand: npm install
-    startCommand: node server.js
+    # Leave rootDir empty — build installs backend deps explicitly
+    buildCommand: cd backend && npm install --omit=dev
+    startCommand: cd backend && node server.js
     envVars:
       - key: NODE_VERSION
         value: "20"

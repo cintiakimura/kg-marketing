@@ -12,22 +12,23 @@ That usually means **Root Directory** is set to `src` (wrong) or **Start Command
 
 ## Fix — Web Service (API / Backend)
 
+**Critical:** `npm install` must run inside `backend/` so `dotenv`, `express`, `pg`, etc. are installed.
+
 In Render Dashboard → your service → **Settings**:
 
 | Setting | Value |
 |---------|--------|
+| **Root Directory** | *(leave empty)* |
+| **Build Command** | `cd backend && npm install --omit=dev` |
+| **Start Command** | `cd backend && node server.js` |
+
+Do **not** set Root Directory to `src` — that causes wrong paths.
+
+Alternative (Root Directory = `backend`):
+
 | **Root Directory** | `backend` |
-| **Build Command** | `npm install` |
+| **Build Command** | `npm install --omit=dev` |
 | **Start Command** | `node server.js` |
-
-Or leave **Root Directory** empty and use:
-
-| Setting | Value |
-|---------|--------|
-| **Build Command** | `cd backend && npm install` |
-| **Start Command** | `npm start` |
-
-(`npm start` runs `cd backend && node server.js` from root `package.json`.)
 
 ## Environment variables
 
