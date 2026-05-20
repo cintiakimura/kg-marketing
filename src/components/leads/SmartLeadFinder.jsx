@@ -5,7 +5,9 @@ import {
   saveSearchTemplate,
   deleteSearchTemplate,
 } from '@/lib/smartLeadFinderStorage';
+import { useToast } from '@/components/ui/use-toast';
 import React, { useState, useMemo } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
   Sparkles,
@@ -47,13 +49,15 @@ import {
 } from '@/components/ui/collapsible';
 
 export const TARGET_ROLE_OPTIONS = [
-  'Head of Product Development',
   'Head of Product',
+  'Head of Product Development',
   'Training Manager',
   'L&D Manager',
   'Head of Learning & Development',
+  'Chief Learning Officer',
   'CTO',
   'VP Engineering',
+  'Head of People Development',
   'Director of Operations',
   'Plant Manager',
   'Technical Training Lead',
@@ -62,29 +66,43 @@ export const TARGET_ROLE_OPTIONS = [
 ];
 
 const COMPANY_SIZE_OPTIONS = [
-  '50–200 employees',
-  '200–500 employees',
-  '500–1,000 employees',
-  '1,000–5,000 employees',
-  '5,000+ employees',
+  '1-10',
+  '11-50',
+  '51-200',
+  '201-1000',
+  '1000+',
 ];
 
 const PROGRESS_STEPS = [
-  { key: 'searching_companies', label: 'Searching companies…' },
-  { key: 'finding_decision_makers', label: 'Finding decision-makers…' },
-  { key: 'analyzing_activity', label: 'Analyzing profiles…' },
-  { key: 'evaluating_intent', label: 'Evaluating intent…' },
+  { key: 'searching_companies', label: 'Finding companies…' },
+  { key: 'finding_decision_makers', label: 'Researching decision-makers…' },
+  { key: 'analyzing_activity', label: 'Analyzing activity…' },
+  { key: 'evaluating_intent', label: 'Scoring fit & intent…' },
   { key: 'complete', label: 'Complete' },
 ];
 
 const EMPTY_ICP = {
   industry: '',
-  companySize: '500–1,000 employees',
-  targetRoles: ['Head of Product Development', 'Training Manager'],
+  companySize: '51-200',
+  targetRoles: ['Head of Product', 'Training Manager', 'L&D Manager'],
   geography: '',
   painPoints: '',
   focusCompanies: '',
 };
+
+function confidenceBadgeClass(level) {
+  if (level === 'high') return 'bg-[#00c600]/20 text-[#00c600] border-[#00c600]/40';
+  if (level === 'medium') return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
+  return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
+}
+
+function activityBullets(text) {
+  if (!text) return [];
+  return text
+    .split(/\n|•/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+}
 
 function fitScoreColor(score) {
   if (score >= 9) return 'bg-[#00c600] text-[#212121]';
@@ -104,6 +122,7 @@ function leadToCreatePayload(lead) {
       `Title: ${lead.title}`,
       `Location: ${lead.location}`,
       `Fit score: ${lead.fitScore}/10`,
+      `Confidence: ${lead.confidence_level || 'medium'}`,
       `LinkedIn: ${lead.linkedinUrl}`,
       '',
       '--- Fit reasoning ---',
@@ -119,6 +138,7 @@ function leadToCreatePayload(lead) {
 }
 
 export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
+  const { toast } = useToast();
   const [icp, setIcp] = useState(EMPTY_ICP);
   const [view, setView] = useState('form');
   const [progressKey, setProgressKey] = useState('');
@@ -139,8 +159,6 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     if (progressIndex < 0) return 0;
     return Math.round(((progressIndex + 1) / PROGRESS_STEPS.length) * 100);
   }, [progressKey, progressIndex]);
-
-  if (!isOpen) return null;
 
   const toggleRole = (role) => {
     setIcp((prev) => ({
@@ -216,6 +234,10 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
       for (const lead of toImport) {
         await Lead.create(leadToCreatePayload(lead));
       }
+      toast({
+        title: `${toImport.length} lead${toImport.length !== 1 ? 's' : ''} imported`,
+        description: 'They are now in your Leads database.',
+      });
       onSuccess?.();
       onClose();
     } catch (err) {
@@ -225,11 +247,29 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     }
   };
 
+  const handleClearForm = () => {
+    setIcp({ ...EMPTY_ICP });
+    setError('');
+  };
+
   const inputClass = 'bg-[#333333] border-[#444444] text-white';
 
   return (
-    <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2a2a2a] rounded-xl max-w-6xl w-full max-h-[92vh] overflow-hidden flex flex-col border border-[#333333] shadow-2xl">
+    <AnimatePresence>
+      {isOpen && (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4"
+    >
+      <motion.div
+        initial={{ opacity: 0, y: 24, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 16, scale: 0.98 }}
+        transition={{ type: 'spring', damping: 26, stiffness: 320 }}
+        className="bg-[#2a2a2a] rounded-xl max-w-6xl w-full max-h-[92vh] overflow-hidden flex flex-col border border-[#333333] shadow-2xl"
+      >
         <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] px-6 py-4 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-[#00c600]/20 flex items-center justify-center">
@@ -429,6 +469,15 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </div>
                 <Button
                   type="button"
+                  variant="outline"
+                  onClick={handleClearForm}
+                  disabled={isSearching}
+                  className="border-[#444444] text-gray-300"
+                >
+                  Clear form
+                </Button>
+                <Button
+                  type="button"
                   onClick={handleSearch}
                   disabled={isSearching}
                   className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold sm:min-w-[200px]"
@@ -496,8 +545,8 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   </p>
                   {meta?.source === 'demo' && (
                     <p className="text-xs text-amber-400/90 mt-1">
-                      Demo mode — set <code className="text-[#00c600]">VITE_GROK_API_KEY</code> for
-                      live research
+                      Demo mode — set <code className="text-[#00c600]">GROK_API_KEY_LUMEN</code> on
+                      backend or <code className="text-[#00c600]">VITE_KG_MARKETING_API_URL</code>
                     </p>
                   )}
                   {meta?.source === 'grok' && (
@@ -533,10 +582,15 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </div>
               </div>
 
-              <div className="grid gap-4">
-                {leads.map((lead) => (
-                  <Card
+              <div className="grid gap-4 md:grid-cols-1">
+                {leads.map((lead, index) => (
+                  <motion.div
                     key={lead.id}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.05 }}
+                  >
+                  <Card
                     className={`bg-[#333333] border transition-all ${
                       selectedIds.has(lead.id)
                         ? 'border-[#00c600] ring-1 ring-[#00c600]/30'
@@ -556,6 +610,14 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                             <Badge className={fitScoreColor(lead.fitScore)}>
                               Fit {lead.fitScore}/10
                             </Badge>
+                            {lead.confidence_level && (
+                              <Badge
+                                variant="outline"
+                                className={confidenceBadgeClass(lead.confidence_level)}
+                              >
+                                {lead.confidence_level} confidence
+                              </Badge>
+                            )}
                           </div>
                           <p className="text-sm text-[#00c600]">{lead.title}</p>
                           <p className="text-sm text-gray-400">{lead.company}</p>
@@ -592,7 +654,14 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
                           Recent activity
                         </p>
-                        <p className="text-gray-300 leading-relaxed">{lead.recentActivity}</p>
+                        <ul className="text-gray-300 leading-relaxed space-y-1 list-none">
+                          {activityBullets(lead.recentActivity).map((bullet) => (
+                            <li key={bullet.slice(0, 40)} className="flex gap-2">
+                              <span className="text-[#00c600] shrink-0">•</span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
                       </div>
                       <div className="p-3 rounded-lg bg-[#2a2a2a] border border-[#444444]">
                         <p className="text-gray-500 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
@@ -605,6 +674,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                       </div>
                     </CardContent>
                   </Card>
+                  </motion.div>
                 ))}
               </div>
             </div>
@@ -636,7 +706,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
             </Button>
           </div>
         )}
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
+      )}
+    </AnimatePresence>
   );
 }

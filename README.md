@@ -22,14 +22,21 @@ API calls are stubbed under `src/api/` with `TODO` comments. Wire each module to
 Optional:
 
 - `VITE_KG_MARKETING_APP_ID`
-- `VITE_KG_MARKETING_API_URL`
+- `VITE_KG_MARKETING_API_URL` — backend URL (auth + API)
+
+**Auth (backend):**
+
+- `AUTH_SECRET` — signing key for session tokens (required in production)
+- `AUTH_ADMIN_EMAIL` — default `admin@kgprotech.com`
+- `AUTH_ADMIN_PASSWORD` — default `kgmarketing2026`
 
 **Smart Lead Finder (Grok):**
 
-- `VITE_GROK_API_KEY` — xAI API key for live research (without it, demo leads are returned)
-- `VITE_GROK_API_URL` — default `https://api.x.ai/v1`
+- `VITE_KG_MARKETING_API_URL` — e.g. `http://localhost:3001` (calls `POST /api/ai/find-leads`)
+- `GROK_API_KEY_LUMEN` — set on the **backend** for live multi-step research (Render env)
+- `VITE_GROK_API_KEY` — optional; direct browser Grok if not using backend proxy
+- `VITE_GROK_USE_BACKEND_PROXY=true` — force backend proxy when both keys are set
 - `VITE_GROK_MODEL` — default `grok-2-latest`
-- `VITE_GROK_USE_BACKEND_PROXY=true` — route Grok calls through your backend (recommended in production)
 
 ## Scripts
 

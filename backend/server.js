@@ -26,6 +26,7 @@ import { uploadFile } from './r2.js';
 import leadsRouter from './routes/leads.js';
 import campaignsRouter from './routes/campaigns.js';
 import aiRouter from './routes/ai.js';
+import authRouter from './routes/auth.js';
 
 const app = express();
 const PORT = Number(process.env.PORT) || 3001;
@@ -109,6 +110,7 @@ app.post('/api/upload', upload.single('file'), async (req, res, next) => {
 // ---------------------------------------------------------------------------
 // API routes
 // ---------------------------------------------------------------------------
+app.use('/api/auth', authRouter);
 app.use('/api/leads', leadsRouter);
 app.use('/api/campaigns', campaignsRouter);
 app.use('/api/ai', aiRouter);

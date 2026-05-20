@@ -1,5 +1,6 @@
-import { getCurrentUser, logout } from '@/api/auth';
-import React, { useState } from 'react';
+import { getCurrentUser } from '@/api/auth';
+import { useAuth } from '@/lib/AuthContext';
+import React from 'react';
 import { 
   LayoutDashboard, 
   Users, 
@@ -12,12 +13,15 @@ import {
 } from 'lucide-react';
 
 export default function Layout({ children, currentPageName }) {
-  const [user, setUser] = React.useState(null);
+  const { user: authUser, logout } = useAuth();
+  const [user, setUser] = React.useState(authUser);
 
   React.useEffect(() => {
-    // TODO: Fetch current user from your auth API for nav role-based tabs
-    getCurrentUser().then(setUser).catch(() => setUser(null));
-  }, []);
+    setUser(authUser);
+    if (!authUser) {
+      getCurrentUser().then(setUser).catch(() => setUser(null));
+    }
+  }, [authUser]);
 
   const tabs = [
     { id: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },

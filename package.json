@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "dev:backend": "cd backend && nodemon server.js",
+    "dev:backend": "cd backend && npm install && node --env-file=../.env --watch server.js",
+    "install:backend": "cd backend && npm install",
     "build": "cd backend && npm install --omit=dev --no-audit",
     "postinstall": "cd backend && npm install --omit=dev --no-audit",
     "start": "cd backend && node server.js",

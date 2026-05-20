@@ -134,22 +134,29 @@ function slugify(str) {
     .replace(/^\.+|\.+$/g, '');
 }
 
-function normalizeLead(raw) {
-  const fitScore = Math.min(10, Math.max(1, Number(raw.fitScore) || 5));
+function normalizeLead(raw, index = 0) {
+  const name = (raw.full_name || raw.name || '').trim() || `Contact ${index + 1}`;
+  const fitScore = Math.min(10, Math.max(1, Number(raw.fit_score ?? raw.fitScore) || 5));
+  let recentActivity = raw.recent_activity ?? raw.recentActivity ?? '';
+  if (Array.isArray(recentActivity)) {
+    recentActivity = recentActivity.map((b) => `• ${String(b).replace(/^•\s*/, '')}`).join('\n');
+  }
   return {
-    id: `sl_${slugify(raw.name)}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
-    name: raw.name?.trim() || 'Unknown',
+    id: raw.id || `sl_${slugify(name)}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
+    name,
+    full_name: name,
     title: raw.title?.trim() || 'Decision-maker',
     company: raw.company?.trim() || 'Unknown company',
-    linkedinUrl: raw.linkedinUrl?.trim() || '',
+    linkedinUrl: (raw.linkedin_url || raw.linkedinUrl || '').trim(),
     location: raw.location?.trim() || '',
     email:
       raw.email?.trim() ||
-      `${slugify(raw.name?.split(' ')[0])}.${slugify(raw.name?.split(' ').slice(-1)[0])}@${slugify(raw.company)}.pending`,
+      `${slugify(name.split(' ')[0])}.${slugify(name.split(' ').slice(-1)[0])}@${slugify(raw.company)}.pending`,
     fitScore,
-    fitReasoning: raw.fitReasoning?.trim() || '',
-    recentActivity: raw.recentActivity?.trim() || '',
-    suggestedFirstMessage: raw.suggestedFirstMessage?.trim() || '',
+    fitReasoning: (raw.fit_reasoning || raw.fitReasoning || '').trim(),
+    recentActivity: String(recentActivity).trim(),
+    suggestedFirstMessage: (raw.suggested_first_message || raw.suggestedFirstMessage || '').trim(),
+    confidence_level: raw.confidence_level || (fitScore >= 8 ? 'high' : fitScore >= 6 ? 'medium' : 'low'),
   };
 }
 
@@ -161,7 +168,7 @@ function parseLeadsFromContent(content) {
     const parsed = JSON.parse(jsonMatch[0]);
     const list = parsed.leads || parsed.results || parsed;
     if (!Array.isArray(list)) return [];
-    return list.map(normalizeLead).filter((l) => l.name && l.company);
+    return list.map((l, i) => normalizeLead(l, i)).filter((l) => l.name && l.company);
   } catch {
     return [];
   }
@@ -279,7 +286,62 @@ function buildDemoLeads(icpData) {
     },
   ];
 
-  return demos.map(normalizeLead);
+  return demos.map((d, i) => normalizeLead(d, i));
+}
+
+function getBackendApiUrl() {
+  const url = import.meta.env.VITE_KG_MARKETING_API_URL || import.meta.env.VITE_API_URL;
+  return url ? url.replace(/\/$/, '') : '';
+}
+
+/**
+ * POST /api/ai/find-leads via KG Marketing backend (recommended in production).
+ */
+async function findHighQualityLeadsViaBackend(icpData, options = {}) {
+  const { onProgress } = options;
+  const base = getBackendApiUrl();
+  if (!base) {
+    throw new Error('Set VITE_KG_MARKETING_API_URL to your backend (e.g. http://localhost:3001)');
+  }
+
+  const progressSteps = [
+    ['searching_companies', 'Finding companies…'],
+    ['finding_decision_makers', 'Researching decision-makers…'],
+    ['analyzing_activity', 'Analyzing recent activity…'],
+    ['evaluating_intent', 'Scoring fit and intent…'],
+  ];
+
+  let stepIndex = 0;
+  const tick = setInterval(() => {
+    if (stepIndex < progressSteps.length) {
+      const [key, label] = progressSteps[stepIndex];
+      onProgress?.(key, label);
+      stepIndex += 1;
+    }
+  }, 3500);
+
+  try {
+    const res = await fetch(`${base}/api/ai/find-leads`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(icpData),
+    });
+
+    const json = await res.json();
+    if (!res.ok || !json.success) {
+      throw new Error(json.error || `Backend error (${res.status})`);
+    }
+
+    const leads = (json.data?.leads || []).map((l, i) => normalizeLead(l, i));
+    onProgress?.('complete', 'Done');
+
+    return {
+      leads,
+      meta: json.data?.meta || { source: 'grok' },
+    };
+  } finally {
+    clearInterval(tick);
+  }
 }
 
 /**
@@ -292,7 +354,15 @@ export async function findHighQualityLeads(icpData, options = {}) {
   const { onProgress } = options;
   const icpSummary = buildIcpSummary(icpData);
   const apiKey = import.meta.env.VITE_GROK_API_KEY;
-  const useDemo = !apiKey && import.meta.env.VITE_GROK_USE_BACKEND_PROXY !== 'true';
+  const backendUrl = getBackendApiUrl();
+  const preferBackend =
+    import.meta.env.VITE_GROK_USE_BACKEND_PROXY === 'true' || Boolean(backendUrl);
+
+  if (preferBackend && backendUrl) {
+    return findHighQualityLeadsViaBackend(icpData, options);
+  }
+
+  const useDemo = !apiKey;
 
   if (useDemo) {
     onProgress?.('searching_companies', 'Searching companies…');

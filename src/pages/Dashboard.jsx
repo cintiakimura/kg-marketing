@@ -1,20 +1,10 @@
 import { Campaign, Lead, Client, EmailMessage, Webinar } from '@/api/entities';
-import { isAuthenticated, redirectToLogin } from '@/api/auth';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useQuery } from '@tanstack/react-query';
 import StatsCard from '../components/dashboard/StatsCard';
 import { Megaphone, Users, Building2, Mail, TrendingUp, Calendar } from 'lucide-react';
 
 export default function Dashboard() {
-  useEffect(() => {
-    // TODO: Check auth session and redirect unauthenticated users to login
-    isAuthenticated().then(isAuth => {
-      if (!isAuth) {
-        redirectToLogin(window.location.pathname);
-      }
-    });
-  }, []);
-
   const { data: campaigns = [] } = useQuery({
     queryKey: ['campaigns'],
     // TODO: Fetch campaigns from your backend API
