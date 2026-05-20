@@ -4,7 +4,28 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Rocket, Image as ImageIcon, Edit, Search } from 'lucide-react';
+import {
+  Plus,
+  Rocket,
+  Image as ImageIcon,
+  Edit,
+  Search,
+  Copy,
+  Archive,
+  LayoutGrid,
+  List,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { useToast } from '@/components/ui/use-toast';
 import CreateCampaignModal from '../components/campaigns/CreateCampaignModal';
 import EditCampaignModal from '../components/campaigns/EditCampaignModal';
 import SelectRecipientsModal from '../components/campaigns/SelectRecipientsModal';
@@ -16,11 +37,13 @@ export default function Campaigns() {
   const [isSelectRecipientsOpen, setIsSelectRecipientsOpen] = useState(false);
   const [selectedCampaign, setSelectedCampaign] = useState(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('table');
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
-  const { data: campaigns = [], isLoading } = useQuery({
+  const { data: campaigns = [], isLoading, isError, error } = useQuery({
     queryKey: ['campaigns'],
-    queryFn: () => Campaign.list('-created_date')
+    queryFn: () => Campaign.list(),
   });
 
   const { data: leads = [] } = useQuery({
@@ -239,11 +262,30 @@ Return JSON with:
     setIsSelectRecipientsOpen(true);
   };
 
+  const duplicateMutation = useMutation({
+    mutationFn: (id) => Campaign.duplicate(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['campaigns']);
+      toast({ title: 'Campaign duplicated' });
+    },
+    onError: (err) => toast({ title: 'Duplicate failed', description: err.message, variant: 'destructive' }),
+  });
+
+  const archiveMutation = useMutation({
+    mutationFn: (id) => Campaign.update(id, { status: 'archived' }),
+    onSuccess: () => {
+      queryClient.invalidateQueries(['campaigns']);
+      toast({ title: 'Campaign archived' });
+    },
+    onError: (err) => toast({ title: 'Archive failed', description: err.message, variant: 'destructive' }),
+  });
+
   const statusColors = {
     draft: 'bg-gray-500',
     active: 'bg-[#00c600]',
     completed: 'bg-blue-500',
-    paused: 'bg-yellow-500'
+    paused: 'bg-yellow-500',
+    archived: 'bg-gray-600',
   };
 
   const filteredCampaigns = campaigns.filter(campaign => {
@@ -272,19 +314,49 @@ Return JSON with:
         </Button>
       </div>
 
-      <div className="relative">
-        <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
-        <Input
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search campaigns by name, language, target audience, or status..."
-          className="pl-10 bg-[#2a2a2a] border-[#333333] text-white"
-        />
+      <div className="flex flex-col sm:flex-row gap-3">
+        <div className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+          <Input
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search campaigns..."
+            className="pl-10 bg-[#2a2a2a] border-[#333333] text-white"
+          />
+        </div>
+        <div className="flex gap-1 border border-[#333333] rounded-lg p-1 bg-[#2a2a2a]">
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === 'table' ? 'default' : 'ghost'}
+            onClick={() => setViewMode('table')}
+            className={viewMode === 'table' ? 'bg-[#00c600] text-[#212121]' : 'text-gray-400'}
+          >
+            <List className="w-4 h-4" />
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            variant={viewMode === 'cards' ? 'default' : 'ghost'}
+            onClick={() => setViewMode('cards')}
+            className={viewMode === 'cards' ? 'bg-[#00c600] text-[#212121]' : 'text-gray-400'}
+          >
+            <LayoutGrid className="w-4 h-4" />
+          </Button>
+        </div>
       </div>
 
+      {isError && (
+        <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
+          <AlertCircle className="w-5 h-5" />
+          <p className="text-sm">{error?.message || 'Failed to load campaigns'}</p>
+        </div>
+      )}
+
       {isLoading ? (
-        <div className="text-center py-12">
-          <p className="text-gray-400">Loading campaigns...</p>
+        <div className="text-center py-12 flex justify-center gap-2 text-gray-400">
+          <Loader2 className="w-5 h-5 animate-spin text-[#00c600]" />
+          Loading campaigns…
         </div>
       ) : filteredCampaigns.length === 0 ? (
         <div className="text-center py-12 bg-[#2a2a2a] rounded-xl border border-[#333333]">
@@ -299,6 +371,65 @@ Return JSON with:
               Create Campaign
             </Button>
           )}
+        </div>
+      ) : viewMode === 'table' ? (
+        <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] overflow-x-auto">
+          <Table>
+            <TableHeader>
+              <TableRow className="border-[#333333] hover:bg-transparent">
+                <TableHead className="text-gray-400">Name</TableHead>
+                <TableHead className="text-gray-400">Status</TableHead>
+                <TableHead className="text-gray-400">Leads</TableHead>
+                <TableHead className="text-gray-400">Start Date</TableHead>
+                <TableHead className="text-gray-400">Performance</TableHead>
+                <TableHead className="text-gray-400 text-right">Actions</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {filteredCampaigns.map((campaign) => (
+                <TableRow key={campaign.id} className="border-[#333333] hover:bg-[#333333]">
+                  <TableCell className="text-white font-medium">{campaign.name}</TableCell>
+                  <TableCell>
+                    <Badge className={`${statusColors[campaign.status] || 'bg-gray-500'} text-white border-0`}>
+                      {campaign.status}
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="text-gray-300">{campaign.leads_count ?? 0}</TableCell>
+                  <TableCell className="text-gray-400 text-sm">
+                    {campaign.start_date || campaign.created_date
+                      ? new Date(campaign.start_date || campaign.created_date).toLocaleDateString()
+                      : '—'}
+                  </TableCell>
+                  <TableCell className="text-[#00c600]">{campaign.performance ?? 0}%</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-1">
+                      <Button size="sm" variant="ghost" onClick={() => handleEditClick(campaign)} className="text-[#00c600]">
+                        <Edit className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => duplicateMutation.mutate(campaign.id)}
+                        className="text-gray-400 hover:text-white"
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                      {campaign.status !== 'archived' && (
+                        <Button
+                          size="sm"
+                          variant="ghost"
+                          onClick={() => archiveMutation.mutate(campaign.id)}
+                          className="text-gray-400 hover:text-amber-400"
+                        >
+                          <Archive className="w-4 h-4" />
+                        </Button>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
         </div>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">

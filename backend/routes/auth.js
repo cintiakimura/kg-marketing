@@ -1,5 +1,5 @@
 /**
- * Auth — sign up (save hashed password) + login (verify against DB).
+ * Auth — sign up + login (shared internal workspace, no roles).
  */
 import { Router } from 'express';
 import crypto from 'crypto';
@@ -50,7 +50,7 @@ function formatUser(row) {
     id: row.id,
     email: row.email,
     name: row.full_name || row.email.split('@')[0],
-    role: 'member',
+    full_name: row.full_name || row.email.split('@')[0],
   };
 }
 
@@ -73,10 +73,6 @@ function emailAllowed(email) {
   return email.endsWith(`@${domain}`);
 }
 
-/**
- * POST /api/auth/signup
- * Body: { email, password, full_name? }
- */
 function mapAuthDbError(err, res, next) {
   console.error('[auth]', err.code, err.message);
   if (err.status === 503) {
@@ -144,7 +140,6 @@ router.post('/signup', async (req, res, next) => {
       sub: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
     });
 
     res.status(201).json({ success: true, data: { token, user } });
@@ -153,9 +148,6 @@ router.post('/signup', async (req, res, next) => {
   }
 });
 
-/**
- * POST /api/auth/login
- */
 router.post('/login', async (req, res, next) => {
   try {
     await ensureUsersTable();
@@ -187,7 +179,6 @@ router.post('/login', async (req, res, next) => {
       sub: user.id,
       email: user.email,
       name: user.name,
-      role: user.role,
     });
 
     res.json({ success: true, data: { token, user } });
@@ -196,9 +187,6 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-/**
- * GET /api/auth/me
- */
 router.get('/me', (req, res) => {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7) : null;
@@ -208,21 +196,18 @@ router.get('/me', (req, res) => {
     return res.status(401).json({ success: false, error: 'Invalid or expired session' });
   }
 
-  res.json({ success: true, data: { user: userFromPayload(payload) } });
+  res.json({
+    success: true,
+    data: {
+      user: {
+        id: payload.sub,
+        email: payload.email,
+        name: payload.name,
+      },
+    },
+  });
 });
 
-function userFromPayload(payload) {
-  return {
-    id: payload.sub,
-    email: payload.email,
-    name: payload.name,
-    role: payload.role || 'member',
-  };
-}
-
-/**
- * POST /api/auth/logout
- */
 router.post('/logout', (_req, res) => {
   res.json({ success: true, data: { message: 'Logged out' } });
 });

@@ -10,9 +10,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 export default function EditClientModal({ isOpen, onClose, client, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
+    contact_name: '',
     industry: '',
     status: 'prospect',
-    notes: ''
+    deal_value: '',
+    last_contact_at: '',
+    notes: '',
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -20,9 +23,14 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
     if (client) {
       setFormData({
         name: client.name || '',
+        contact_name: client.contact_name || '',
         industry: client.industry || '',
         status: client.status || 'prospect',
-        notes: client.notes || ''
+        deal_value: client.deal_value ?? '',
+        last_contact_at: client.last_contact_at
+          ? new Date(client.last_contact_at).toISOString().slice(0, 10)
+          : '',
+        notes: client.notes || '',
       });
     }
   }, [client]);
@@ -37,7 +45,13 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
 
     setIsSaving(true);
     try {
-      await Client.update(client.id, formData);
+      await Client.update(client.id, {
+        ...formData,
+        deal_value: formData.deal_value === '' ? null : formData.deal_value,
+        last_contact_at: formData.last_contact_at
+          ? new Date(formData.last_contact_at).toISOString()
+          : null,
+      });
       onSuccess();
       onClose();
     } catch (error) {
@@ -69,11 +83,41 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
           </div>
 
           <div>
+            <Label className="text-gray-300 mb-2">Contact Name</Label>
+            <Input
+              value={formData.contact_name}
+              onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
+              className="bg-[#333333] border-[#444444] text-white"
+            />
+          </div>
+
+          <div>
             <Label className="text-gray-300 mb-2">Industry</Label>
             <Input
               value={formData.industry}
               onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
               placeholder="e.g., Automotive, Technology"
+              className="bg-[#333333] border-[#444444] text-white"
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300 mb-2">Deal Value (USD)</Label>
+            <Input
+              type="number"
+              min="0"
+              value={formData.deal_value}
+              onChange={(e) => setFormData({ ...formData, deal_value: e.target.value })}
+              className="bg-[#333333] border-[#444444] text-white"
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300 mb-2">Last Contact</Label>
+            <Input
+              type="date"
+              value={formData.last_contact_at}
+              onChange={(e) => setFormData({ ...formData, last_contact_at: e.target.value })}
               className="bg-[#333333] border-[#444444] text-white"
             />
           </div>

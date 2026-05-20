@@ -10,9 +10,11 @@ import { Textarea } from '@/components/ui/textarea';
 export default function CreateClientModal({ isOpen, onClose, onSuccess }) {
   const [formData, setFormData] = useState({
     name: '',
+    contact_name: '',
     industry: '',
     status: 'prospect',
-    notes: ''
+    deal_value: '',
+    notes: '',
   });
   const [isSaving, setIsSaving] = useState(false);
 
@@ -32,9 +34,11 @@ export default function CreateClientModal({ isOpen, onClose, onSuccess }) {
       onClose();
       setFormData({
         name: '',
+        contact_name: '',
         industry: '',
         status: 'prospect',
-        notes: ''
+        deal_value: '',
+        notes: '',
       });
     } catch (error) {
       alert('Failed to create client');
@@ -62,6 +66,28 @@ export default function CreateClientModal({ isOpen, onClose, onSuccess }) {
               placeholder="Company Inc."
               className="bg-[#333333] border-[#444444] text-white"
               required
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300 mb-2">Contact Name</Label>
+            <Input
+              value={formData.contact_name}
+              onChange={(e) => setFormData(prev => ({ ...prev, contact_name: e.target.value }))}
+              placeholder="Jane Smith"
+              className="bg-[#333333] border-[#444444] text-white"
+            />
+          </div>
+
+          <div>
+            <Label className="text-gray-300 mb-2">Deal Value (USD)</Label>
+            <Input
+              type="number"
+              min="0"
+              value={formData.deal_value}
+              onChange={(e) => setFormData(prev => ({ ...prev, deal_value: e.target.value }))}
+              placeholder="50000"
+              className="bg-[#333333] border-[#444444] text-white"
             />
           </div>
 

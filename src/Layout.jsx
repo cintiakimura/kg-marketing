@@ -1,38 +1,22 @@
-import { getCurrentUser } from '@/api/auth';
 import { useAuth } from '@/lib/AuthContext';
 import React from 'react';
-import { 
-  LayoutDashboard, 
-  Users, 
-  Building2, 
-  Mail, 
-  Calendar, 
-  BarChart3, 
+import {
+  LayoutDashboard,
+  Building2,
   Megaphone,
-  LogOut
+  LogOut,
+  Target,
 } from 'lucide-react';
 
+const tabs = [
+  { id: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { id: 'Leads', label: 'Leads', icon: Target },
+  { id: 'Campaigns', label: 'Campaigns', icon: Megaphone },
+  { id: 'Clients', label: 'Clients', icon: Building2 },
+];
+
 export default function Layout({ children, currentPageName }) {
-  const { user: authUser, logout } = useAuth();
-  const [user, setUser] = React.useState(authUser);
-
-  React.useEffect(() => {
-    setUser(authUser);
-    if (!authUser) {
-      getCurrentUser().then(setUser).catch(() => setUser(null));
-    }
-  }, [authUser]);
-
-  const tabs = [
-    { id: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
-    ...(user?.role === 'manager' || user?.role === 'admin' ? [{ id: 'ManagerDashboard', label: 'Manager', icon: Users }] : []),
-    { id: 'Campaigns', label: 'Campaigns', icon: Megaphone },
-    { id: 'Leads', label: 'Leads', icon: Users },
-    { id: 'Clients', label: 'Clients', icon: Building2 },
-    { id: 'Webmail', label: 'Webmail', icon: Mail },
-    { id: 'Calendar', label: 'Calendar', icon: Calendar },
-    { id: 'Statistics', label: 'Statistics', icon: BarChart3 }
-  ];
+  const { logout } = useAuth();
 
   return (
     <div className="min-h-screen bg-[#212121]">
@@ -71,24 +55,29 @@ export default function Layout({ children, currentPageName }) {
         }
       `}</style>
 
-      {/* Header */}
       <header className="bg-[#2a2a2a] border-b border-[#333333] sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-[#00c600] rounded-lg flex items-center justify-center">
+              <img
+                src="/kg-logo.png"
+                alt="KG"
+                className="w-10 h-10 rounded-lg object-contain"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextSibling?.classList.remove('hidden');
+                }}
+              />
+              <div className="hidden w-10 h-10 bg-[#00c600] rounded-lg flex items-center justify-center">
                 <span className="text-[#212121] font-bold text-xl">KG</span>
               </div>
               <div>
                 <h1 className="text-white font-bold text-xl">KG Marketing</h1>
-                <p className="text-gray-400 text-xs">Campaign-in-a-Box</p>
+                <p className="text-gray-400 text-xs">Internal workspace</p>
               </div>
             </div>
             <button
-              onClick={() => {
-                // TODO: Wire logout to your auth provider
-                logout();
-              }}
+              onClick={() => logout()}
               className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-[#00c600] transition-colors"
             >
               <LogOut className="w-4 h-4" />
@@ -97,7 +86,6 @@ export default function Layout({ children, currentPageName }) {
           </div>
         </div>
 
-        {/* Tab Navigation */}
         <nav className="max-w-[1600px] mx-auto px-6">
           <div className="flex gap-1 overflow-x-auto scrollbar-custom">
             {tabs.map((tab) => {
@@ -122,10 +110,7 @@ export default function Layout({ children, currentPageName }) {
         </nav>
       </header>
 
-      {/* Main Content */}
-      <main className="max-w-[1600px] mx-auto px-6 py-8">
-        {children}
-      </main>
+      <main className="max-w-[1600px] mx-auto px-6 py-8">{children}</main>
     </div>
   );
 }

@@ -24,10 +24,11 @@ try {
 import express from 'express';
 import cors from 'cors';
 import multer from 'multer';
-import { initDatabase, ensureUsersTable, ping, query } from './db.js';
+import { initDatabase, ensureUsersTable, ensureSchemaMigrations, ping, query } from './db.js';
 import { uploadFile } from './r2.js';
 import leadsRouter from './routes/leads.js';
 import campaignsRouter from './routes/campaigns.js';
+import clientsRouter from './routes/clients.js';
 import aiRouter from './routes/ai.js';
 import authRouter from './routes/auth.js';
 
@@ -125,6 +126,7 @@ app.post('/api/upload', upload.single('file'), async (req, res, next) => {
 app.use('/api/auth', authRouter);
 app.use('/api/leads', leadsRouter);
 app.use('/api/campaigns', campaignsRouter);
+app.use('/api/clients', clientsRouter);
 app.use('/api/ai', aiRouter);
 
 // Favicon (browsers request .ico by default)
@@ -187,7 +189,10 @@ function start() {
   });
 
   if (process.env.DATABASE_URL) {
-    const runInit = process.env.INIT_DB === 'true' ? initDatabase() : ensureUsersTable();
+    const runInit =
+      process.env.INIT_DB === 'true'
+        ? initDatabase()
+        : ensureUsersTable().then(() => ensureSchemaMigrations());
     runInit
       .then(() => console.log('[db] Auth tables ready'))
       .catch((err) => console.error('[db] Init failed (server still running):', err.message));

@@ -2,9 +2,38 @@
  * Leads API — full CRUD (primary resource).
  */
 import { Router } from 'express';
-import { query, formatLead } from '../db.js';
+import { query, formatLead, applyPersonalContext } from '../db.js';
+import { verifyToken } from './auth.js';
 
 const router = Router();
+
+function getViewerEmail(req) {
+  const header = req.headers.authorization || '';
+  const token = header.startsWith('Bearer ') ? header.slice(7) : null;
+  const payload = verifyToken(token);
+  return payload?.email?.toLowerCase() || null;
+}
+
+async function savePersonalFields(leadId, email, { notes, next_followup_date }) {
+  const { rows } = await query('SELECT personal FROM leads WHERE id = $1', [leadId]);
+  if (!rows[0]) return null;
+
+  const personal = rows[0].personal && typeof rows[0].personal === 'object' ? rows[0].personal : {};
+  const key = email.toLowerCase();
+  const current = personal[key] || {};
+  const next = { ...current };
+
+  if (notes !== undefined) next.notes = notes;
+  if (next_followup_date !== undefined) next.next_followup_date = next_followup_date;
+
+  personal[key] = next;
+
+  await query('UPDATE leads SET personal = $1::jsonb WHERE id = $2', [
+    JSON.stringify(personal),
+    leadId,
+  ]);
+  return next;
+}
 
 export const PIPELINE_STATUSES = new Set([
   'new',
@@ -59,10 +88,14 @@ router.get('/', async (req, res, next) => {
     }
 
     const sql = `SELECT * FROM leads ${where.length ? 'WHERE ' + where.join(' AND ') : ''} ORDER BY ${order}`;
+    const viewer = getViewerEmail(req);
     const { rows } = await query(sql, params);
     res.json({
       success: true,
-      data: rows.map((r) => formatLead({ ...r, status: normalizeStatus(r.status) })),
+      data: rows.map((r) => {
+        const normalized = { ...r, status: normalizeStatus(r.status) };
+        return viewer ? applyPersonalContext(normalized, viewer) : formatLead(normalized);
+      }),
       meta: { count: rows.length },
     });
   } catch (err) {
@@ -147,7 +180,11 @@ router.get('/:id', async (req, res, next) => {
   try {
     const { rows } = await query('SELECT * FROM leads WHERE id = $1', [req.params.id]);
     if (!rows[0]) return res.status(404).json({ success: false, error: 'Lead not found' });
-    const lead = formatLead({ ...rows[0], status: normalizeStatus(rows[0].status) });
+    const viewer = getViewerEmail(req);
+    const normalized = { ...rows[0], status: normalizeStatus(rows[0].status) };
+    const lead = viewer
+      ? applyPersonalContext(normalized, viewer)
+      : formatLead(normalized);
     res.json({ success: true, data: lead });
   } catch (err) {
     next(err);
@@ -172,8 +209,8 @@ router.post('/', async (req, res, next) => {
         full_name, email, company, title, linkedin_url, location,
         client_id, campaign_id, status, language_preference, notes,
         last_status_change, followup_history, fit_score, source,
-        next_followup_date, last_contact_at
-      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)
+        next_followup_date, last_contact_at, owner_email
+      ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18)
       RETURNING *`,
       [
         b.full_name.trim(),
@@ -193,12 +230,15 @@ router.post('/', async (req, res, next) => {
         b.source || 'manual',
         b.next_followup_date || null,
         b.last_contact_at || null,
+        b.owner_email || null,
       ]
     );
 
+    const viewer = getViewerEmail(req);
+    const normalized = { ...rows[0], status: normalizeStatus(rows[0].status) };
     res.status(201).json({
       success: true,
-      data: formatLead({ ...rows[0], status: normalizeStatus(rows[0].status) }),
+      data: viewer ? applyPersonalContext(normalized, viewer) : formatLead(normalized),
     });
   } catch (err) {
     next(err);
@@ -209,6 +249,15 @@ router.post('/', async (req, res, next) => {
 router.patch('/:id', async (req, res, next) => {
   try {
     const b = req.body;
+    const viewer = getViewerEmail(req);
+
+    if (viewer && (b.personal_notes !== undefined || b.personal_next_followup_date !== undefined)) {
+      await savePersonalFields(req.params.id, viewer, {
+        notes: b.personal_notes,
+        next_followup_date: b.personal_next_followup_date,
+      });
+    }
+
     const allowed = [
       'full_name',
       'email',
@@ -227,6 +276,7 @@ router.patch('/:id', async (req, res, next) => {
       'source',
       'next_followup_date',
       'last_contact_at',
+      'owner_email',
     ];
 
     const sets = [];
@@ -251,20 +301,28 @@ router.patch('/:id', async (req, res, next) => {
       }
     }
 
-    if (!sets.length) {
+    if (!sets.length && !(viewer && (b.personal_notes !== undefined || b.personal_next_followup_date !== undefined))) {
       return res.status(400).json({ success: false, error: 'No fields to update' });
     }
 
-    vals.push(req.params.id);
-    const { rows } = await query(
-      `UPDATE leads SET ${sets.join(', ')} WHERE id = $${vals.length} RETURNING *`,
-      vals
-    );
+    let rows = [];
+    if (sets.length) {
+      vals.push(req.params.id);
+      const result = await query(
+        `UPDATE leads SET ${sets.join(', ')} WHERE id = $${vals.length} RETURNING *`,
+        vals
+      );
+      rows = result.rows;
+    } else {
+      const result = await query('SELECT * FROM leads WHERE id = $1', [req.params.id]);
+      rows = result.rows;
+    }
 
     if (!rows[0]) return res.status(404).json({ success: false, error: 'Lead not found' });
+    const normalized = { ...rows[0], status: normalizeStatus(rows[0].status) };
     res.json({
       success: true,
-      data: formatLead({ ...rows[0], status: normalizeStatus(rows[0].status) }),
+      data: viewer ? applyPersonalContext(normalized, viewer) : formatLead(normalized),
     });
   } catch (err) {
     next(err);

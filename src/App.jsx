@@ -49,7 +49,7 @@ function AppRoutes() {
       <Route
         path="/"
         element={
-          isAuthenticated ? <Navigate to="/dashboard" replace /> : <Landing />
+          isAuthenticated ? <Navigate to="/Leads" replace /> : <Landing />
         }
       />
 
@@ -57,7 +57,7 @@ function AppRoutes() {
         path="/dashboard"
         element={
           isAuthenticated ? (
-            <Navigate to="/Dashboard" replace />
+            <Navigate to="/Leads" replace />
           ) : (
             <Navigate to="/" replace />
           )

@@ -1,133 +1,220 @@
-import { Campaign, Lead, Client, EmailMessage, Webinar } from '@/api/entities';
-import React from 'react';
+import { Campaign, Lead } from '@/api/entities';
+import React, { useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import StatsCard from '../components/dashboard/StatsCard';
-import { Megaphone, Users, Building2, Mail, TrendingUp, Calendar } from 'lucide-react';
+import {
+  Megaphone,
+  Users,
+  Bell,
+  TrendingUp,
+  Plus,
+  Sparkles,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+} from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { normalizeLeadStatus, getStatusMeta } from '@/lib/leadConstants';
+
+function isFollowUpDue(lead) {
+  if (!lead.next_followup_date) return false;
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const due = new Date(lead.next_followup_date);
+  due.setHours(0, 0, 0, 0);
+  return due <= today;
+}
 
 export default function Dashboard() {
-  const { data: campaigns = [] } = useQuery({
-    queryKey: ['campaigns'],
-    // TODO: Fetch campaigns from your backend API
-    queryFn: () => Campaign.list()
-  });
-
-  const { data: leads = [] } = useQuery({
+  const {
+    data: leads = [],
+    isLoading: leadsLoading,
+    isError: leadsError,
+    error: leadsErr,
+  } = useQuery({
     queryKey: ['leads'],
-    // TODO: Fetch leads from your backend API
-    queryFn: () => Lead.list()
+    queryFn: () => Lead.list('-created_date'),
   });
 
-  const { data: clients = [] } = useQuery({
-    queryKey: ['clients'],
-    // TODO: Fetch clients from your backend API
-    queryFn: () => Client.list()
+  const {
+    data: campaigns = [],
+    isLoading: campaignsLoading,
+    isError: campaignsError,
+  } = useQuery({
+    queryKey: ['campaigns'],
+    queryFn: () => Campaign.list(),
   });
 
-  const { data: emails = [] } = useQuery({
-    queryKey: ['emails'],
-    // TODO: Fetch email messages from your backend API
-    queryFn: () => EmailMessage.list()
-  });
+  const stats = useMemo(() => {
+    const activeCampaigns = campaigns.filter((c) => c.status === 'active').length;
+    const followUpDue = leads.filter(isFollowUpDue).length;
+    const clients = leads.filter((l) => normalizeLeadStatus(l.status) === 'client').length;
+    const conversion =
+      leads.length > 0 ? Math.round((clients / leads.length) * 100) : 0;
+    return { activeCampaigns, followUpDue, conversion };
+  }, [leads, campaigns]);
 
-  const { data: webinars = [] } = useQuery({
-    queryKey: ['webinars'],
-    // TODO: Fetch webinars from your backend API
-    queryFn: () => Webinar.list()
-  });
+  const recentLeads = useMemo(
+    () =>
+      [...leads]
+        .sort(
+          (a, b) =>
+            new Date(b.created_date || b.created_at) -
+            new Date(a.created_date || a.created_at)
+        )
+        .slice(0, 8),
+    [leads]
+  );
 
-  const activeCampaigns = campaigns.filter(c => c.status === 'active').length;
-  const unreadEmails = emails.filter(e => !e.is_read && e.folder === 'inbox').length;
-  const upcomingWebinars = webinars.filter(w => new Date(w.start_time) > new Date()).length;
+  const loading = leadsLoading || campaignsLoading;
+  const hasError = leadsError || campaignsError;
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Welcome to Campaign-in-a-Box</h1>
-        <p className="text-gray-400">Manage your IoT automotive training campaigns and leads</p>
+        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
+        <p className="text-gray-400">
+          Overview of leads, campaigns, and follow-ups
+        </p>
       </div>
 
-      {/* Stats Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        <StatsCard
-          title="Active Campaigns"
-          value={activeCampaigns}
-          icon={Megaphone}
-          trend="up"
-          trendValue="+12%"
-        />
-        <StatsCard
-          title="Total Leads"
-          value={leads.length}
-          icon={Users}
-          trend="up"
-          trendValue="+8%"
-        />
-        <StatsCard
-          title="Clients"
-          value={clients.length}
-          icon={Building2}
-          trend="up"
-          trendValue="+5%"
-        />
-        <StatsCard
-          title="Unread Messages"
-          value={unreadEmails}
-          icon={Mail}
-        />
-      </div>
+      {hasError && (
+        <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
+          <AlertCircle className="w-5 h-5 shrink-0" />
+          <p className="text-sm">
+            {leadsErr?.message || 'Could not load dashboard data. Check API connection.'}
+          </p>
+        </div>
+      )}
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div className="bg-[#2a2a2a] rounded-xl p-6 border border-[#333333]">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <TrendingUp className="w-5 h-5 text-[#00c600]" />
-            Recent Activity
-          </h2>
-          <div className="space-y-3">
-            <div className="flex items-center justify-between py-2 border-b border-[#333333]">
-              <span className="text-gray-300 text-sm">New leads imported</span>
-              <span className="text-[#00c600] font-medium">{leads.filter(l => l.status === 'new').length}</span>
-            </div>
-            <div className="flex items-center justify-between py-2 border-b border-[#333333]">
-              <span className="text-gray-300 text-sm">Emails sent today</span>
-              <span className="text-[#00c600] font-medium">{emails.filter(e => e.folder === 'sent').length}</span>
-            </div>
-            <div className="flex items-center justify-between py-2">
-              <span className="text-gray-300 text-sm">Campaign completion rate</span>
-              <span className="text-[#00c600] font-medium">87%</span>
-            </div>
+      {loading ? (
+        <div className="flex items-center justify-center py-16 text-gray-400 gap-2">
+          <Loader2 className="w-6 h-6 animate-spin text-[#00c600]" />
+          Loading dashboard…
+        </div>
+      ) : (
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <StatsCard title="Total Leads" value={leads.length} icon={Users} />
+            <StatsCard
+              title="Active Campaigns"
+              value={stats.activeCampaigns}
+              icon={Megaphone}
+            />
+            <StatsCard
+              title="Follow-up Due / Overdue"
+              value={stats.followUpDue}
+              icon={Bell}
+            />
+            <StatsCard
+              title="Conversion Rate"
+              value={`${stats.conversion}%`}
+              icon={TrendingUp}
+            />
           </div>
-        </div>
 
-        <div className="bg-[#2a2a2a] rounded-xl p-6 border border-[#333333]">
-          <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-            <Calendar className="w-5 h-5 text-[#00c600]" />
-            Upcoming Webinars
-          </h2>
-          {upcomingWebinars === 0 ? (
-            <p className="text-gray-400 text-sm">No upcoming webinars scheduled</p>
-          ) : (
-            <div className="space-y-3">
-              {webinars
-                .filter(w => new Date(w.start_time) > new Date())
-                .slice(0, 3)
-                .map(webinar => (
-                  <div key={webinar.id} className="flex items-center justify-between py-2 border-b border-[#333333]">
-                    <div>
-                      <p className="text-white text-sm font-medium">{webinar.title}</p>
-                      <p className="text-gray-400 text-xs">
-                        {new Date(webinar.start_time).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <span className="text-[#00c600] text-xs">
-                      {webinar.attendees?.length || 0} registered
-                    </span>
-                  </div>
-                ))}
+          <div className="flex flex-wrap gap-3">
+            <Button
+              asChild
+              className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+            >
+              <a href="/Leads">
+                <Plus className="w-4 h-4 mr-2" />
+                New Lead
+              </a>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="border-[#444444] text-gray-200 hover:bg-[#333333] hover:text-[#00c600]"
+            >
+              <a href="/Leads">
+                <Sparkles className="w-4 h-4 mr-2" />
+                Smart Lead Finder
+              </a>
+            </Button>
+            <Button
+              asChild
+              variant="outline"
+              className="border-[#444444] text-gray-200 hover:bg-[#333333] hover:text-[#00c600]"
+            >
+              <a href="/Campaigns">
+                <Megaphone className="w-4 h-4 mr-2" />
+                New Campaign
+              </a>
+            </Button>
+          </div>
+
+          <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-[#333333]">
+              <h2 className="text-lg font-bold text-white">Recent Leads</h2>
+              <a
+                href="/Leads"
+                className="text-sm text-[#00c600] hover:text-[#00dd00] flex items-center gap-1"
+              >
+                View all <ArrowRight className="w-4 h-4" />
+              </a>
             </div>
-          )}
-        </div>
-      </div>
+            {recentLeads.length === 0 ? (
+              <p className="p-8 text-gray-400 text-center text-sm">
+                No leads yet. Add your first lead or run Smart Lead Finder.
+              </p>
+            ) : (
+              <div className="overflow-x-auto">
+                <Table>
+                  <TableHeader>
+                    <TableRow className="border-[#333333] hover:bg-transparent">
+                      <TableHead className="text-gray-400">Name</TableHead>
+                      <TableHead className="text-gray-400">Company</TableHead>
+                      <TableHead className="text-gray-400">Status</TableHead>
+                      <TableHead className="text-gray-400">Follow-up</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {recentLeads.map((lead) => {
+                      const meta = getStatusMeta(lead.status);
+                      return (
+                        <TableRow
+                          key={lead.id}
+                          className="border-[#333333] hover:bg-[#333333]"
+                        >
+                          <TableCell className="text-white font-medium">
+                            {lead.full_name}
+                          </TableCell>
+                          <TableCell className="text-gray-300">
+                            {lead.company || '—'}
+                          </TableCell>
+                          <TableCell>
+                            <Badge
+                              className={`${meta.color} text-white border-0`}
+                            >
+                              {meta.label}
+                            </Badge>
+                          </TableCell>
+                          <TableCell className="text-gray-400 text-sm">
+                            {lead.next_followup_date
+                              ? new Date(lead.next_followup_date).toLocaleDateString()
+                              : '—'}
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                  </TableBody>
+                </Table>
+              </div>
+            )}
+          </div>
+        </>
+      )}
     </div>
   );
 }

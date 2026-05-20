@@ -1,33 +1,4 @@
-/**
- * Leads API — full CRUD against KG Marketing backend.
- */
-
-function getApiBase() {
-  const envUrl =
-    import.meta.env.VITE_KG_MARKETING_API_URL || import.meta.env.VITE_API_URL;
-  if (envUrl) return envUrl.replace(/\/$/, '');
-  // Same-origin production (Express serves dist + /api)
-  if (typeof window !== 'undefined') return window.location.origin;
-  return '';
-}
-
-async function apiRequest(path, options = {}) {
-  const base = getApiBase();
-  if (!base) {
-    throw new Error('Set VITE_KG_MARKETING_API_URL to connect to the leads API');
-  }
-
-  const res = await fetch(`${base}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options.headers },
-    ...options,
-  });
-
-  const json = await res.json().catch(() => ({}));
-  if (!res.ok || json.success === false) {
-    throw new Error(json.error || `Request failed (${res.status})`);
-  }
-  return json.data;
-}
+import { apiRequest } from '@/lib/apiClient';
 
 /**
  * @param {string} [sort]

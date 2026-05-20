@@ -46,11 +46,13 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
     if (!lead) return;
     setStatus(normalizeLeadStatus(lead.status));
     const p = parseLeadNotes(lead.notes);
-    setUserNotes(p.userNotes || (smartSections ? '' : lead.notes || ''));
+    setUserNotes(
+      lead.my_notes ?? p.userNotes ?? (smartSections ? '' : lead.notes || '')
+    );
     setFinderSections(smartSections ? p : null);
     setNextFollowUp(
-      lead.next_followup_date
-        ? String(lead.next_followup_date).slice(0, 10)
+      (lead.my_next_followup_date || lead.next_followup_date)
+        ? String(lead.my_next_followup_date || lead.next_followup_date).slice(0, 10)
         : ''
     );
   }, [lead, smartSections]);
@@ -87,7 +89,8 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
       const updates = {
         status,
         notes: notesPayload,
-        next_followup_date: nextFollowUp || null,
+        personal_notes: userNotes,
+        personal_next_followup_date: nextFollowUp || null,
       };
       if (status !== normalizeLeadStatus(lead.status)) {
         updates.last_status_change = new Date().toISOString();
@@ -246,7 +249,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           )}
 
           <div>
-            <Label className="text-gray-300 mb-2">Your notes</Label>
+            <Label className="text-gray-300 mb-2">Your notes (only you see these)</Label>
             <Textarea
               value={userNotes}
               onChange={(e) => setUserNotes(e.target.value)}

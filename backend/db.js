@@ -185,13 +185,48 @@ export async function initDatabase() {
     console.warn('[db] leads columns:', err.message);
   }
   await ensureUsersTable();
+  await ensureSchemaMigrations();
   console.log('[db] Tables ready');
+}
+
+/** Lightweight migrations (safe to run on every deploy). */
+export async function ensureSchemaMigrations() {
+  try {
+    await pool.query(`
+      ALTER TABLE clients ADD COLUMN IF NOT EXISTS contact_name VARCHAR(255);
+      ALTER TABLE clients ADD COLUMN IF NOT EXISTS deal_value NUMERIC(12,2);
+      ALTER TABLE clients ADD COLUMN IF NOT EXISTS last_contact_at TIMESTAMPTZ;
+      ALTER TABLE campaigns ADD COLUMN IF NOT EXISTS sent_count INTEGER NOT NULL DEFAULT 0;
+      ALTER TABLE leads ADD COLUMN IF NOT EXISTS owner_email VARCHAR(255);
+      ALTER TABLE leads ADD COLUMN IF NOT EXISTS personal JSONB NOT NULL DEFAULT '{}'::jsonb;
+    `);
+  } catch (err) {
+    console.warn('[db] schema migrations:', err.message);
+  }
 }
 
 /** Health check — verify DB connection. */
 export async function ping() {
   const { rows } = await pool.query('SELECT NOW() AS now');
   return rows[0];
+}
+
+/** Merge per-user notes/follow-up from personal JSONB. */
+export function applyPersonalContext(row, viewerEmail) {
+  const lead = formatLead(row);
+  if (!lead || !viewerEmail) return lead;
+
+  const personal =
+    typeof row.personal === 'object' && row.personal !== null ? row.personal : {};
+  const mine = personal[viewerEmail] || personal[viewerEmail.toLowerCase()] || {};
+
+  return {
+    ...lead,
+    owner_email: row.owner_email || null,
+    my_notes: mine.notes || '',
+    my_next_followup_date: mine.next_followup_date || null,
+    next_followup_date: mine.next_followup_date || lead.next_followup_date,
+  };
 }
 
 /** Map DB row → API response (frontend-compatible). */
@@ -214,6 +249,7 @@ export function formatLead(row) {
     followup_history: row.followup_history || [],
     fit_score: row.fit_score,
     source: row.source,
+    owner_email: row.owner_email || null,
     next_followup_date: row.next_followup_date,
     last_contact_at: row.last_contact_at,
     created_at: row.created_at,
@@ -224,6 +260,11 @@ export function formatLead(row) {
 
 export function formatCampaign(row) {
   if (!row) return null;
+  const leadsCount = Number(row.leads_count ?? 0);
+  const sentCount = Number(row.sent_count ?? 0);
+  const converted = Number(row.converted_count ?? 0);
+  const performance =
+    leadsCount > 0 ? Math.round((converted / leadsCount) * 100) : 0;
   return {
     id: row.id,
     name: row.name,
@@ -235,6 +276,28 @@ export function formatCampaign(row) {
     media_url: row.media_url,
     media_type: row.media_type,
     followup_sequences: row.followup_sequences || [],
+    leads_count: leadsCount,
+    sent_count: sentCount,
+    start_date: row.created_at,
+    performance,
+    created_at: row.created_at,
+    updated_at: row.updated_at,
+    created_date: row.created_at,
+  };
+}
+
+export function formatClient(row) {
+  if (!row) return null;
+  return {
+    id: row.id,
+    name: row.name,
+    company: row.name,
+    contact_name: row.contact_name,
+    industry: row.industry,
+    status: row.status,
+    notes: row.notes,
+    deal_value: row.deal_value != null ? Number(row.deal_value) : null,
+    last_contact_at: row.last_contact_at,
     created_at: row.created_at,
     updated_at: row.updated_at,
     created_date: row.created_at,

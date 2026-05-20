@@ -1,5 +1,5 @@
 /**
- * KG Marketing — data entities.
+ * KG Marketing — data entities (backend-backed).
  */
 import {
   listLeads,
@@ -7,8 +7,20 @@ import {
   updateLead,
   deleteLead,
 } from './leads.js';
-
-const entity = (name) => ({
+import {
+  listCampaigns,
+  createCampaign,
+  updateCampaign,
+  deleteCampaign,
+  duplicateCampaign,
+} from './campaigns.js';
+import {
+  listClients,
+  createClient,
+  updateClient,
+  deleteClient,
+} from './clients.js';
+const noopEntity = (name) => ({
   list: async () => [],
   filter: async () => [],
   create: async () => ({ id: `placeholder-${name}-${Date.now()}` }),
@@ -22,9 +34,24 @@ export const Lead = {
   update: (id, data) => updateLead(id, data),
   delete: (id) => deleteLead(id),
 };
-export const Campaign = entity('Campaign');
-export const Client = entity('Client');
-export const EmailMessage = entity('EmailMessage');
-export const Webinar = entity('Webinar');
-export const User = entity('User');
-export const Query = entity('Query');
+
+export const Campaign = {
+  list: () => listCampaigns(),
+  filter: async () => [],
+  create: (data) => createCampaign(data),
+  update: (id, data) => updateCampaign(id, data),
+  delete: (id) => deleteCampaign(id),
+  duplicate: (id) => duplicateCampaign(id),
+};
+
+export const Client = {
+  list: () => listClients(),
+  filter: async () => [],
+  create: (data) => createClient(data),
+  update: (id, data) => updateClient(id, data),
+  delete: (id) => deleteClient(id),
+};
+
+export const EmailMessage = noopEntity('EmailMessage');
+export const Webinar = noopEntity('Webinar');
+export const Query = noopEntity('Query');
