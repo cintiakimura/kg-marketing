@@ -1,0 +1,10 @@
+{
+  "name": "KG Marketing",
+  "short_name": "KG Marketing",
+  "description": "KG Protech Campaign-in-a-Box",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#212121",
+  "theme_color": "#00c600",
+  "icons": []
+}

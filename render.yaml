@@ -1,0 +1,22 @@
+# KG Marketing — Render deployment (Vite + React SPA)
+# Prefer "Static Site" on Render; this blueprint also supports Web Service.
+
+staticSites:
+  - name: kg-marketing
+    buildCommand: npm install && npm run build
+    staticPublishPath: ./dist
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+services:
+  - type: web
+    name: kg-marketing-web
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_VERSION
+        value: "20"

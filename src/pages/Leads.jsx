@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Plus, Upload, Search, Mail, Calendar as CalendarIcon, Edit, Send, Bell } from 'lucide-react';
+import { Plus, Upload, Search, Mail, Calendar as CalendarIcon, Edit, Send, Bell, Sparkles } from 'lucide-react';
 import ImportLeadsModal from '../components/leads/ImportLeadsModal';
 import CreateLeadModal from '../components/leads/CreateLeadModal';
 import EditLeadModal from '../components/leads/EditLeadModal';
+import SmartLeadFinder from '../components/leads/SmartLeadFinder';
 import { Badge } from '@/components/ui/badge';
 import {
   Table,
@@ -20,6 +21,7 @@ import {
 
 export default function Leads() {
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
+  const [isSmartFinderOpen, setIsSmartFinderOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [selectedLead, setSelectedLead] = useState(null);
@@ -242,6 +244,13 @@ export default function Leads() {
             )}
           </Button>
           <Button
+            onClick={() => setIsSmartFinderOpen(true)}
+            className="bg-gradient-to-r from-[#00c600] to-emerald-500 hover:from-[#00dd00] hover:to-emerald-400 text-[#212121] font-semibold shadow-lg shadow-[#00c600]/20"
+          >
+            <Sparkles className="w-5 h-5 mr-2" />
+            Smart Lead Finder
+          </Button>
+          <Button
             onClick={() => setIsCreateModalOpen(true)}
             className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
           >
@@ -370,6 +379,12 @@ export default function Leads() {
           </div>
         )}
       </div>
+
+      <SmartLeadFinder
+        isOpen={isSmartFinderOpen}
+        onClose={() => setIsSmartFinderOpen(false)}
+        onSuccess={() => queryClient.invalidateQueries(['leads'])}
+      />
 
       <ImportLeadsModal
         isOpen={isImportModalOpen}
