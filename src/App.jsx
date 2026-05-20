@@ -27,8 +27,8 @@ const LayoutWrapper = ({ children, currentPageName }) =>
 
 function AuthLoadingScreen() {
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-[#212121]">
-      <div className="w-10 h-10 border-4 border-[#333333] border-t-[#00c600] rounded-full animate-spin" />
+    <div className="fixed inset-0 flex items-center justify-center bg-kg-black">
+      <div className="w-10 h-10 border-4 border-kg-green/25 border-t-kg-green rounded-full animate-spin" />
     </div>
   );
 }

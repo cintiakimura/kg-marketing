@@ -19,13 +19,11 @@ export default function Layout({ children, currentPageName }) {
   const { logout } = useAuth();
 
   return (
-    <div className="min-h-screen bg-[#212121]">
+    <div className="min-h-screen bg-kg-black">
       <style>{`
         :root {
-          --primary-green: #00c600;
-          --dark-bg: #212121;
-          --dark-secondary: #2a2a2a;
-          --dark-tertiary: #333333;
+          --kg-green: #00F068;
+          --kg-green-hover: #4DFF9A;
         }
         
         * {
@@ -33,7 +31,7 @@ export default function Layout({ children, currentPageName }) {
         }
         
         body {
-          background: #212121;
+          background: #000000;
         }
         
         .scrollbar-custom::-webkit-scrollbar {
@@ -42,20 +40,20 @@ export default function Layout({ children, currentPageName }) {
         }
         
         .scrollbar-custom::-webkit-scrollbar-track {
-          background: #2a2a2a;
+          background: #0A0A0A;
         }
         
         .scrollbar-custom::-webkit-scrollbar-thumb {
-          background: #00c600;
+          background: #00F068;
           border-radius: 3px;
         }
         
         .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-          background: #00dd00;
+          background: #4DFF9A;
         }
       `}</style>
 
-      <header className="bg-[#2a2a2a] border-b border-[#333333] sticky top-0 z-50">
+      <header className="bg-kg-surface border-b border-kg-green/25 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <NavLink to="/dashboard" className="flex items-center gap-3 hover:opacity-90">
@@ -68,21 +66,21 @@ export default function Layout({ children, currentPageName }) {
                   e.target.nextSibling?.classList.remove('hidden');
                 }}
               />
-              <div className="hidden w-10 h-10 bg-[#00c600] rounded-lg flex items-center justify-center">
-                <span className="text-[#212121] font-bold text-xl">KG</span>
+              <div className="hidden w-10 h-10 bg-kg-green rounded-lg flex items-center justify-center shadow-kg-glow-sm">
+                <span className="text-white font-medium text-xl">KG</span>
               </div>
               <div>
-                <h1 className="text-white font-bold text-xl">KG Marketing</h1>
-                <p className="text-gray-400 text-xs">Internal workspace</p>
+                <h1 className="text-white font-medium text-lg">KG Marketing</h1>
+                <p className="text-gray-400 text-[13px] font-normal">Internal workspace</p>
               </div>
             </NavLink>
             <button
               type="button"
               onClick={() => logout()}
-              className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-[#00c600] transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-[13px] font-normal text-gray-300 hover:text-kg-green transition-colors"
             >
               <LogOut className="w-4 h-4" />
-              <span className="text-sm">Logout</span>
+              <span>Logout</span>
             </button>
           </div>
         </div>
@@ -96,15 +94,15 @@ export default function Layout({ children, currentPageName }) {
                   key={tab.path}
                   to={`/${tab.path}`}
                   className={({ isActive }) =>
-                    `flex items-center gap-2 px-6 py-3 border-b-2 transition-all whitespace-nowrap ${
+                    `flex items-center gap-2 px-6 py-3 border-b-2 transition-all whitespace-nowrap text-[13px] font-normal ${
                       isActive || currentPageName === tab.path
-                        ? 'border-[#00c600] text-[#00c600]'
+                        ? 'border-kg-green text-kg-green'
                         : 'border-transparent text-gray-400 hover:text-gray-200'
                     }`
                   }
                 >
                   <Icon className="w-4 h-4" />
-                  <span className="text-sm font-medium">{tab.label}</span>
+                  <span>{tab.label}</span>
                 </NavLink>
               );
             })}

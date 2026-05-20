@@ -146,8 +146,8 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
-        <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between">
+      <div className="bg-kg-surface rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
+        <div className="sticky top-0 bg-kg-surface border-b border-kg-green/25 p-6 flex items-center justify-between">
           <h2 className="text-xl font-medium text-white">Edit Campaign</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
@@ -161,7 +161,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Q1 2025 IoT Training Launch"
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <div>
               <Label className="text-gray-300 mb-2">Language</Label>
               <Select value={formData.language} onValueChange={(val) => setFormData(prev => ({ ...prev, language: val }))}>
-                <SelectTrigger className="bg-[#333333] border-[#444444] text-white">
+                <SelectTrigger className="bg-kg-raised border-kg-green/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -187,7 +187,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 value={formData.target_audience}
                 onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
                 placeholder="Automotive engineers, fleet managers"
-                className="bg-[#333333] border-[#444444] text-white"
+                className="bg-kg-raised border-kg-green/20 text-white"
               />
             </div>
             </div>
@@ -210,7 +210,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-image-upload').click()}
               disabled={isUploading}
-              className="bg-[#333333] hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Image'}
@@ -226,7 +226,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-presentation-upload').click()}
               disabled={isUploading}
-              className="bg-[#333333] hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Presentation'}
@@ -247,7 +247,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               value={formData.email_subject}
               onChange={(e) => setFormData(prev => ({ ...prev, email_subject: e.target.value }))}
               placeholder="Subject line"
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -258,7 +258,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               onChange={(e) => setFormData(prev => ({ ...prev, email_body: e.target.value }))}
               placeholder="Email content"
               rows={8}
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -269,11 +269,11 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="https://youtube.com/watch?v=..."
-                className="bg-[#333333] border-[#444444] text-white"
+                className="bg-kg-raised border-kg-green/20 text-white"
               />
               <Button
                 onClick={handleAddVideoUrl}
-                className="bg-[#333333] hover:bg-[#444444] text-white"
+                className="bg-kg-raised hover:bg-[#444444] text-white"
               >
                 Add
               </Button>
@@ -301,21 +301,21 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 <img 
                   src={formData.media_url} 
                   alt="Campaign" 
-                  className="w-full rounded-lg border-2 border-[#00c600]"
+                  className="w-full rounded-lg border-2 border-kg-green/40"
                 />
               )}
               {formData.media_type === 'presentation' && (
-                <div className="p-4 bg-[#333333] rounded-lg border-2 border-[#00c600] text-center">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-kg-green/40 text-center">
                   <p className="text-white">📄 Presentation attached</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-[#00c600] text-sm">
+                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-kg-green text-sm">
                     View file
                   </a>
                 </div>
               )}
               {formData.media_type === 'video_url' && (
-                <div className="p-4 bg-[#333333] rounded-lg border-2 border-[#00c600]">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-kg-green/40">
                   <p className="text-white mb-2">🎥 Video URL:</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-[#00c600] text-sm break-all">
+                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-kg-green text-sm break-all">
                     {formData.media_url}
                   </a>
                 </div>
@@ -323,7 +323,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             </div>
           )}
 
-          <div className="border-t border-[#333333] pt-6">
+          <div className="border-t border-kg-green/25 pt-6">
             <FollowupSequenceEditor
               sequences={formData.followup_sequences}
               onChange={(sequences) => setFormData(prev => ({ ...prev, followup_sequences: sequences }))}
@@ -332,10 +332,10 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-[#333333]">
+          <div className="flex gap-3 pt-4 border-t border-kg-green/25">
             <Button
               onClick={() => setIsCreateLeadModalOpen(true)}
-              className="bg-[#333333] hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Add Lead
@@ -361,7 +361,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-[#444444] text-gray-300 hover:bg-[#333333]"
+              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

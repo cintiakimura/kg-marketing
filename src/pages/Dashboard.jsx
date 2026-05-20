@@ -99,7 +99,7 @@ export default function Dashboard() {
 
       {loading ? (
         <div className="flex items-center justify-center py-16 text-gray-400 gap-2">
-          <Loader2 className="w-6 h-6 animate-spin text-[#00c600]" />
+          <Loader2 className="w-6 h-6 animate-spin text-kg-green" />
           Loading dashboard…
         </div>
       ) : (
@@ -153,12 +153,12 @@ export default function Dashboard() {
             </Button>
           </div>
 
-          <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] overflow-hidden">
-            <div className="flex items-center justify-between p-6 border-b border-[#333333]">
+          <div className="bg-kg-surface rounded-xl border border-kg-green/25 overflow-hidden">
+            <div className="flex items-center justify-between p-6 border-b border-kg-green/25">
               <h2 className="text-lg font-medium text-white">Recent Leads</h2>
               <Link
                 to="/leads"
-                className="text-sm text-[#00c600] hover:text-[#00dd00] flex items-center gap-1"
+                className="text-sm text-kg-green hover:text-[kg-green-hover] flex items-center gap-1"
               >
                 View all <ArrowRight className="w-4 h-4" />
               </Link>
@@ -171,7 +171,7 @@ export default function Dashboard() {
               <div className="overflow-x-auto">
                 <Table>
                   <TableHeader>
-                    <TableRow className="border-[#333333] hover:bg-transparent">
+                    <TableRow className="border-kg-green/25 hover:bg-transparent">
                       <TableHead className="text-gray-400">Name</TableHead>
                       <TableHead className="text-gray-400">Company</TableHead>
                       <TableHead className="text-gray-400">Status</TableHead>
@@ -184,7 +184,7 @@ export default function Dashboard() {
                       return (
                         <TableRow
                           key={lead.id}
-                          className="border-[#333333] hover:bg-[#333333]"
+                          className="border-kg-green/25 hover:bg-kg-raised"
                         >
                           <TableCell className="text-white font-medium">
                             {lead.full_name}

@@ -1,24 +1,29 @@
-/** Shared visual tokens — styling only, no logic. */
+/** Shared visual tokens — KG Lite v2 (black + luminous green). */
 
-export const pageTitle = 'text-3xl font-medium text-white tracking-tight';
-export const pageSubtitle = 'text-base text-gray-400 leading-relaxed';
-export const sectionTitle = 'text-lg font-medium text-white';
-export const helperText = 'text-sm text-gray-400 leading-relaxed';
-export const labelClass = 'text-gray-300 font-medium mb-2 block leading-snug';
+export const pageTitle = 'kg-page-title';
+export const pageSubtitle = 'text-[13px] font-normal text-gray-400 leading-relaxed';
+export const sectionTitle = 'kg-section-title';
+export const helperText = 'kg-helper';
+export const labelClass = 'text-gray-300 font-normal mb-2 block leading-snug text-[13px]';
 
-export const cardSurface = 'bg-[#2a2a2a] rounded-xl border border-[#333333]';
+export const cardSurface = 'bg-kg-surface rounded-xl border border-kg-green/25';
 export const cardPadding = 'p-6 md:p-8';
 export const sectionGap = 'space-y-8';
 
-export const modalShell = 'bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom';
+export const modalShell =
+  'bg-kg-surface rounded-xl border border-kg-green/30 max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom';
 export const modalHeader =
-  'sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 md:p-8 flex items-center justify-between z-10';
+  'sticky top-0 bg-kg-surface border-b border-kg-green/25 p-6 md:p-8 flex items-center justify-between z-10';
 export const modalBody = 'p-6 md:p-8 space-y-6';
 export const modalTitle = 'text-xl font-medium text-white';
 
 export const inputDark =
-  'bg-[#333333] border-[#444444] text-white text-[15px] leading-relaxed rounded-xl min-h-[44px]';
+  'bg-kg-raised border border-kg-green/20 text-white text-[13px] font-normal leading-relaxed rounded-xl min-h-[44px]';
 export const textareaDark =
-  'bg-[#333333] border-[#444444] text-white text-[15px] leading-relaxed rounded-xl';
+  'bg-kg-raised border border-kg-green/20 text-white text-[13px] font-normal leading-relaxed rounded-xl';
 
-export const emptyState = 'text-center py-16 px-8 text-gray-400 text-base leading-relaxed';
+export const emptyState =
+  'text-center py-16 px-8 text-gray-400 text-[13px] font-normal leading-relaxed';
+
+/** Primary brand green (KG Lite luminous) */
+export const KG_GREEN = '#00F068';

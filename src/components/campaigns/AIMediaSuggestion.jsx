@@ -95,17 +95,17 @@ Return JSON with:
   };
 
   return (
-    <div className="p-4 bg-[#333333] rounded-lg border border-[#444444]">
+    <div className="p-4 bg-kg-raised rounded-lg border border-kg-green/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-[#00c600]" />
+          <TrendingUp className="w-4 h-4 text-kg-green" />
           <span className="text-white font-medium text-sm">AI Media Recommendation</span>
         </div>
         <Button
           onClick={handleGenerateSuggestion}
           disabled={isGenerating || campaigns.length === 0}
           size="sm"
-          className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121]"
+          className="bg-kg-green hover:bg-[kg-green-hover] text-white"
         >
           <Sparkles className="w-3 h-3 mr-1" />
           {isGenerating ? 'Analyzing...' : 'Get Suggestion'}
@@ -114,8 +114,8 @@ Return JSON with:
 
       {suggestion && (
         <div className="space-y-3">
-          <div className="p-3 bg-[#2a2a2a] rounded border border-[#00c600]/30">
-            <p className="text-[#00c600] font-medium text-sm mb-1">
+          <div className="p-3 bg-kg-surface rounded border border-kg-green/30">
+            <p className="text-kg-green font-medium text-sm mb-1">
               Recommended: {suggestion.recommended_media === 'none' ? 'No Media' : suggestion.recommended_media.replace('_', ' ').toUpperCase()}
             </p>
             <p className="text-gray-300 text-xs">{suggestion.reason}</p>
@@ -125,7 +125,7 @@ Return JSON with:
               onClick={handleApplySuggestion}
               disabled={isGenerating}
               size="sm"
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121]"
+              className="flex-1 bg-kg-green hover:bg-[kg-green-hover] text-white"
             >
               {isGenerating ? 'Applying...' : 'Apply Suggestion'}
             </Button>
@@ -133,7 +133,7 @@ Return JSON with:
               onClick={() => setSuggestion(null)}
               size="sm"
               variant="outline"
-              className="border-[#444444] text-gray-300 hover:bg-[#333333]"
+              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
             >
               Dismiss
             </Button>

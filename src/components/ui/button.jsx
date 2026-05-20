@@ -5,7 +5,7 @@ import { cva } from "class-variance-authority";
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#00c600]/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-kg-green/50 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -19,22 +19,19 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 rounded-xl h-11",
         ghost: "hover:bg-accent hover:text-accent-foreground rounded-xl h-11",
         link: "text-primary underline-offset-4 hover:underline",
-        /** KG primary — green fill, white text */
-        kg: "h-11 rounded-xl bg-[#00c600] text-white font-medium px-5 shadow-md shadow-[#00c600]/25 hover:bg-[#00dd00] hover:shadow-[0_0_24px_rgba(0,198,0,0.4)] active:scale-[0.98]",
-        /** KG secondary — green outline */
+        /** KG Lite primary — luminous green, white text */
+        kg: "h-11 rounded-xl bg-kg-green text-white font-normal px-5 shadow-lg shadow-kg-green/35 hover:bg-kg-green-hover hover:shadow-kg-glow active:scale-[0.98]",
         kgOutline:
-          "h-11 rounded-xl border-2 border-[#00c600]/55 bg-transparent text-[#00c600] font-medium px-5 hover:bg-[#00c600]/10 hover:border-[#00c600]",
-        /** KG muted — gray outline for tertiary actions */
+          "h-11 rounded-xl border-2 border-kg-green/50 bg-transparent text-kg-green font-normal px-5 hover:bg-kg-green-muted hover:border-kg-green hover:text-kg-green-hover",
         kgMuted:
-          "h-11 rounded-xl border border-[#444444] bg-[#333333] text-gray-200 font-medium px-5 hover:bg-[#3d3d3d] hover:border-[#555555] hover:text-white",
-        /** Accent action (e.g. email follow-ups) */
+          "h-11 rounded-xl border border-kg-green/20 bg-kg-raised text-gray-300 font-normal px-5 hover:bg-kg-surface hover:border-kg-green/35 hover:text-white",
         kgBlue:
-          "h-11 rounded-xl bg-blue-600 text-white font-medium px-5 shadow-md hover:bg-blue-500",
+          "h-11 rounded-xl bg-blue-600 text-white font-normal px-5 shadow-md hover:bg-blue-500",
       },
       size: {
         default: "h-11 px-5",
         sm: "h-9 rounded-lg px-3 text-xs",
-        lg: "h-12 rounded-xl px-8 text-base",
+        lg: "h-12 rounded-xl px-8 text-[13px]",
         icon: "h-11 w-11 rounded-xl",
       },
     },

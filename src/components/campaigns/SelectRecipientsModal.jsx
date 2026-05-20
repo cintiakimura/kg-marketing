@@ -69,8 +69,8 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="border-b border-[#333333] p-6 flex items-center justify-between">
+      <div className="bg-kg-surface rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="border-b border-kg-green/25 p-6 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-medium text-white">Select Recipients</h2>
             <p className="text-gray-400 text-sm mt-1">
@@ -83,7 +83,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-custom p-6">
-          <div className="mb-6 p-4 bg-[#333333] rounded-lg">
+          <div className="mb-6 p-4 bg-kg-raised rounded-lg">
             <h3 className="text-white font-semibold mb-3">Add Recipients Manually</h3>
             <div className="flex gap-2 mb-3">
               <Input
@@ -91,7 +91,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                 onChange={(e) => setEmailInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addManualEmail()}
                 placeholder="Enter email address..."
-                className="bg-[#2a2a2a] border-[#444444] text-white"
+                className="bg-kg-surface border-kg-green/20 text-white"
               />
               <Button
                 onClick={addManualEmail}
@@ -104,7 +104,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             {manualEmails.length > 0 && (
               <div className="space-y-2">
                 {manualEmails.map((email) => (
-                  <div key={email} className="flex items-center justify-between p-2 bg-[#2a2a2a] rounded">
+                  <div key={email} className="flex items-center justify-between p-2 bg-kg-surface rounded">
                     <span className="text-white text-sm">{email}</span>
                     <Button
                       size="sm"
@@ -124,7 +124,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={toggleAll}
               variant="outline"
-              className="border-[#444444] text-gray-300 hover:bg-[#333333]"
+              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
             >
               {selectedLeads.length === leads.length ? 'Deselect All' : 'Select All'}
             </Button>
@@ -132,7 +132,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
 
           <div className="space-y-4">
             {Object.entries(leadsByCompany).map(([company, companyLeads]) =>
-            <div key={company} className="bg-[#333333] rounded-lg p-4">
+            <div key={company} className="bg-kg-raised rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   {company}
                   <Badge className="bg-[#444444] text-gray-300 border-0">
@@ -149,7 +149,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                       <Checkbox
                     checked={selectedLeads.includes(lead.id)}
                     onCheckedChange={() => toggleLead(lead.id)}
-                    className="border-[#555555] data-[state=checked]:bg-[#00c600] data-[state=checked]:border-[#00c600]" />
+                    className="border-[#555555] data-[state=checked]:bg-kg-green data-[state=checked]:border-kg-green/40" />
 
                       <div className="flex-1">
                         <p className="text-white font-medium">{lead.full_name}</p>
@@ -160,7 +160,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                   lead.status === 'contacted' ? 'bg-yellow-500' :
                   lead.status === 'interested' ? 'bg-purple-500' :
                   lead.status === 'scheduled' ? 'bg-orange-500' :
-                  'bg-[#00c600]'} text-white border-0`
+                  'bg-kg-green'} text-white border-0`
                   }>
                         {lead.status}
                       </Badge>
@@ -172,16 +172,16 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
           </div>
         </div>
 
-        <div className="border-t border-[#333333] p-6">
-          <div className="flex items-center gap-3 mb-4 p-3 bg-[#333333] rounded-lg">
+        <div className="border-t border-kg-green/25 p-6">
+          <div className="flex items-center gap-3 mb-4 p-3 bg-kg-raised rounded-lg">
             <Checkbox
               checked={useAIPersonalization}
               onCheckedChange={setUseAIPersonalization}
-              className="border-[#555555] data-[state=checked]:bg-[#00c600] data-[state=checked]:border-[#00c600]"
+              className="border-[#555555] data-[state=checked]:bg-kg-green data-[state=checked]:border-kg-green/40"
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-[#00c600]" />
+                <Sparkles className="w-4 h-4 text-kg-green" />
                 <Label className="text-white font-medium cursor-pointer" onClick={() => setUseAIPersonalization(!useAIPersonalization)}>
                   AI-Powered Email Personalization
                 </Label>
@@ -204,7 +204,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-[#444444] text-gray-300 hover:bg-[#333333]"
+              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
               disabled={isLaunching}
             >
               Cancel

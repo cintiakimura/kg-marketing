@@ -63,8 +63,8 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-[#2a2a2a] rounded-xl max-w-md w-full">
-        <div className="border-b border-[#333333] p-6 flex items-center justify-between">
+      <div className="bg-kg-surface rounded-xl max-w-md w-full">
+        <div className="border-b border-kg-green/25 p-6 flex items-center justify-between">
           <h2 className="text-xl font-medium text-white">Edit Client</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
@@ -78,7 +78,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Company name"
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -87,7 +87,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             <Input
               value={formData.contact_name}
               onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -97,7 +97,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               value={formData.industry}
               onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
               placeholder="e.g., Automotive, Technology"
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -108,7 +108,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               min="0"
               value={formData.deal_value}
               onChange={(e) => setFormData({ ...formData, deal_value: e.target.value })}
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -118,14 +118,14 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               type="date"
               value={formData.last_contact_at}
               onChange={(e) => setFormData({ ...formData, last_contact_at: e.target.value })}
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
           <div>
             <Label className="text-gray-300 mb-2">Status</Label>
             <Select value={formData.status} onValueChange={(val) => setFormData({ ...formData, status: val })}>
-              <SelectTrigger className="bg-[#333333] border-[#444444] text-white">
+              <SelectTrigger className="bg-kg-raised border-kg-green/20 text-white">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -143,7 +143,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Additional notes..."
               rows={4}
-              className="bg-[#333333] border-[#444444] text-white"
+              className="bg-kg-raised border-kg-green/20 text-white"
             />
           </div>
 
@@ -159,7 +159,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-[#444444] text-gray-300 hover:bg-[#333333]"
+              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

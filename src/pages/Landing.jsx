@@ -13,8 +13,8 @@ import {
 } from '@/components/ui/dialog';
 import { useAuthNavigate } from '@/lib/AuthContext';
 
-const ACCENT = '#00c600';
-const BG = '#212121';
+const ACCENT = '#00F068';
+const BG = '#000000';
 
 export default function Landing() {
   const { loginAndGoToDashboard, signupAndGoToDashboard } = useAuthNavigate();
@@ -50,7 +50,7 @@ export default function Landing() {
   };
 
   const inputClass =
-    'bg-[#333333] border-[#444444] text-white placeholder:text-gray-500 focus-visible:ring-[#00c600] font-normal';
+    'bg-kg-raised border-kg-green/20 text-white placeholder:text-gray-500 focus-visible:ring-kg-green font-normal';
 
   return (
     <div
@@ -74,7 +74,7 @@ export default function Landing() {
           type="button"
           variant="ghost"
           onClick={() => setLoginOpen(true)}
-          className="text-[#00c600] hover:text-[#00dd00] hover:bg-[#00c600]/10 font-normal"
+          className="text-kg-green hover:text-[kg-green-hover] hover:bg-kg-green/10 font-normal"
           style={{ fontWeight: 400 }}
         >
           Login
@@ -104,7 +104,7 @@ export default function Landing() {
           <Button
             type="button"
             onClick={() => setLoginOpen(true)}
-            className="h-12 px-8 rounded-md text-[#212121] hover:opacity-90 font-normal"
+            className="h-12 px-8 rounded-md text-white hover:opacity-90 font-normal"
             style={{ backgroundColor: ACCENT, fontWeight: 400 }}
           >
             Login to your workspace
@@ -114,8 +114,8 @@ export default function Landing() {
 
       <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
         <DialogContent
-          className="border-[#444444] text-white sm:max-w-md font-normal"
-          style={{ backgroundColor: '#2a2a2a', fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
+          className="border-kg-green/20 text-white sm:max-w-md font-normal"
+          style={{ backgroundColor: '#0A0A0A', fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
         >
           <DialogHeader>
             <DialogTitle className="text-white" style={{ fontWeight: 400 }}>
@@ -126,12 +126,12 @@ export default function Landing() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex rounded-lg bg-[#333333] p-1 mt-2">
+          <div className="flex rounded-lg bg-kg-raised p-1 mt-2">
             <button
               type="button"
               onClick={() => switchAuthMode('login')}
               className={`flex-1 py-2 text-sm rounded-md transition-colors ${
-                authMode === 'login' ? 'text-[#212121]' : 'text-gray-400'
+                authMode === 'login' ? 'text-white' : 'text-gray-400'
               }`}
               style={{
                 fontWeight: 400,
@@ -144,7 +144,7 @@ export default function Landing() {
               type="button"
               onClick={() => switchAuthMode('signup')}
               className={`flex-1 py-2 text-sm rounded-md transition-colors ${
-                authMode === 'signup' ? 'text-[#212121]' : 'text-gray-400'
+                authMode === 'signup' ? 'text-white' : 'text-gray-400'
               }`}
               style={{
                 fontWeight: 400,
@@ -210,7 +210,7 @@ export default function Landing() {
             <Button
               type="submit"
               disabled={loading}
-              className="w-full h-11 text-[#212121] font-normal hover:opacity-90"
+              className="w-full h-11 text-white font-normal hover:opacity-90"
               style={{ backgroundColor: ACCENT, fontWeight: 400 }}
             >
               {loading ? (
