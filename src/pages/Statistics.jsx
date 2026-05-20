@@ -27,7 +27,7 @@ export default function Statistics() {
     { name: 'Contacted', value: leads.filter(l => l.status === 'contacted').length, color: '#eab308' },
     { name: 'Interested', value: leads.filter(l => l.status === 'interested').length, color: '#a855f7' },
     { name: 'Scheduled', value: leads.filter(l => l.status === 'scheduled').length, color: '#f97316' },
-    { name: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: 'kg-green' }
+    { name: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#14532d' }
   ];
 
   // Campaign performance
@@ -88,7 +88,7 @@ export default function Statistics() {
       {/* Charts */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Lead Status Distribution */}
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
           <h2 className="text-lg font-medium text-white mb-6">Lead Status Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
@@ -108,7 +108,7 @@ export default function Statistics() {
               </Pie>
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#2a2a2a', 
+                  backgroundColor: '#0a1f0a', 
                   border: '1px solid #333333',
                   borderRadius: '8px',
                   color: '#fff'
@@ -119,7 +119,7 @@ export default function Statistics() {
         </div>
 
         {/* Campaign Performance */}
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
           <h2 className="text-lg font-medium text-white mb-6">Campaign Performance</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={campaignData}>
@@ -135,19 +135,19 @@ export default function Statistics() {
               />
               <Tooltip 
                 contentStyle={{ 
-                  backgroundColor: '#2a2a2a', 
+                  backgroundColor: '#0a1f0a', 
                   border: '1px solid #333333',
                   borderRadius: '8px',
                   color: '#fff'
                 }}
               />
-              <Bar dataKey="sent" fill="kg-green" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="sent" fill="#14532d" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
 
         {/* Language Preferences */}
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
           <h2 className="text-lg font-medium text-white mb-6">Lead Language Preferences</h2>
           <div className="space-y-4">
             {languageData.map((item, index) => {
@@ -156,13 +156,13 @@ export default function Statistics() {
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-gray-300 text-sm">{item.name}</span>
-                    <span className="text-kg-green text-sm font-medium">
+                    <span className="text-green-400 text-sm font-medium">
                       {item.value} ({percentage.toFixed(1)}%)
                     </span>
                   </div>
                   <div className="w-full bg-kg-raised rounded-full h-2">
                     <div 
-                      className="bg-kg-green h-2 rounded-full transition-all"
+                      className="bg-kg-btn h-2 rounded-full transition-all"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>
@@ -173,7 +173,7 @@ export default function Statistics() {
         </div>
 
         {/* Conversion Funnel */}
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
           <h2 className="text-lg font-medium text-white mb-6">Lead Conversion Funnel</h2>
           <div className="space-y-3">
             {[
@@ -181,7 +181,7 @@ export default function Statistics() {
               { label: 'Contacted', value: leads.filter(l => l.status === 'contacted').length, color: '#eab308' },
               { label: 'Interested', value: leads.filter(l => l.status === 'interested').length, color: '#a855f7' },
               { label: 'Scheduled', value: leads.filter(l => l.status === 'scheduled').length, color: '#f97316' },
-              { label: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: 'kg-green' }
+              { label: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#14532d' }
             ].map((stage, index) => {
               const maxWidth = leads.length > 0 ? (stage.value / leads.length) * 100 : 0;
               return (

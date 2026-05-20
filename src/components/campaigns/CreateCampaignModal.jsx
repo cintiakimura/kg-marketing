@@ -214,8 +214,8 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-kg-surface rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
-        <div className="sticky top-0 bg-kg-surface border-b border-kg-green/25 p-6 flex items-center justify-between z-10">
+      <div className="bg-kg-card rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
+        <div className="sticky top-0 bg-kg-card border-b border-green-500/25 p-6 flex items-center justify-between z-10">
           <h2 className="text-xl font-medium text-white">Create New Campaign</h2>
           <button
             onClick={handleClose}
@@ -227,7 +227,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
 
         <div className="p-6 space-y-6">
           {/* Grok full campaign */}
-          <div className="rounded-xl border border-kg-green/40 bg-kg-green/5 p-4 space-y-3">
+          <div className="rounded-xl border border-green-500/40 bg-kg-btn/5 p-4 space-y-3">
             <p className="text-sm text-gray-300">
               Describe your campaign in one sentence — Grok will draft name, audience, email,
               and video ideas (KG ProTech on-brand, no invented stats).
@@ -259,7 +259,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                   onChange={(e) => setGrokBrief(e.target.value)}
                   placeholder='e.g. "Q1 2025 IoT Training Launch for automotive OEM training centers"'
                   rows={3}
-                  className="bg-kg-raised border-kg-green/20 text-white"
+                  className="bg-kg-raised border-green-500/20 text-white"
                   autoFocus
                 />
                 <div className="flex gap-2">
@@ -285,7 +285,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                     type="button"
                     variant="outline"
                     onClick={() => setShowGrokBrief(false)}
-                    className="border-kg-green/20 text-gray-300"
+                    className="border-green-500/20 text-gray-300"
                   >
                     Cancel
                   </Button>
@@ -300,7 +300,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
           </div>
 
           {grokRationale && (
-            <p className="text-sm text-gray-400 italic border-l-2 border-kg-green/40 pl-3">
+            <p className="text-sm text-gray-400 italic border-l-2 border-green-500/40 pl-3">
               {grokRationale}
             </p>
           )}
@@ -311,7 +311,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
               value={formData.name}
               onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               placeholder="Q1 2025 IoT Training Launch"
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -322,7 +322,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                 value={formData.language}
                 onValueChange={(val) => setFormData((prev) => ({ ...prev, language: val }))}
               >
-                <SelectTrigger className="bg-kg-raised border-kg-green/20 text-white">
+                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -342,7 +342,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                   setFormData((prev) => ({ ...prev, target_audience: e.target.value }))
                 }
                 placeholder="Automotive engineers, fleet managers"
-                className="bg-kg-raised border-kg-green/20 text-white"
+                className="bg-kg-raised border-green-500/20 text-white"
               />
             </div>
           </div>
@@ -415,8 +415,8 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                     }
                     className={`text-left text-sm px-3 py-2 rounded-lg border transition-colors ${
                       formData.email_subject === subj
-                        ? 'border-kg-green/40 bg-kg-green/10 text-kg-green'
-                        : 'border-kg-green/20 text-gray-300 hover:border-kg-green/50'
+                        ? 'border-green-500/40 bg-kg-btn/10 text-green-400'
+                        : 'border-green-500/20 text-gray-300 hover:border-green-500/50'
                     }`}
                   >
                     {subj}
@@ -434,7 +434,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                 setFormData((prev) => ({ ...prev, email_subject: e.target.value }))
               }
               placeholder="Subject line"
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -447,7 +447,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
               }
               placeholder="Email content"
               rows={10}
-              className="bg-kg-raised border-kg-green/20 text-white font-mono text-sm"
+              className="bg-kg-raised border-green-500/20 text-white font-mono text-sm"
             />
           </div>
 
@@ -483,7 +483,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="https://youtube.com/watch?v=..."
-                className="bg-kg-raised border-kg-green/20 text-white"
+                className="bg-kg-raised border-green-500/20 text-white"
               />
               <Button
                 type="button"
@@ -521,29 +521,29 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                 <img
                   src={formData.media_url}
                   alt="Campaign"
-                  className="w-full rounded-lg border-2 border-kg-green/40"
+                  className="w-full rounded-lg border-2 border-green-500/40"
                 />
               )}
               {formData.media_type === 'presentation' && (
-                <div className="p-4 bg-kg-raised rounded-lg border-2 border-kg-green/40 text-center">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-green-500/40 text-center">
                   <p className="text-white">📄 Presentation attached</p>
                   <a
                     href={formData.media_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-kg-green text-sm"
+                    className="text-green-400 text-sm"
                   >
                     View file
                   </a>
                 </div>
               )}
               {formData.media_type === 'video_url' && (
-                <div className="p-4 bg-kg-raised rounded-lg border-2 border-kg-green/40">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-green-500/40">
                   <a
                     href={formData.media_url}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-kg-green text-sm break-all"
+                    className="text-green-400 text-sm break-all"
                   >
                     {formData.media_url}
                   </a>
@@ -552,7 +552,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
             </div>
           )}
 
-          <div className="border-t border-kg-green/25 pt-6">
+          <div className="border-t border-green-500/25 pt-6">
             <FollowupSequenceEditor
               sequences={formData.followup_sequences}
               onChange={(sequences) =>
@@ -563,7 +563,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-kg-green/25">
+          <div className="flex gap-3 pt-4 border-t border-green-500/25">
             <Button
               type="button"
               onClick={handleSubmit}
@@ -577,7 +577,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
               type="button"
               onClick={handleClose}
               variant="outline"
-              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

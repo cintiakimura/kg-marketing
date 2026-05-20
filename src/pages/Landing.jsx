@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { useAuthNavigate } from '@/lib/AuthContext';
 
-const ACCENT = '#00F068';
+const ACCENT = '#14532d';
 const BG = '#000000';
 
 export default function Landing() {
@@ -50,7 +50,7 @@ export default function Landing() {
   };
 
   const inputClass =
-    'bg-kg-raised border-kg-green/20 text-white placeholder:text-gray-500 focus-visible:ring-kg-green font-normal';
+    'bg-kg-raised border-green-500/20 text-white placeholder:text-gray-500 focus-visible:ring-green-500 font-normal';
 
   return (
     <div
@@ -74,7 +74,7 @@ export default function Landing() {
           type="button"
           variant="ghost"
           onClick={() => setLoginOpen(true)}
-          className="text-kg-green hover:text-[kg-green-hover] hover:bg-kg-green/10 font-normal"
+          className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 font-normal"
           style={{ fontWeight: 400 }}
         >
           Login
@@ -114,8 +114,8 @@ export default function Landing() {
 
       <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
         <DialogContent
-          className="border-kg-green/20 text-white sm:max-w-md font-normal"
-          style={{ backgroundColor: '#0A0A0A', fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
+          className="border-green-500/20 text-white sm:max-w-md font-normal"
+          style={{ backgroundColor: '#0a1f0a', fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
         >
           <DialogHeader>
             <DialogTitle className="text-white" style={{ fontWeight: 400 }}>

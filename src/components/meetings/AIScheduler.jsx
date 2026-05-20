@@ -122,7 +122,7 @@ Return JSON with 3 time slot suggestions:
         body: `Dear ${lead.full_name},<br><br>
 Your 15-minute webinar with KG PROTECH has been scheduled for:<br><br>
 <strong>${suggestion.day_name}, ${suggestion.time_display}</strong><br><br>
-Meeting Link: <a href="https://meet.google.com/xyz" style="color: kg-green;">Join Meeting</a><br><br>
+Meeting Link: <a href="https://meet.google.com/xyz" style="color: #14532d;">Join Meeting</a><br><br>
 We look forward to discussing how our IoT Automatic Fault Simulator can benefit ${lead.company || 'your organization'}.<br><br>
 Best regards,<br>
 Cintia Kimura<br>
@@ -150,10 +150,10 @@ KG PROTECH`
   };
 
   return (
-    <div className="p-4 bg-kg-raised rounded-lg border border-kg-green/20">
+    <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <Calendar className="w-4 h-4 text-kg-green" />
+          <Calendar className="w-4 h-4 text-green-400" />
           <span className="text-white font-medium text-sm">AI Meeting Scheduler</span>
         </div>
         {!suggestions && (
@@ -161,7 +161,7 @@ KG PROTECH`
             onClick={handleAnalyze}
             disabled={isAnalyzing}
             size="sm"
-            className="bg-kg-green hover:bg-[kg-green-hover] text-white"
+            className="bg-kg-btn hover:bg-kg-btn-hover text-white"
           >
             {isAnalyzing ? (
               <>
@@ -180,12 +180,12 @@ KG PROTECH`
 
       {suggestions && (
         <div className="space-y-3">
-          <div className="p-2 bg-kg-surface rounded">
+          <div className="p-2 bg-kg-card rounded">
             <p className="text-gray-300 text-xs">{suggestions.analysis}</p>
           </div>
 
           {suggestions.suggestions.map((suggestion, idx) => (
-            <div key={idx} className="p-3 bg-kg-surface rounded border border-kg-green/30">
+            <div key={idx} className="p-3 bg-kg-card rounded border border-green-500/30">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -194,7 +194,7 @@ KG PROTECH`
                       {suggestion.confidence}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-kg-green text-sm mb-1">
+                  <div className="flex items-center gap-2 text-green-400 text-sm mb-1">
                     <Clock className="w-3 h-3" />
                     <span>{suggestion.time_display}</span>
                   </div>
@@ -204,7 +204,7 @@ KG PROTECH`
                   onClick={() => handleSchedule(suggestion)}
                   disabled={isScheduling}
                   size="sm"
-                  className="bg-kg-green hover:bg-[kg-green-hover] text-white"
+                  className="bg-kg-btn hover:bg-kg-btn-hover text-white"
                 >
                   {isScheduling ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -223,7 +223,7 @@ KG PROTECH`
             onClick={() => setSuggestions(null)}
             size="sm"
             variant="outline"
-            className="w-full border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-raised"
           >
             Clear Suggestions
           </Button>

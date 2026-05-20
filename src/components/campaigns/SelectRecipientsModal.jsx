@@ -69,8 +69,8 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-kg-surface rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
-        <div className="border-b border-kg-green/25 p-6 flex items-center justify-between">
+      <div className="bg-kg-card rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
+        <div className="border-b border-green-500/25 p-6 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-medium text-white">Select Recipients</h2>
             <p className="text-gray-400 text-sm mt-1">
@@ -91,7 +91,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                 onChange={(e) => setEmailInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addManualEmail()}
                 placeholder="Enter email address..."
-                className="bg-kg-surface border-kg-green/20 text-white"
+                className="bg-kg-card border-green-500/20 text-white"
               />
               <Button
                 onClick={addManualEmail}
@@ -104,7 +104,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             {manualEmails.length > 0 && (
               <div className="space-y-2">
                 {manualEmails.map((email) => (
-                  <div key={email} className="flex items-center justify-between p-2 bg-kg-surface rounded">
+                  <div key={email} className="flex items-center justify-between p-2 bg-kg-card rounded">
                     <span className="text-white text-sm">{email}</span>
                     <Button
                       size="sm"
@@ -124,7 +124,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={toggleAll}
               variant="outline"
-              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
             >
               {selectedLeads.length === leads.length ? 'Deselect All' : 'Select All'}
             </Button>
@@ -149,7 +149,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                       <Checkbox
                     checked={selectedLeads.includes(lead.id)}
                     onCheckedChange={() => toggleLead(lead.id)}
-                    className="border-[#555555] data-[state=checked]:bg-kg-green data-[state=checked]:border-kg-green/40" />
+                    className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40" />
 
                       <div className="flex-1">
                         <p className="text-white font-medium">{lead.full_name}</p>
@@ -160,7 +160,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                   lead.status === 'contacted' ? 'bg-yellow-500' :
                   lead.status === 'interested' ? 'bg-purple-500' :
                   lead.status === 'scheduled' ? 'bg-orange-500' :
-                  'bg-kg-green'} text-white border-0`
+                  'bg-kg-btn'} text-white border-0`
                   }>
                         {lead.status}
                       </Badge>
@@ -172,16 +172,16 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
           </div>
         </div>
 
-        <div className="border-t border-kg-green/25 p-6">
+        <div className="border-t border-green-500/25 p-6">
           <div className="flex items-center gap-3 mb-4 p-3 bg-kg-raised rounded-lg">
             <Checkbox
               checked={useAIPersonalization}
               onCheckedChange={setUseAIPersonalization}
-              className="border-[#555555] data-[state=checked]:bg-kg-green data-[state=checked]:border-kg-green/40"
+              className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40"
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-kg-green" />
+                <Sparkles className="w-4 h-4 text-green-400" />
                 <Label className="text-white font-medium cursor-pointer" onClick={() => setUseAIPersonalization(!useAIPersonalization)}>
                   AI-Powered Email Personalization
                 </Label>
@@ -204,7 +204,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
               disabled={isLaunching}
             >
               Cancel

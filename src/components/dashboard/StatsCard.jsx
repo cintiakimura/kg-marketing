@@ -5,10 +5,10 @@ export default function StatsCard({ title, value, icon: Icon, trend, trendValue 
   const isPositive = trend === 'up';
 
   return (
-    <div className="bg-kg-surface rounded-xl p-6 md:p-8 border border-kg-green/25 hover:border-kg-green/40 hover:shadow-kg-glow-sm transition-all">
+    <div className="bg-kg-card rounded-xl p-6 md:p-8 border border-green-500/30 hover:border-green-500/45 shadow-kg-card-glow transition-all">
       <div className="flex items-start justify-between mb-5">
-        <div className="p-3 bg-kg-green-muted rounded-xl border border-kg-green/20">
-          <Icon className="w-6 h-6 text-kg-green" />
+        <div className="p-3 bg-kg-muted rounded-xl border border-green-500/25">
+          <Icon className="w-6 h-6 text-green-400" />
         </div>
         {trend && (
           <div

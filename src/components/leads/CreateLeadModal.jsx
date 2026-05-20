@@ -58,8 +58,8 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-kg-surface rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
-        <div className="sticky top-0 bg-kg-surface border-b border-kg-green/25 p-6 flex items-center justify-between">
+      <div className="bg-kg-card rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
+        <div className="sticky top-0 bg-kg-card border-b border-green-500/25 p-6 flex items-center justify-between">
           <h2 className="text-xl font-medium text-white">Create New Lead</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
@@ -73,7 +73,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
               value={formData.full_name}
               onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
               placeholder="John Doe"
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
               required
             />
           </div>
@@ -85,7 +85,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               placeholder="john@company.com"
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
               required
             />
           </div>
@@ -96,7 +96,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
               value={formData.company}
               onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
               placeholder="Company Name"
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -104,7 +104,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
             <div>
               <Label className="text-gray-300 mb-2">Status</Label>
               <Select value={formData.status} onValueChange={(val) => setFormData(prev => ({ ...prev, status: val }))}>
-                <SelectTrigger className="bg-kg-raised border-kg-green/20 text-white">
+                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -122,7 +122,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
             <div>
               <Label className="text-gray-300 mb-2">Language</Label>
               <Select value={formData.language_preference} onValueChange={(val) => setFormData(prev => ({ ...prev, language_preference: val }))}>
-                <SelectTrigger className="bg-kg-raised border-kg-green/20 text-white">
+                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -143,11 +143,11 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
               placeholder="Additional notes..."
               rows={3}
-              className="bg-kg-raised border-kg-green/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-kg-green/25">
+          <div className="flex gap-3 pt-4 border-t border-green-500/25">
             <Button
               type="submit"
               disabled={isSaving}
@@ -160,7 +160,7 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
               type="button"
               onClick={onClose}
               variant="outline"
-              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

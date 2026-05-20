@@ -112,7 +112,7 @@ Return JSON:
       </div>
 
       {editingSequences.length === 0 ? (
-        <div className="p-4 bg-kg-raised rounded-lg border border-kg-green/20 text-center">
+        <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20 text-center">
           <Mail className="w-8 h-8 text-gray-500 mx-auto mb-2" />
           <p className="text-gray-400 text-sm">No follow-up sequences defined</p>
           <p className="text-gray-500 text-xs mt-1">Click "Add Sequence" to create automated follow-ups</p>
@@ -120,10 +120,10 @@ Return JSON:
       ) : (
         <div className="space-y-4">
           {editingSequences.map((sequence, index) => (
-            <div key={index} className="p-4 bg-kg-raised rounded-lg border border-kg-green/20 space-y-3">
+            <div key={index} className="p-4 bg-kg-raised rounded-lg border border-green-500/20 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-kg-green" />
+                  <Clock className="w-4 h-4 text-green-400" />
                   <span className="text-white font-medium text-sm">Sequence {index + 1}</span>
                 </div>
                 <div className="flex gap-2">
@@ -132,7 +132,7 @@ Return JSON:
                     onClick={() => generateFollowupContent(index, sequence)}
                     disabled={generatingIndex === index}
                     size="sm"
-                    className="bg-kg-green hover:bg-[kg-green-hover] text-white h-7 text-xs"
+                    className="bg-kg-btn hover:bg-kg-btn-hover text-white h-7 text-xs"
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
                     {generatingIndex === index ? 'Generating...' : 'AI Generate'}
@@ -156,7 +156,7 @@ Return JSON:
                     value={sequence.trigger_status} 
                     onValueChange={(val) => updateSequence(index, 'trigger_status', val)}
                   >
-                    <SelectTrigger className="bg-kg-surface border-kg-green/20 text-white h-9">
+                    <SelectTrigger className="bg-kg-card border-green-500/20 text-white h-9">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -175,7 +175,7 @@ Return JSON:
                     min="0"
                     value={sequence.delay_days}
                     onChange={(e) => updateSequence(index, 'delay_days', parseInt(e.target.value))}
-                    className="bg-kg-surface border-kg-green/20 text-white h-9"
+                    className="bg-kg-card border-green-500/20 text-white h-9"
                   />
                 </div>
               </div>
@@ -186,7 +186,7 @@ Return JSON:
                   value={sequence.email_subject}
                   onChange={(e) => updateSequence(index, 'email_subject', e.target.value)}
                   placeholder="Follow-up subject..."
-                  className="bg-kg-surface border-kg-green/20 text-white"
+                  className="bg-kg-card border-green-500/20 text-white"
                 />
               </div>
 
@@ -197,19 +197,19 @@ Return JSON:
                   onChange={(e) => updateSequence(index, 'email_body', e.target.value)}
                   placeholder="Follow-up email content..."
                   rows={4}
-                  className="bg-kg-surface border-kg-green/20 text-white"
+                  className="bg-kg-card border-green-500/20 text-white"
                 />
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-kg-surface rounded">
+              <div className="flex items-center gap-3 p-3 bg-kg-card rounded">
                 <Checkbox
                   checked={sequence.schedule_meeting || false}
                   onCheckedChange={(checked) => updateSequence(index, 'schedule_meeting', checked)}
-                  className="border-[#555555] data-[state=checked]:bg-kg-green data-[state=checked]:border-kg-green/40"
+                  className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-kg-green" />
+                    <Calendar className="w-4 h-4 text-green-400" />
                     <Label className="text-white text-sm cursor-pointer" onClick={() => updateSequence(index, 'schedule_meeting', !sequence.schedule_meeting)}>
                       Auto-schedule meeting with AI
                     </Label>

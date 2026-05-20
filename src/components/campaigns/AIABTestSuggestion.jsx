@@ -131,17 +131,17 @@ Return JSON with 3 A/B test suggestions:
   };
 
   return (
-    <div className="p-4 bg-kg-raised rounded-lg border border-kg-green/20">
+    <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-kg-green" />
+          <TrendingUp className="w-4 h-4 text-green-400" />
           <span className="text-white font-medium text-sm">AI A/B Testing Optimizer</span>
         </div>
         <Button
           onClick={handleGenerateSuggestions}
           disabled={isGenerating || campaigns.length === 0}
           size="sm"
-          className="bg-kg-green hover:bg-[kg-green-hover] text-white"
+          className="bg-kg-btn hover:bg-kg-btn-hover text-white"
         >
           <Sparkles className="w-3 h-3 mr-1" />
           {isGenerating ? 'Analyzing...' : 'Generate Tests'}
@@ -151,11 +151,11 @@ Return JSON with 3 A/B test suggestions:
       {suggestions && (
         <div className="space-y-4">
           {/* Subject Line Test */}
-          <div className="p-3 bg-kg-surface rounded border border-kg-green/30">
+          <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
-              <FileText className="w-4 h-4 text-kg-green" />
+              <FileText className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-sm">Subject Line Test</span>
-              <Badge className="bg-kg-green/20 text-kg-green border-0 text-xs">
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
                 +{suggestions.subject_line_test.expected_improvement}
               </Badge>
             </div>
@@ -168,7 +168,7 @@ Return JSON with 3 A/B test suggestions:
                     onClick={() => applySubjectVariant('A')}
                     size="sm"
                     variant="ghost"
-                    className="text-kg-green hover:text-[kg-green-hover] hover:bg-kg-green/10 h-6 text-xs"
+                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-xs"
                   >
                     Apply
                   </Button>
@@ -182,7 +182,7 @@ Return JSON with 3 A/B test suggestions:
                     onClick={() => applySubjectVariant('B')}
                     size="sm"
                     variant="ghost"
-                    className="text-kg-green hover:text-[kg-green-hover] hover:bg-kg-green/10 h-6 text-xs"
+                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-xs"
                   >
                     Apply
                   </Button>
@@ -193,11 +193,11 @@ Return JSON with 3 A/B test suggestions:
           </div>
 
           {/* Content Test */}
-          <div className="p-3 bg-kg-surface rounded border border-kg-green/30">
+          <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
-              <Send className="w-4 h-4 text-kg-green" />
+              <Send className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-sm">Content Structure Test</span>
-              <Badge className="bg-kg-green/20 text-kg-green border-0 text-xs">
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
                 +{suggestions.content_test.expected_improvement}
               </Badge>
             </div>
@@ -215,11 +215,11 @@ Return JSON with 3 A/B test suggestions:
           </div>
 
           {/* Timing Test */}
-          <div className="p-3 bg-kg-surface rounded border border-kg-green/30">
+          <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
-              <Clock className="w-4 h-4 text-kg-green" />
+              <Clock className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-sm">Send Time Optimization</span>
-              <Badge className="bg-kg-green/20 text-kg-green border-0 text-xs">
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
                 +{suggestions.timing_test.expected_improvement}
               </Badge>
             </div>
@@ -240,7 +240,7 @@ Return JSON with 3 A/B test suggestions:
             onClick={() => setSuggestions(null)}
             size="sm"
             variant="outline"
-            className="w-full border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-raised"
           >
             Clear Suggestions
           </Button>

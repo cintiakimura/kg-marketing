@@ -22,8 +22,9 @@ export default function Layout({ children, currentPageName }) {
     <div className="min-h-screen bg-kg-black">
       <style>{`
         :root {
-          --kg-green: #00F068;
-          --kg-green-hover: #4DFF9A;
+          --kg-btn: #14532d;
+          --kg-btn-hover: #166534;
+          --kg-card: #0a1f0a;
         }
         
         * {
@@ -40,20 +41,20 @@ export default function Layout({ children, currentPageName }) {
         }
         
         .scrollbar-custom::-webkit-scrollbar-track {
-          background: #0A0A0A;
+          background: #0a1f0a;
         }
         
         .scrollbar-custom::-webkit-scrollbar-thumb {
-          background: #00F068;
+          background: #14532d;
           border-radius: 3px;
         }
         
         .scrollbar-custom::-webkit-scrollbar-thumb:hover {
-          background: #4DFF9A;
+          background: #166534;
         }
       `}</style>
 
-      <header className="bg-kg-surface border-b border-kg-green/25 sticky top-0 z-50">
+      <header className="bg-kg-card border-b border-green-500/30 sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <NavLink to="/dashboard" className="flex items-center gap-3 hover:opacity-90">
@@ -66,7 +67,7 @@ export default function Layout({ children, currentPageName }) {
                   e.target.nextSibling?.classList.remove('hidden');
                 }}
               />
-              <div className="hidden w-10 h-10 bg-kg-green rounded-lg flex items-center justify-center shadow-kg-glow-sm">
+              <div className="hidden w-10 h-10 bg-kg-btn rounded-lg flex items-center justify-center shadow-kg-btn">
                 <span className="text-white font-medium text-xl">KG</span>
               </div>
               <div>
@@ -77,7 +78,7 @@ export default function Layout({ children, currentPageName }) {
             <button
               type="button"
               onClick={() => logout()}
-              className="flex items-center gap-2 px-4 py-2 text-[13px] font-normal text-gray-300 hover:text-kg-green transition-colors"
+              className="flex items-center gap-2 px-4 py-2 text-[13px] font-normal text-gray-300 hover:text-green-400 transition-colors"
             >
               <LogOut className="w-4 h-4" />
               <span>Logout</span>
@@ -96,7 +97,7 @@ export default function Layout({ children, currentPageName }) {
                   className={({ isActive }) =>
                     `flex items-center gap-2 px-6 py-3 border-b-2 transition-all whitespace-nowrap text-[13px] font-normal ${
                       isActive || currentPageName === tab.path
-                        ? 'border-kg-green text-kg-green'
+                        ? 'border-green-500 text-green-400'
                         : 'border-transparent text-gray-400 hover:text-gray-200'
                     }`
                   }

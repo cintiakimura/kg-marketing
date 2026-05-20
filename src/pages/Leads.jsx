@@ -298,7 +298,7 @@ export default function Leads() {
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
           <h1 className="kg-page-title mb-2 flex items-center gap-2">
-            <LayoutGrid className="w-8 h-8 text-kg-green" />
+            <LayoutGrid className="w-8 h-8 text-green-400" />
             Leads Workspace
           </h1>
           <p className="text-base text-gray-400 leading-relaxed">
@@ -349,7 +349,7 @@ export default function Leads() {
       {isError && (
         <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
           Could not load leads: {error?.message}. Set{' '}
-          <code className="text-kg-green">VITE_KG_MARKETING_API_URL</code> in .env.local.
+          <code className="text-green-400">VITE_KG_MARKETING_API_URL</code> in .env.local.
         </div>
       )}
 
@@ -363,7 +363,7 @@ export default function Leads() {
             onOpenLead={setDetailLead}
           />
 
-          <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6 md:p-8 space-y-5">
+          <div className="bg-kg-card rounded-xl border border-green-500/25 p-6 md:p-8 space-y-5">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />
@@ -371,12 +371,12 @@ export default function Leads() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search name, company, title, notes…"
-                  className="pl-10 bg-kg-raised border-kg-green/20 text-white"
+                  className="pl-10 bg-kg-raised border-green-500/20 text-white"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-kg-green/20 text-white">
-                  <Filter className="w-4 h-4 mr-2 text-kg-green" />
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
+                  <Filter className="w-4 h-4 mr-2 text-green-400" />
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -389,7 +389,7 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               <Select value={followUpFilter} onValueChange={setFollowUpFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-kg-green/20 text-white">
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
                   <Bell className="w-4 h-4 mr-2 text-amber-400" />
                   <SelectValue placeholder="Follow-up" />
                 </SelectTrigger>

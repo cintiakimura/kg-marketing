@@ -30,7 +30,7 @@ function notesPreview(notes) {
 }
 
 function fitBadgeClass(score) {
-  if (score >= 9) return 'bg-kg-green text-white font-semibold';
+  if (score >= 9) return 'bg-kg-btn text-white font-semibold';
   if (score >= 7) return 'bg-emerald-600/90 text-white';
   return 'bg-gray-600 text-white';
 }
@@ -47,12 +47,12 @@ export default function LeadsTable({
     <div className="overflow-x-auto">
       <Table>
         <TableHeader>
-          <TableRow className="border-kg-green/25 hover:bg-transparent">
+          <TableRow className="border-green-500/25 hover:bg-transparent">
             <TableHead className="w-10">
               <Checkbox
                 checked={allSelected}
                 onCheckedChange={onToggleSelectAll}
-                className="border-[#555] data-[state=checked]:bg-kg-green"
+                className="border-[#555] data-[state=checked]:bg-kg-btn"
               />
             </TableHead>
             <TableHead className="text-gray-400">Name</TableHead>
@@ -75,21 +75,21 @@ export default function LeadsTable({
             return (
               <TableRow
                 key={lead.id}
-                className="border-kg-green/25 hover:bg-kg-raised/80 cursor-pointer"
+                className="border-green-500/25 hover:bg-kg-raised/80 cursor-pointer"
                 onClick={() => onOpenLead(lead)}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <Checkbox
                     checked={selectedIds.has(lead.id)}
                     onCheckedChange={() => onToggleSelect(lead.id)}
-                    className="border-[#555] data-[state=checked]:bg-kg-green"
+                    className="border-[#555] data-[state=checked]:bg-kg-btn"
                   />
                 </TableCell>
                 <TableCell className="text-white font-medium">
                   <div className="flex items-center gap-2">
                     {lead.full_name}
                     {isSmartFinderLead(lead) && (
-                      <Sparkles className="w-3.5 h-3.5 text-kg-green shrink-0" title="Smart Lead Finder" />
+                      <Sparkles className="w-3.5 h-3.5 text-green-400 shrink-0" title="Smart Lead Finder" />
                     )}
                   </div>
                 </TableCell>

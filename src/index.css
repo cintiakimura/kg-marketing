@@ -4,32 +4,31 @@
 
 @layer base {
   :root {
-    --kg-green: #00f068;
-    --kg-green-hover: #4dff9a;
     --kg-bg: #000000;
-    --kg-surface: #0a0a0a;
-    --kg-raised: #111111;
-    --kg-border: rgba(0, 240, 104, 0.22);
+    --kg-card: #0a1f0a;
+    --kg-raised: #0d2812;
+    --kg-btn: #14532d;
+    --kg-btn-hover: #166534;
 
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
-    --card: 0 0% 4%;
+    --card: 142 40% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 0 0% 4%;
+    --popover: 142 40% 8%;
     --popover-foreground: 0 0% 98%;
-    --primary: 145 100% 47%;
+    --primary: 142 61% 20%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 0 0% 7%;
+    --secondary: 142 35% 10%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 0 0% 7%;
+    --muted: 142 30% 12%;
     --muted-foreground: 0 0% 65%;
-    --accent: 0 0% 7%;
+    --accent: 142 35% 12%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 0 0% 12%;
-    --input: 0 0% 12%;
-    --ring: 145 100% 47%;
+    --border: 142 25% 18%;
+    --input: 142 30% 12%;
+    --ring: 142 61% 35%;
     --radius: 0.75rem;
   }
 }
@@ -59,10 +58,13 @@
   .kg-section-title {
     @apply text-base font-medium text-white;
   }
+  .kg-label-important {
+    @apply text-[13px] font-medium text-gray-300;
+  }
   .kg-card {
-    @apply bg-kg-surface rounded-xl border border-kg-green/25 p-6 md:p-8;
+    @apply bg-kg-card rounded-xl border border-green-500/30 p-6 md:p-8 shadow-kg-card-glow;
   }
   .kg-card-hover {
-    @apply kg-card transition-colors hover:border-kg-green/45 hover:shadow-kg-glow-sm;
+    @apply kg-card transition-colors hover:border-green-500/45;
   }
 }

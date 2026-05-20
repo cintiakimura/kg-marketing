@@ -74,7 +74,7 @@ export default function Clients() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name, contact, industry, or status..."
-          className="pl-10 bg-kg-surface border-kg-green/25 text-white"
+          className="pl-10 bg-kg-card border-green-500/25 text-white"
         />
       </div>
 
@@ -87,11 +87,11 @@ export default function Clients() {
 
       {isLoading ? (
         <div className="text-center py-12 flex justify-center gap-2 text-gray-400">
-          <Loader2 className="w-5 h-5 animate-spin text-kg-green" />
+          <Loader2 className="w-5 h-5 animate-spin text-green-400" />
           Loading clients…
         </div>
       ) : filteredClients.length === 0 ? (
-        <div className="text-center py-12 bg-kg-surface rounded-xl border border-kg-green/25">
+        <div className="text-center py-12 bg-kg-card rounded-xl border border-green-500/25">
           <Building2 className="w-16 h-16 text-gray-600 mx-auto mb-4" />
           <p className="text-gray-400">
             {searchQuery
@@ -100,10 +100,10 @@ export default function Clients() {
           </p>
         </div>
       ) : (
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 overflow-x-auto">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 overflow-x-auto">
           <Table>
             <TableHeader>
-              <TableRow className="border-kg-green/25 hover:bg-transparent">
+              <TableRow className="border-green-500/25 hover:bg-transparent">
                 <TableHead className="text-gray-400">Name</TableHead>
                 <TableHead className="text-gray-400">Company</TableHead>
                 <TableHead className="text-gray-400">Industry</TableHead>
@@ -115,7 +115,7 @@ export default function Clients() {
             </TableHeader>
             <TableBody>
               {filteredClients.map((client) => (
-                <TableRow key={client.id} className="border-kg-green/25 hover:bg-kg-raised">
+                <TableRow key={client.id} className="border-green-500/25 hover:bg-kg-raised">
                   <TableCell className="text-white font-medium">
                     {client.contact_name || client.name}
                   </TableCell>
@@ -125,7 +125,7 @@ export default function Clients() {
                     <Badge
                       className={`${
                         client.status === 'active'
-                          ? 'bg-kg-green'
+                          ? 'bg-kg-btn'
                           : client.status === 'inactive'
                             ? 'bg-red-500'
                             : 'bg-gray-500'
@@ -139,7 +139,7 @@ export default function Clients() {
                       ? new Date(client.last_contact_at).toLocaleDateString()
                       : '—'}
                   </TableCell>
-                  <TableCell className="text-kg-green font-medium">
+                  <TableCell className="text-green-400 font-medium">
                     {formatCurrency(client.deal_value)}
                   </TableCell>
                   <TableCell>
@@ -147,7 +147,7 @@ export default function Clients() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEditClient(client)}
-                      className="text-kg-green hover:text-[kg-green-hover] hover:bg-kg-green/10"
+                      className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10"
                     >
                       <Edit className="w-4 h-4" />
                     </Button>

@@ -109,26 +109,26 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
     }
   };
 
-  const inputClass = 'bg-kg-raised border-kg-green/20 text-white';
+  const inputClass = 'bg-kg-raised border-green-500/20 text-white';
 
   return (
     <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
-      <div className="bg-kg-surface rounded-xl max-w-3xl w-full max-h-[92vh] overflow-hidden flex flex-col border border-kg-green/25 shadow-2xl">
-        <div className="shrink-0 border-b border-kg-green/25 px-6 py-4 flex items-start justify-between gap-4">
+      <div className="bg-kg-card rounded-xl max-w-3xl w-full max-h-[92vh] overflow-hidden flex flex-col border border-green-500/25 shadow-2xl">
+        <div className="shrink-0 border-b border-green-500/25 px-6 py-4 flex items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1">
               <h2 className="text-xl font-medium text-white">{lead.full_name}</h2>
               {isSmartFinderLead(lead) && (
-                <Badge className="bg-kg-green/20 text-kg-green border-kg-green/40">
+                <Badge className="bg-kg-btn/20 text-green-400 border-green-500/40">
                   <Sparkles className="w-3 h-3 mr-1" />
                   Imported from Smart Finder
                 </Badge>
               )}
               {lead.fit_score != null && (
-                <Badge className="bg-kg-green text-white font-semibold">Fit {lead.fit_score}/10</Badge>
+                <Badge className="bg-kg-btn text-white font-semibold">Fit {lead.fit_score}/10</Badge>
               )}
             </div>
-            <p className="text-kg-green text-sm">{lead.title || '—'}</p>
+            <p className="text-green-400 text-sm">{lead.title || '—'}</p>
             <p className="text-gray-400 text-sm">{lead.company || '—'}</p>
             <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-400">
               {lead.email && (
@@ -181,7 +181,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
             </div>
             <div>
               <Label className="text-gray-300 mb-2 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-kg-green" />
+                <Calendar className="w-4 h-4 text-green-400" />
                 Next follow-up date
               </Label>
               <Input
@@ -194,7 +194,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           </div>
 
           {parsed.suggestedMessage && (
-            <div className="p-4 rounded-lg bg-kg-raised border border-kg-green/20">
+            <div className="p-4 rounded-lg bg-kg-raised border border-green-500/20">
               <div className="flex items-center justify-between mb-2">
                 <Label className="text-gray-400 text-xs uppercase tracking-wide">
                   Suggested first message
@@ -204,7 +204,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
                   size="sm"
                   variant="ghost"
                   onClick={handleCopyMessage}
-                  className="text-kg-green hover:text-[kg-green-hover]"
+                  className="text-green-400 hover:text-[kg-btn-hover]"
                 >
                   <Copy className="w-4 h-4 mr-1" />
                   Copy
@@ -217,9 +217,9 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           )}
 
           {parsed.verificationNotes && (
-            <div className="p-4 rounded-lg bg-kg-green/5 border border-kg-green/20">
+            <div className="p-4 rounded-lg bg-kg-btn/5 border border-green-500/20">
               <Label className="text-gray-400 text-xs uppercase tracking-wide flex items-center gap-1 mb-2">
-                <ShieldCheck className="w-3 h-3 text-kg-green" />
+                <ShieldCheck className="w-3 h-3 text-green-400" />
                 Verification notes (read-only)
               </Label>
               <p className="text-gray-400 text-sm leading-relaxed">{parsed.verificationNotes}</p>
@@ -231,7 +231,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
               <Label className="text-gray-400 text-xs uppercase tracking-wide mb-2">
                 Fit reasoning (read-only)
               </Label>
-              <p className="text-gray-300 text-sm leading-relaxed bg-kg-raised p-3 rounded-lg border border-kg-green/20">
+              <p className="text-gray-300 text-sm leading-relaxed bg-kg-raised p-3 rounded-lg border border-green-500/20">
                 {parsed.fitReasoning}
               </p>
             </div>
@@ -242,7 +242,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
               <Label className="text-gray-400 text-xs uppercase tracking-wide mb-2">
                 Recent activity (read-only)
               </Label>
-              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line bg-kg-raised p-3 rounded-lg border border-kg-green/20">
+              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line bg-kg-raised p-3 rounded-lg border border-green-500/20">
                 {parsed.recentActivity}
               </p>
             </div>
@@ -263,7 +263,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-kg-green/25 p-4 flex gap-3 bg-[#252525]">
+        <div className="shrink-0 border-t border-green-500/25 p-4 flex gap-3 bg-[#252525]">
           <Button
             type="button"
             onClick={handleSave}
@@ -277,7 +277,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
             type="button"
             variant="outline"
             onClick={onClose}
-            className="border-kg-green/20 text-gray-300"
+            className="border-green-500/20 text-gray-300"
           >
             Close
           </Button>

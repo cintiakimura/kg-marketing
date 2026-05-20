@@ -99,24 +99,24 @@ export default function Calendar() {
       <div>
         <h2 className="text-xl font-medium text-white mb-4">Upcoming Sessions</h2>
         {upcomingWebinars.length === 0 ?
-        <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-8 text-center">
+        <div className="bg-kg-card rounded-xl border border-green-500/25 p-8 text-center">
             <CalendarIcon className="w-12 h-12 text-gray-600 mx-auto mb-3" />
             <p className="text-gray-400">No upcoming webinars scheduled</p>
           </div> :
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {upcomingWebinars.map((webinar) =>
-          <div key={webinar.id} className="bg-kg-surface rounded-xl border border-kg-green/25 p-6 hover:border-kg-green/40 transition-all">
+          <div key={webinar.id} className="bg-kg-card rounded-xl border border-green-500/25 p-6 hover:border-green-500/40 transition-all">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-lg font-medium text-white">{webinar.title}</h3>
-                  <Badge className="bg-kg-green text-white border-0">Upcoming</Badge>
+                  <Badge className="bg-kg-btn text-white border-0">Upcoming</Badge>
                 </div>
                 
                 <p className="text-gray-400 text-sm mb-4">{webinar.description}</p>
                 
                 <div className="space-y-2 mb-4">
                   <div className="flex items-center gap-2 text-sm">
-                    <CalendarIcon className="w-4 h-4 text-kg-green" />
+                    <CalendarIcon className="w-4 h-4 text-green-400" />
                     <span className="text-gray-300">
                       {format(new Date(webinar.start_time), 'MMM dd, yyyy • HH:mm')}
                     </span>
@@ -127,7 +127,7 @@ export default function Calendar() {
                   </div>
                   <div className="flex items-center gap-2 text-sm">
                     <span className="text-gray-500">Attendees:</span>
-                    <span className="text-kg-green font-medium">
+                    <span className="text-green-400 font-medium">
                       {webinar.attendees?.length || 0} / {webinar.max_attendees}
                     </span>
                   </div>
@@ -146,7 +146,7 @@ export default function Calendar() {
               }
                   <Button
                 size="sm"
-                variant="outline" className="bg-kg-green text-white px-3 text-xs font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-8 border-kg-green/20 hover:bg-kg-raised"
+                variant="outline" className="bg-kg-btn text-white px-3 text-xs font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-8 border-green-500/20 hover:bg-kg-raised"
 
                 onClick={() => window.open(generateGoogleCalendarLink(webinar), '_blank')}>
 
@@ -166,7 +166,7 @@ export default function Calendar() {
           <h2 className="text-xl font-medium text-white mb-4">Past Sessions</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {pastWebinars.map((webinar) =>
-          <div key={webinar.id} className="bg-kg-surface rounded-xl border border-kg-green/25 p-6 opacity-75">
+          <div key={webinar.id} className="bg-kg-card rounded-xl border border-green-500/25 p-6 opacity-75">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-lg font-medium text-white">{webinar.title}</h3>
                   <Badge className="bg-gray-500 text-white border-0">Completed</Badge>
@@ -190,8 +190,8 @@ export default function Calendar() {
       {/* Create Webinar Modal */}
       {isCreateModalOpen &&
       <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-          <div className="bg-kg-surface rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
-            <div className="sticky top-0 bg-kg-surface border-b border-kg-green/25 p-6 flex items-center justify-between">
+          <div className="bg-kg-card rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
+            <div className="sticky top-0 bg-kg-card border-b border-green-500/25 p-6 flex items-center justify-between">
               <h2 className="text-xl font-medium text-white">Schedule Webinar</h2>
               <button onClick={() => setIsCreateModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-6 h-6" />
@@ -205,7 +205,7 @@ export default function Calendar() {
                 value={formData.title}
                 onChange={(e) => setFormData((prev) => ({ ...prev, title: e.target.value }))}
                 placeholder="IoT Automotive Training Session"
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
               </div>
 
@@ -216,7 +216,7 @@ export default function Calendar() {
                 onChange={(e) => setFormData((prev) => ({ ...prev, description: e.target.value }))}
                 placeholder="Session overview and topics covered"
                 rows={3}
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
               </div>
 
@@ -227,7 +227,7 @@ export default function Calendar() {
                   type="datetime-local"
                   value={formData.start_time}
                   onChange={(e) => setFormData((prev) => ({ ...prev, start_time: e.target.value }))}
-                  className="bg-kg-raised border-kg-green/20 text-white" />
+                  className="bg-kg-raised border-green-500/20 text-white" />
 
                 </div>
                 <div>
@@ -236,7 +236,7 @@ export default function Calendar() {
                   type="datetime-local"
                   value={formData.end_time}
                   onChange={(e) => setFormData((prev) => ({ ...prev, end_time: e.target.value }))}
-                  className="bg-kg-raised border-kg-green/20 text-white" />
+                  className="bg-kg-raised border-green-500/20 text-white" />
 
                 </div>
               </div>
@@ -248,7 +248,7 @@ export default function Calendar() {
                   value={formData.host_name}
                   onChange={(e) => setFormData((prev) => ({ ...prev, host_name: e.target.value }))}
                   placeholder="John Doe"
-                  className="bg-kg-raised border-kg-green/20 text-white" />
+                  className="bg-kg-raised border-green-500/20 text-white" />
 
                 </div>
                 <div>
@@ -257,7 +257,7 @@ export default function Calendar() {
                   type="number"
                   value={formData.max_attendees}
                   onChange={(e) => setFormData((prev) => ({ ...prev, max_attendees: parseInt(e.target.value) }))}
-                  className="bg-kg-raised border-kg-green/20 text-white" />
+                  className="bg-kg-raised border-green-500/20 text-white" />
 
                 </div>
               </div>
@@ -268,7 +268,7 @@ export default function Calendar() {
                 value={formData.meeting_link}
                 onChange={(e) => setFormData((prev) => ({ ...prev, meeting_link: e.target.value }))}
                 placeholder="https://meet.google.com/xxx-xxxx-xxx"
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
                 <p className="text-gray-500 text-xs mt-1">Google Meet, Zoom, or any meeting platform link</p>
               </div>
@@ -284,7 +284,7 @@ export default function Calendar() {
                 <Button
                 onClick={() => setIsCreateModalOpen(false)}
                 variant="outline"
-                className="border-kg-green/20 text-gray-300 hover:bg-kg-raised">
+                className="border-green-500/20 text-gray-300 hover:bg-kg-raised">
 
                   Cancel
                 </Button>

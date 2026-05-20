@@ -108,8 +108,8 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-      <div className="bg-kg-surface rounded-xl max-w-lg w-full">
-        <div className="border-b border-kg-green/25 p-6 flex items-center justify-between">
+      <div className="bg-kg-card rounded-xl max-w-lg w-full">
+        <div className="border-b border-green-500/25 p-6 flex items-center justify-between">
           <h2 className="text-xl font-medium text-white">Import Leads</h2>
           <button 
             onClick={onClose} 
@@ -121,8 +121,8 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
         </div>
 
         <div className="p-6 space-y-6">
-          <div className="border-2 border-dashed border-kg-green/20 rounded-lg p-8 text-center hover:border-kg-green/40 transition-colors">
-            <FileSpreadsheet className="w-12 h-12 text-kg-green mx-auto mb-4" />
+          <div className="border-2 border-dashed border-green-500/20 rounded-lg p-8 text-center hover:border-green-500/40 transition-colors">
+            <FileSpreadsheet className="w-12 h-12 text-green-400 mx-auto mb-4" />
             <p className="text-gray-300 mb-4">Upload CSV, Excel, or Image file</p>
             <input
               type="file"
@@ -142,7 +142,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
               Choose File
             </label>
             {file && (
-              <p className="text-kg-green mt-3 text-sm font-medium">{file.name}</p>
+              <p className="text-green-400 mt-3 text-sm font-medium">{file.name}</p>
             )}
           </div>
 
@@ -186,7 +186,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
               onClick={onClose}
               disabled={isProcessing}
               variant="outline"
-              className="border-kg-green/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

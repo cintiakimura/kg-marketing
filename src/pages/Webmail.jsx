@@ -98,7 +98,7 @@ export default function Webmail() {
       <div className="grid grid-cols-12 gap-6">
         {/* Sidebar */}
         <div className="col-span-12 lg:col-span-3">
-          <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-4">
+          <div className="bg-kg-card rounded-xl border border-green-500/25 p-4">
             <nav className="space-y-1">
               {folders.map((folder) => {
                 const Icon = folder.icon;
@@ -114,7 +114,7 @@ export default function Webmail() {
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
                     activeFolder === folder.id ?
-                    'bg-kg-green text-white' :
+                    'bg-kg-btn text-white' :
                     'text-gray-300 hover:bg-kg-raised'}`
                     }>
 
@@ -139,8 +139,8 @@ export default function Webmail() {
 
         {/* Email List */}
         <div className="col-span-12 lg:col-span-4">
-          <div className="bg-kg-surface rounded-xl border border-kg-green/25 overflow-hidden">
-            <div className="p-4 border-b border-kg-green/25">
+          <div className="bg-kg-card rounded-xl border border-green-500/25 overflow-hidden">
+            <div className="p-4 border-b border-green-500/25">
               <h2 className="text-lg font-medium text-white">
                 {folders.find((f) => f.id === activeFolder)?.label}
               </h2>
@@ -158,7 +158,7 @@ export default function Webmail() {
                 onClick={() => handleEmailClick(email)}
                 className={`w-full p-4 text-left hover:bg-kg-raised transition-colors ${
                 selectedEmail?.id === email.id ? 'bg-kg-raised' : ''} ${
-                !email.is_read ? 'border-l-4 border-kg-green/40' : ''}`}>
+                !email.is_read ? 'border-l-4 border-green-500/40' : ''}`}>
 
                     <div className="flex items-start justify-between mb-1">
                       <p className={`text-sm ${!email.is_read ? 'text-white font-bold' : 'text-gray-300'}`}>
@@ -184,7 +184,7 @@ export default function Webmail() {
         {/* Email Detail */}
         <div className="col-span-12 lg:col-span-5">
           {selectedEmail ?
-          <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-6">
+          <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-medium text-white mb-4">{selectedEmail.subject}</h2>
                 <div className="space-y-2 text-sm">
@@ -207,12 +207,12 @@ export default function Webmail() {
                   </div>
                 </div>
               </div>
-              <div className="border-t border-kg-green/25 pt-6">
+              <div className="border-t border-green-500/25 pt-6">
                 <p className="text-gray-300 whitespace-pre-wrap">{selectedEmail.body}</p>
               </div>
             </div> :
 
-          <div className="bg-kg-surface rounded-xl border border-kg-green/25 p-12 text-center">
+          <div className="bg-kg-card rounded-xl border border-green-500/25 p-12 text-center">
               <Mail className="w-16 h-16 text-gray-600 mx-auto mb-4" />
               <p className="text-gray-400">Select an email to view</p>
             </div>
@@ -223,8 +223,8 @@ export default function Webmail() {
       {/* Compose Modal */}
       {isComposeOpen &&
       <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
-          <div className="bg-kg-surface rounded-xl max-w-2xl w-full">
-            <div className="border-b border-kg-green/25 p-6 flex items-center justify-between">
+          <div className="bg-kg-card rounded-xl max-w-2xl w-full">
+            <div className="border-b border-green-500/25 p-6 flex items-center justify-between">
               <h2 className="text-xl font-medium text-white">New Message</h2>
               <button onClick={() => setIsComposeOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-6 h-6" />
@@ -238,7 +238,7 @@ export default function Webmail() {
                 value={composeData.to_email}
                 onChange={(e) => setComposeData((prev) => ({ ...prev, to_email: e.target.value }))}
                 placeholder="recipient@example.com"
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
               </div>
 
@@ -248,7 +248,7 @@ export default function Webmail() {
                 value={composeData.subject}
                 onChange={(e) => setComposeData((prev) => ({ ...prev, subject: e.target.value }))}
                 placeholder="Email subject"
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
               </div>
 
@@ -259,7 +259,7 @@ export default function Webmail() {
                 onChange={(e) => setComposeData((prev) => ({ ...prev, body: e.target.value }))}
                 placeholder="Type your message here..."
                 rows={10}
-                className="bg-kg-raised border-kg-green/20 text-white" />
+                className="bg-kg-raised border-green-500/20 text-white" />
 
               </div>
 
@@ -274,7 +274,7 @@ export default function Webmail() {
                 </Button>
                 <Button
                 onClick={() => setIsComposeOpen(false)}
-                variant="outline" className="bg-kg-green text-white px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-kg-green/20 hover:bg-kg-raised">
+                variant="outline" className="bg-kg-btn text-white px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-green-500/20 hover:bg-kg-raised">
 
 
                   Cancel
