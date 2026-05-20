@@ -1,5 +1,5 @@
-import { Lead } from '@/api/entities';
 import { findHighQualityLeads } from '@/api/integrations';
+import { createLeadsBulk } from '@/api/leads';
 import {
   loadSearchTemplates,
   saveSearchTemplate,
@@ -26,6 +26,9 @@ import {
   ChevronDown,
   Trash2,
   Brain,
+  ShieldCheck,
+  ExternalLink,
+  ScrollText,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -74,10 +77,10 @@ const COMPANY_SIZE_OPTIONS = [
 ];
 
 const PROGRESS_STEPS = [
-  { key: 'searching_companies', label: 'Finding companies…' },
+  { key: 'searching_companies', label: 'Finding relevant companies…' },
   { key: 'finding_decision_makers', label: 'Researching decision-makers…' },
-  { key: 'analyzing_activity', label: 'Analyzing activity…' },
-  { key: 'evaluating_intent', label: 'Scoring fit & intent…' },
+  { key: 'analyzing_activity', label: 'Analyzing recent activity…' },
+  { key: 'evaluating_fit', label: 'Evaluating fit…' },
   { key: 'complete', label: 'Complete' },
 ];
 
@@ -87,6 +90,7 @@ const EMPTY_ICP = {
   targetRoles: ['Head of Product', 'Training Manager', 'L&D Manager'],
   geography: '',
   painPoints: '',
+  customPrompt: '',
   focusCompanies: '',
 };
 
@@ -111,19 +115,30 @@ function fitScoreColor(score) {
   return 'bg-gray-500 text-white';
 }
 
+function leadEmail(lead) {
+  if (lead.email?.trim()) return lead.email.trim();
+  const slug = lead.name.toLowerCase().replace(/[^a-z0-9]+/g, '.');
+  const co = (lead.company || 'company').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  return `${slug}@${co}.pending-import`;
+}
+
 function leadToCreatePayload(lead) {
   return {
     full_name: lead.name,
-    email: lead.email,
+    email: leadEmail(lead),
     company: lead.company,
+    title: lead.title,
+    linkedin_url: lead.linkedinUrl || null,
+    location: lead.location || null,
+    fit_score: lead.fitScore,
+    source: 'smart_lead_finder',
     status: 'new',
     language_preference: 'English',
     notes: [
-      `Title: ${lead.title}`,
-      `Location: ${lead.location}`,
-      `Fit score: ${lead.fitScore}/10`,
       `Confidence: ${lead.confidence_level || 'medium'}`,
-      `LinkedIn: ${lead.linkedinUrl}`,
+      '',
+      '--- Verification notes ---',
+      lead.verificationNotes || lead.verification_notes || '—',
       '',
       '--- Fit reasoning ---',
       lead.fitReasoning,
@@ -152,6 +167,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
   const [templateName, setTemplateName] = useState('');
   const [showTemplates, setShowTemplates] = useState(false);
   const [error, setError] = useState('');
+  const [importDone, setImportDone] = useState(false);
+  const [importedCount, setImportedCount] = useState(0);
+  const [appliedCustomPrompt, setAppliedCustomPrompt] = useState('');
 
   const progressIndex = PROGRESS_STEPS.findIndex((s) => s.key === progressKey);
   const progressPercent = useMemo(() => {
@@ -179,6 +197,8 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     setView('loading');
     setLeads([]);
     setSelectedIds(new Set());
+    setImportDone(false);
+    setAppliedCustomPrompt(icp.customPrompt?.trim() || '');
     setProgressKey('searching_companies');
 
     try {
@@ -231,15 +251,18 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     setIsImporting(true);
     setError('');
     try {
-      for (const lead of toImport) {
-        await Lead.create(leadToCreatePayload(lead));
-      }
+      const payloads = toImport.map(leadToCreatePayload);
+      const { created, errors } = await createLeadsBulk(payloads);
+      setImportedCount(created.length);
+      setImportDone(true);
       toast({
-        title: `${toImport.length} lead${toImport.length !== 1 ? 's' : ''} imported`,
-        description: 'They are now in your Leads database.',
+        title: `${created.length} lead${created.length !== 1 ? 's' : ''} imported`,
+        description:
+          errors.length > 0
+            ? `${errors.length} failed — check API URL and database connection.`
+            : 'Verified leads are now in your database.',
       });
       onSuccess?.();
-      onClose();
     } catch (err) {
       setError(`Import failed: ${err.message}`);
     } finally {
@@ -278,7 +301,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
             <div>
               <h2 className="text-xl font-bold text-white">Smart Lead Finder</h2>
               <p className="text-sm text-gray-400">
-                Quality over quantity — real decision-makers with intent signals
+                Up to 12 verified decision-makers — evidence-backed, anti-hallucination research
               </p>
             </div>
           </div>
@@ -299,6 +322,14 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   {error}
                 </div>
               )}
+
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-[#00c600]/5 border border-[#00c600]/25">
+                <ShieldCheck className="w-5 h-5 text-[#00c600] shrink-0 mt-0.5" />
+                <p className="text-sm text-gray-300 leading-relaxed">
+                  Grok uses multi-step web + X search, then a verification pass. Leads without
+                  solid sources, LinkedIn evidence, or recent activity are discarded — never invented.
+                </p>
+              </div>
 
               <Collapsible open={showTemplates} onOpenChange={setShowTemplates}>
                 <CollapsibleTrigger asChild>
@@ -438,6 +469,23 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 />
               </div>
 
+              <div className="p-4 rounded-xl border border-[#00c600]/30 bg-[#333333]/80">
+                <Label className="text-white mb-2 flex items-center gap-2 text-base font-medium">
+                  <ScrollText className="w-5 h-5 text-[#00c600]" />
+                  Custom Instructions (Optional)
+                </Label>
+                <p className="text-xs text-gray-500 mb-3">
+                  Refine how Grok searches and scores leads — applied across all research phases.
+                </p>
+                <Textarea
+                  value={icp.customPrompt}
+                  onChange={(e) => setIcp((p) => ({ ...p, customPrompt: e.target.value }))}
+                  placeholder="Example: Focus on people who recently posted about implementing AI training tools, or commented on employee development topics, or work at companies that raised funding in the last 6 months..."
+                  rows={5}
+                  className={`${inputClass} min-h-[120px] text-sm leading-relaxed`}
+                />
+              </div>
+
               <div>
                 <Label className="text-gray-300 mb-2">Optional: focus companies</Label>
                 <Textarea
@@ -494,8 +542,8 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
               <Loader2 className="w-12 h-12 text-[#00c600] animate-spin mb-6" />
               <h3 className="text-lg font-semibold text-white mb-2">Research in progress</h3>
               <p className="text-gray-400 text-sm mb-8 text-center max-w-md">
-                Grok is searching companies, profiling decision-makers, and scoring intent from
-                recent activity.
+                Four-phase research: companies → decision-makers → recent activity → fit scoring
+                with source verification.
               </p>
               <div className="w-full max-w-md space-y-4">
                 <Progress value={progressPercent} className="h-2 bg-[#333333]" />
@@ -540,9 +588,26 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
 
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-white font-medium">
-                    {leads.length} high-intent lead{leads.length !== 1 ? 's' : ''} found
-                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="text-white font-medium">
+                      {leads.length} high-intent lead{leads.length !== 1 ? 's' : ''} found
+                    </p>
+                    {(appliedCustomPrompt || meta?.customPromptApplied) && (
+                      <Badge
+                        variant="outline"
+                        className="bg-[#00c600]/10 text-[#00c600] border-[#00c600]/40 text-xs"
+                        title={appliedCustomPrompt}
+                      >
+                        <ScrollText className="w-3 h-3 mr-1 inline" />
+                        Custom instructions applied
+                      </Badge>
+                    )}
+                  </div>
+                  {appliedCustomPrompt && (
+                    <p className="text-xs text-gray-500 mt-1 max-w-xl line-clamp-2">
+                      “{appliedCustomPrompt}”
+                    </p>
+                  )}
                   {meta?.source === 'demo' && (
                     <p className="text-xs text-amber-400/90 mt-1">
                       Demo mode — set <code className="text-[#00c600]">GROK_API_KEY_LUMEN</code> on
@@ -551,8 +616,10 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   )}
                   {meta?.source === 'grok' && (
                     <p className="text-xs text-gray-500 mt-1">
-                      Researched {meta.companiesResearched} companies ·{' '}
-                      {meta.candidatesReviewed} profiles reviewed
+                      {meta.companiesResearched ?? 0} companies ·{' '}
+                      {meta.candidatesReviewed ?? 0} candidates ·{' '}
+                      {meta.leadsReturned ?? leads.length} passed verification
+                      {meta.quality_summary ? ` — ${meta.quality_summary}` : ''}
                     </p>
                   )}
                 </div>
@@ -672,6 +739,17 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                           {lead.suggestedFirstMessage}
                         </p>
                       </div>
+                      {(lead.verificationNotes || lead.verification_notes) && (
+                        <div className="p-3 rounded-lg bg-[#00c600]/5 border border-[#00c600]/20">
+                          <p className="text-gray-500 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
+                            <ShieldCheck className="w-3 h-3 text-[#00c600]" />
+                            Verification notes
+                          </p>
+                          <p className="text-gray-400 text-xs leading-relaxed">
+                            {lead.verificationNotes || lead.verification_notes}
+                          </p>
+                        </div>
+                      )}
                     </CardContent>
                   </Card>
                   </motion.div>
@@ -683,19 +761,38 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
 
         {view === 'results' && (
           <div className="shrink-0 border-t border-[#333333] p-4 flex flex-wrap gap-3 bg-[#252525]">
-            <Button
-              type="button"
-              onClick={handleImportSelected}
-              disabled={isImporting || selectedIds.size === 0}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold min-w-[200px]"
-            >
-              {isImporting ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <UserPlus className="w-4 h-4 mr-2" />
-              )}
-              Import selected to Leads ({selectedIds.size})
-            </Button>
+            {importDone ? (
+              <>
+                <p className="w-full text-sm text-[#00c600] flex items-center gap-2">
+                  <CheckCircle2 className="w-4 h-4" />
+                  {importedCount} lead{importedCount !== 1 ? 's' : ''} saved to your database.
+                </p>
+                <Button
+                  type="button"
+                  onClick={() => {
+                    onClose();
+                  }}
+                  className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold"
+                >
+                  <ExternalLink className="w-4 h-4 mr-2" />
+                  View Leads list
+                </Button>
+              </>
+            ) : (
+              <Button
+                type="button"
+                onClick={handleImportSelected}
+                disabled={isImporting || selectedIds.size === 0}
+                className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold min-w-[200px]"
+              >
+                {isImporting ? (
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                ) : (
+                  <UserPlus className="w-4 h-4 mr-2" />
+                )}
+                Import Selected Leads to Database ({selectedIds.size})
+              </Button>
+            )}
             <Button
               type="button"
               variant="outline"

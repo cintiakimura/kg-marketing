@@ -111,8 +111,10 @@ export default function CreateLeadModal({ isOpen, onClose, onSuccess, prefilledC
                   <SelectItem value="new">New</SelectItem>
                   <SelectItem value="contacted">Contacted</SelectItem>
                   <SelectItem value="interested">Interested</SelectItem>
-                  <SelectItem value="scheduled">Scheduled</SelectItem>
-                  <SelectItem value="closed">Closed</SelectItem>
+                  <SelectItem value="follow_up_later">Follow-up Later</SelectItem>
+                  <SelectItem value="no_budget">No Budget</SelectItem>
+                  <SelectItem value="client">Client</SelectItem>
+                  <SelectItem value="archived">Archived</SelectItem>
                 </SelectContent>
               </Select>
             </div>

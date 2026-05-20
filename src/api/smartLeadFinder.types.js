@@ -6,6 +6,7 @@
  * @property {string} geography
  * @property {string} painPoints
  * @property {string} [focusCompanies]
+ * @property {string} [customPrompt]
  */
 
 /**
@@ -17,11 +18,13 @@
  * @property {string} company
  * @property {string} linkedinUrl
  * @property {string} location
- * @property {string} email
+ * @property {string} [email]
  * @property {number} fitScore
  * @property {string} fitReasoning
  * @property {string} recentActivity
  * @property {string} suggestedFirstMessage
+ * @property {string} verificationNotes
+ * @property {string} [verification_notes]
  * @property {'high'|'medium'|'low'} [confidence_level]
  */
 

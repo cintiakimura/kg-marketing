@@ -1,27 +1,27 @@
 /**
- * KG Marketing — data entities (replace with your REST/GraphQL backend).
+ * KG Marketing — data entities.
  */
+import {
+  listLeads,
+  createLead,
+  updateLead,
+  deleteLead,
+} from './leads.js';
 
 const entity = (name) => ({
-  list: async (_sort) => {
-    // TODO: Implement API call — list ${name} (e.g. GET /api/${name.toLowerCase()}s)
-    return [];
-  },
-  filter: async (_criteria) => {
-    // TODO: Implement API call — filter ${name} records
-    return [];
-  },
-  create: async (_data) => {
-    // TODO: Implement API call — create ${name} (e.g. POST /api/${name.toLowerCase()}s)
-    return { id: `placeholder-${name}-${Date.now()}` };
-  },
-  update: async (id, _data) => {
-    // TODO: Implement API call — update ${name} by id (e.g. PATCH /api/...)
-    return { id };
-  },
+  list: async () => [],
+  filter: async () => [],
+  create: async () => ({ id: `placeholder-${name}-${Date.now()}` }),
+  update: async (id) => ({ id }),
 });
 
-export const Lead = entity('Lead');
+export const Lead = {
+  list: (sort) => listLeads(sort),
+  filter: async () => [],
+  create: (data) => createLead(data),
+  update: (id, data) => updateLead(id, data),
+  delete: (id) => deleteLead(id),
+};
 export const Campaign = entity('Campaign');
 export const Client = entity('Client');
 export const EmailMessage = entity('EmailMessage');

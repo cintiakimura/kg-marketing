@@ -40,41 +40,15 @@ const GROK_API_URL = () =>
 const GROK_MODEL = () =>
   import.meta.env.VITE_GROK_MODEL || 'grok-2-latest';
 
-const LEAD_OUTPUT_SCHEMA = {
-  type: 'object',
-  properties: {
-    leads: {
-      type: 'array',
-      items: {
-        type: 'object',
-        properties: {
-          name: { type: 'string' },
-          title: { type: 'string' },
-          company: { type: 'string' },
-          linkedinUrl: { type: 'string' },
-          location: { type: 'string' },
-          email: { type: 'string' },
-          fitScore: { type: 'number' },
-          fitReasoning: { type: 'string' },
-          recentActivity: { type: 'string' },
-          suggestedFirstMessage: { type: 'string' },
-        },
-        required: [
-          'name',
-          'title',
-          'company',
-          'linkedinUrl',
-          'location',
-          'fitScore',
-          'fitReasoning',
-          'recentActivity',
-          'suggestedFirstMessage',
-        ],
-      },
-    },
-  },
-  required: ['leads'],
-};
+const MAX_LEADS = 12;
+const MIN_FIT_SCORE = 7;
+
+const PROGRESS_STEPS = [
+  ['searching_companies', 'Finding relevant companies…'],
+  ['finding_decision_makers', 'Researching decision-makers…'],
+  ['analyzing_activity', 'Analyzing recent activity…'],
+  ['evaluating_fit', 'Evaluating fit…'],
+];
 
 const GROK_RESEARCH_TOOLS = [
   {
@@ -114,8 +88,18 @@ const GROK_RESEARCH_TOOLS = [
   },
 ];
 
-function buildIcpSummary(icpData) {
+function buildCustomInstructionsBlock(icpData) {
+  const customPrompt = (icpData.customPrompt || '').trim();
+  if (!customPrompt) return '';
   return [
+    '',
+    `Additional user instructions: ${customPrompt}`,
+    'Respect these instructions as much as possible while maintaining quality and anti-hallucination rules. Do not invent people, URLs, or activity to satisfy them.',
+  ].join('\n');
+}
+
+function buildIcpSummary(icpData) {
+  const base = [
     `Industry / sector: ${icpData.industry}`,
     `Company size: ${icpData.companySize}`,
     `Target roles: ${(icpData.targetRoles || []).join(', ')}`,
@@ -125,6 +109,8 @@ function buildIcpSummary(icpData) {
       ? `Priority companies: ${icpData.focusCompanies}`
       : 'No specific company list — discover best-fit orgs.',
   ].join('\n');
+  const extra = buildCustomInstructionsBlock(icpData);
+  return extra ? `${base}${extra}` : base;
 }
 
 function slugify(str) {
@@ -141,22 +127,30 @@ function normalizeLead(raw, index = 0) {
   if (Array.isArray(recentActivity)) {
     recentActivity = recentActivity.map((b) => `• ${String(b).replace(/^•\s*/, '')}`).join('\n');
   }
+  const verificationNotes = (
+    raw.verification_notes ||
+    raw.verificationNotes ||
+    ''
+  ).trim();
+  const linkedinUrl = (raw.linkedin_url || raw.linkedinUrl || '').trim();
   return {
     id: raw.id || `sl_${slugify(name)}_${Date.now()}_${Math.random().toString(36).slice(2, 7)}`,
     name,
     full_name: name,
     title: raw.title?.trim() || 'Decision-maker',
     company: raw.company?.trim() || 'Unknown company',
-    linkedinUrl: (raw.linkedin_url || raw.linkedinUrl || '').trim(),
+    linkedinUrl,
     location: raw.location?.trim() || '',
-    email:
-      raw.email?.trim() ||
-      `${slugify(name.split(' ')[0])}.${slugify(name.split(' ').slice(-1)[0])}@${slugify(raw.company)}.pending`,
+    email: raw.email?.trim() || '',
     fitScore,
     fitReasoning: (raw.fit_reasoning || raw.fitReasoning || '').trim(),
     recentActivity: String(recentActivity).trim(),
     suggestedFirstMessage: (raw.suggested_first_message || raw.suggestedFirstMessage || '').trim(),
-    confidence_level: raw.confidence_level || (fitScore >= 8 ? 'high' : fitScore >= 6 ? 'medium' : 'low'),
+    verificationNotes,
+    verification_notes: verificationNotes,
+    confidence_level:
+      raw.confidence_level ||
+      (fitScore >= 8 && linkedinUrl ? 'high' : fitScore >= MIN_FIT_SCORE ? 'medium' : 'low'),
   };
 }
 
@@ -231,10 +225,11 @@ function buildDemoLeads(icpData) {
       name: 'Elena Vasquez',
       title: roles[0] || 'Head of Product Development',
       company: 'NordDrive Systems',
-      linkedinUrl: 'https://www.linkedin.com/in/example-elena-vasquez',
+      linkedinUrl: '',
       location: 'Munich, Germany',
-      email: 'e.vasquez@norddrive.example',
       fitScore: 9,
+      verification_notes:
+        'DEMO: Enable backend Grok research for live web_search + x_keyword_search verification.',
       fitReasoning: `Leads ${industry} product roadmap and publicly discussed rolling out a new technician certification program last month. Company size matches your ICP and she owns training budget alignment with product launches.`,
       recentActivity:
         'Posted last week about implementing a new hands-on training system for EV diagnostics teams — strong buying signal for structured learning solutions.',
@@ -244,10 +239,10 @@ function buildDemoLeads(icpData) {
       name: 'Marcus Chen',
       title: roles[1] || 'Training Manager',
       company: 'Apex Mobility Components',
-      linkedinUrl: 'https://www.linkedin.com/in/example-marcus-chen',
+      linkedinUrl: '',
       location: 'Detroit, USA',
-      email: 'marcus.chen@apexmobility.example',
       fitScore: 8,
+      verification_notes: 'DEMO: Illustrative lead — not from live search.',
       fitReasoning:
         'Active on X discussing supplier quality workshops and L&D tooling gaps. Apex recently expanded manufacturing lines — typical inflection point for standardized training.',
       recentActivity:
@@ -259,10 +254,10 @@ function buildDemoLeads(icpData) {
       name: 'Dr. Amira Okonkwo',
       title: 'Head of Learning & Development',
       company: 'Helix Automotive Tech',
-      linkedinUrl: 'https://www.linkedin.com/in/example-amira-okonkwo',
+      linkedinUrl: '',
       location: 'London, UK',
-      email: 'a.okonkwo@helixauto.example',
       fitScore: 9,
+      verification_notes: 'DEMO: Illustrative lead — not from live search.',
       fitReasoning: `Helix fits geographic focus (${icpData.geography || 'EMEA'}) and pain theme "${icpData.painPoints || 'digital training'}". Amira coordinates global L&D — ideal economic buyer for campaign-in-a-box style programs.`,
       recentActivity:
         'Conference talk recap: "Scaling competency frameworks across 4 sites" — indicates active investment in training infrastructure.',
@@ -273,10 +268,10 @@ function buildDemoLeads(icpData) {
       name: 'James Whitfield',
       title: 'CTO',
       company: 'TorqueLine Industries',
-      linkedinUrl: 'https://www.linkedin.com/in/example-james-whitfield',
+      linkedinUrl: '',
       location: 'Chicago, USA',
-      email: 'j.whitfield@torqueline.example',
-      fitScore: 7,
+      fitScore: 8,
+      verification_notes: 'DEMO: Illustrative lead — not from live search.',
       fitReasoning:
         'Technical executive influence; TorqueLine announced smart factory initiative. CTO less direct for training but sponsors digital twin skilling — good champion path.',
       recentActivity:
@@ -304,21 +299,15 @@ async function findHighQualityLeadsViaBackend(icpData, options = {}) {
     throw new Error('Set VITE_KG_MARKETING_API_URL to your backend (e.g. http://localhost:3001)');
   }
 
-  const progressSteps = [
-    ['searching_companies', 'Finding companies…'],
-    ['finding_decision_makers', 'Researching decision-makers…'],
-    ['analyzing_activity', 'Analyzing recent activity…'],
-    ['evaluating_intent', 'Scoring fit and intent…'],
-  ];
-
   let stepIndex = 0;
+  onProgress?.(PROGRESS_STEPS[0][0], PROGRESS_STEPS[0][1]);
   const tick = setInterval(() => {
-    if (stepIndex < progressSteps.length) {
-      const [key, label] = progressSteps[stepIndex];
+    stepIndex += 1;
+    if (stepIndex < PROGRESS_STEPS.length) {
+      const [key, label] = PROGRESS_STEPS[stepIndex];
       onProgress?.(key, label);
-      stepIndex += 1;
     }
-  }, 3500);
+  }, 4500);
 
   try {
     const res = await fetch(`${base}/api/ai/find-leads`, {
@@ -332,8 +321,11 @@ async function findHighQualityLeadsViaBackend(icpData, options = {}) {
       throw new Error(json.error || `Backend error (${res.status})`);
     }
 
-    const leads = (json.data?.leads || []).map((l, i) => normalizeLead(l, i));
-    onProgress?.('complete', 'Done');
+    const leads = (json.data?.leads || [])
+      .map((l, i) => normalizeLead(l, i))
+      .filter((l) => l.fitScore >= MIN_FIT_SCORE && l.verificationNotes)
+      .slice(0, MAX_LEADS);
+    onProgress?.('complete', 'Research complete');
 
     return {
       leads,
@@ -365,29 +357,25 @@ export async function findHighQualityLeads(icpData, options = {}) {
   const useDemo = !apiKey;
 
   if (useDemo) {
-    onProgress?.('searching_companies', 'Searching companies…');
-    await delay(800);
-    onProgress?.('finding_decision_makers', 'Finding decision-makers…');
-    await delay(900);
-    onProgress?.('analyzing_activity', 'Analyzing profiles & posts…');
-    await delay(1000);
-    onProgress?.('evaluating_intent', 'Evaluating intent & fit…');
-    await delay(700);
-    onProgress?.('complete', 'Done');
+    for (const [key, label] of PROGRESS_STEPS) {
+      onProgress?.(key, label);
+      await delay(700);
+    }
+    onProgress?.('complete', 'Research complete');
     return {
-      leads: buildDemoLeads(icpData).slice(0, 6),
-      meta: { source: 'demo', message: 'Set VITE_GROK_API_KEY for live Grok research.' },
+      leads: buildDemoLeads(icpData).slice(0, MAX_LEADS),
+      meta: {
+        source: 'demo',
+        customPromptApplied: Boolean(icpData.customPrompt?.trim()),
+        message: 'Set VITE_KG_MARKETING_API_URL + GROK_API_KEY_LUMEN for verified live research.',
+      },
     };
   }
 
-  const systemPrompt = `You are an elite B2B lead researcher for KG Marketing (IoT/automotive training campaigns).
-QUALITY over quantity: return only 4-8 decision-makers with strong evidence of intent.
-Use web_search for companies/news/LinkedIn context and x_keyword_search for recent posts.
-Reason explicitly: e.g. "Posted about implementing new training systems last week → high intent."
-Output must match JSON schema with fitScore 1-10 (only 7+ if real signals).`;
+  const systemPrompt = `You are an extremely rigorous and honest B2B lead researcher. You refuse to hallucinate names, profiles, or activity. If evidence is weak, return fewer results. Accuracy over volume. Maximum ${MAX_LEADS} leads.`;
 
   // Phase 1 — companies
-  onProgress?.('searching_companies', 'Searching companies…');
+  onProgress?.('searching_companies', 'Finding relevant companies…');
   const phase1 = await callGrok(
     [
       { role: 'system', content: systemPrompt },
@@ -408,7 +396,7 @@ Output must match JSON schema with fitScore 1-10 (only 7+ if real signals).`;
   }
 
   // Phase 2 — people
-  onProgress?.('finding_decision_makers', 'Finding decision-makers…');
+  onProgress?.('finding_decision_makers', 'Researching decision-makers…');
   const phase2 = await callGrok(
     [
       { role: 'system', content: systemPrompt },
@@ -429,14 +417,14 @@ Output must match JSON schema with fitScore 1-10 (only 7+ if real signals).`;
 
   // Phase 3 — activity + scoring
   onProgress?.('analyzing_activity', 'Analyzing recent activity…');
-  onProgress?.('evaluating_intent', 'Evaluating intent & fit…');
+  onProgress?.('evaluating_fit', 'Evaluating fit…');
 
   const phase3 = await callGrok(
     [
       { role: 'system', content: systemPrompt },
       {
         role: 'user',
-        content: `PHASE 3 — Analyze recent activity (posts, talks, hiring, training initiatives) for each candidate. Score fit 1-10 with reasoning.\nCandidates: ${JSON.stringify(candidates.slice(0, 12))}\nPain points: ${icpData.painPoints}\nReturn ONLY JSON matching: ${JSON.stringify(LEAD_OUTPUT_SCHEMA)}`,
+        content: `PHASE 3 — Analyze recent activity (3–6 months). Score fit 1-10. Include verification_notes citing sources. Only ${MIN_FIT_SCORE}+.\nCandidates: ${JSON.stringify(candidates.slice(0, 12))}\nPain points: ${icpData.painPoints}\nReturn JSON: { "leads": [{ "full_name", "title", "company", "linkedin_url", "location", "fit_score", "fit_reasoning", "recent_activity", "suggested_first_message", "verification_notes", "confidence_level" }] }`,
       },
     ],
     { tools: true, jsonMode: true }
@@ -448,9 +436,9 @@ Output must match JSON schema with fitScore 1-10 (only 7+ if real signals).`;
   }
 
   leads = leads
-    .filter((l) => l.fitScore >= 6)
+    .filter((l) => l.fitScore >= MIN_FIT_SCORE && l.verificationNotes)
     .sort((a, b) => b.fitScore - a.fitScore)
-    .slice(0, 8);
+    .slice(0, MAX_LEADS);
 
   onProgress?.('complete', 'Done');
 
@@ -458,6 +446,7 @@ Output must match JSON schema with fitScore 1-10 (only 7+ if real signals).`;
     leads,
     meta: {
       source: 'grok',
+      customPromptApplied: Boolean(icpData.customPrompt?.trim()),
       companiesResearched: companies.length,
       candidatesReviewed: candidates.length,
     },

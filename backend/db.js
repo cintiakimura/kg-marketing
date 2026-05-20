@@ -62,6 +62,8 @@ CREATE TABLE IF NOT EXISTS leads (
   followup_history JSONB NOT NULL DEFAULT '[]'::jsonb,
   fit_score SMALLINT,
   source VARCHAR(100) DEFAULT 'manual',
+  next_followup_date DATE,
+  last_contact_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
@@ -112,6 +114,10 @@ END $$;
 /** Create tables if they do not exist. */
 export async function initDatabase() {
   await pool.query(SCHEMA_SQL);
+  await pool.query(`
+    ALTER TABLE leads ADD COLUMN IF NOT EXISTS next_followup_date DATE;
+    ALTER TABLE leads ADD COLUMN IF NOT EXISTS last_contact_at TIMESTAMPTZ;
+  `);
   console.log('[db] Tables ready');
 }
 
@@ -141,6 +147,8 @@ export function formatLead(row) {
     followup_history: row.followup_history || [],
     fit_score: row.fit_score,
     source: row.source,
+    next_followup_date: row.next_followup_date,
+    last_contact_at: row.last_contact_at,
     created_at: row.created_at,
     updated_at: row.updated_at,
     created_date: row.created_at,
