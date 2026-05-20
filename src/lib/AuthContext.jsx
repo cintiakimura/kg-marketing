@@ -119,12 +119,12 @@ export function useAuthNavigate() {
 
   const loginAndGoToDashboard = async (email, password) => {
     await login(email, password);
-    navigate('/Leads', { replace: true });
+    navigate('/leads', { replace: true });
   };
 
   const signupAndGoToDashboard = async (email, password, fullName) => {
     await signup(email, password, fullName);
-    navigate('/Leads', { replace: true });
+    navigate('/leads', { replace: true });
   };
 
   const logoutAndGoHome = async () => {

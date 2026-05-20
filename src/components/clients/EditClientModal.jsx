@@ -65,7 +65,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
       <div className="bg-[#2a2a2a] rounded-xl max-w-md w-full">
         <div className="border-b border-[#333333] p-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Edit Client</h2>
+          <h2 className="text-xl font-medium text-white">Edit Client</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
@@ -151,7 +151,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             <Button
               onClick={handleSubmit}
               disabled={isSaving || !formData.name.trim()}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg" className="flex-1"
             >
               <Save className="w-4 h-4 mr-2" />
               {isSaving ? 'Saving...' : 'Save Changes'}

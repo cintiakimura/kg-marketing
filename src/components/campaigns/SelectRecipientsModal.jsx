@@ -72,7 +72,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
       <div className="bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-hidden flex flex-col">
         <div className="border-b border-[#333333] p-6 flex items-center justify-between">
           <div>
-            <h2 className="text-xl font-bold text-white">Select Recipients</h2>
+            <h2 className="text-xl font-medium text-white">Select Recipients</h2>
             <p className="text-gray-400 text-sm mt-1">
               {selectedLeads.length} leads + {manualEmails.length} manual recipients
             </p>
@@ -95,7 +95,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
               />
               <Button
                 onClick={addManualEmail}
-                className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+                variant="kg"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Add
@@ -196,7 +196,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={handleConfirm}
               disabled={(selectedLeads.length === 0 && manualEmails.length === 0) || isLaunching}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg" className="flex-1"
             >
               {useAIPersonalization ? <Sparkles className="w-4 h-4 mr-2" /> : <Send className="w-4 h-4 mr-2" />}
               {isLaunching ? 'Launching...' : `Launch to ${selectedLeads.length + manualEmails.length} Recipients`}

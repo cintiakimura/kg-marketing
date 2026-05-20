@@ -1,91 +1,152 @@
 import { Campaign } from '@/api/entities';
-import { invokeLLM, uploadFile } from '@/api/integrations';
+import {
+  generateCampaignWithGrok,
+  generateCampaignEmailCopy,
+} from '@/api/campaignAi';
+import { uploadFile } from '@/api/integrations';
 import React, { useState } from 'react';
-import { X, Sparkles, Image as ImageIcon, Send, Upload, Trash2 } from 'lucide-react';
+import {
+  X,
+  Sparkles,
+  Image as ImageIcon,
+  Send,
+  Upload,
+  Trash2,
+  Loader2,
+  Wand2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import FollowupSequenceEditor from './FollowupSequenceEditor';
-import { useQuery } from '@tanstack/react-query';
+import { useToast } from '@/components/ui/use-toast';
+
+const EMPTY_FORM = {
+  name: '',
+  language: 'English',
+  target_audience: '',
+  email_subject: '',
+  email_body: '',
+  media_type: '',
+  media_url: '',
+  followup_sequences: [],
+};
 
 export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
-  const [formData, setFormData] = useState({
-    name: '',
-    language: 'English',
-    target_audience: '',
-    email_subject: '',
-    email_body: '',
-    media_type: '',
-    media_url: '',
-    followup_sequences: []
-  });
+  const { toast } = useToast();
+  const [formData, setFormData] = useState(EMPTY_FORM);
   const [videoUrl, setVideoUrl] = useState('');
   const [isGeneratingCopy, setIsGeneratingCopy] = useState(false);
+  const [isGeneratingFull, setIsGeneratingFull] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
-
-  const { data: campaigns = [] } = useQuery({
-    queryKey: ['campaigns'],
-    queryFn: () => Campaign.list()
-  });
+  const [showGrokBrief, setShowGrokBrief] = useState(false);
+  const [grokBrief, setGrokBrief] = useState('');
+  const [subjectVariants, setSubjectVariants] = useState([]);
+  const [keyMessages, setKeyMessages] = useState([]);
+  const [videoIdeas, setVideoIdeas] = useState([]);
+  const [grokRationale, setGrokRationale] = useState('');
+  const [grokSource, setGrokSource] = useState(null);
 
   if (!isOpen) return null;
 
-  const handleGenerateCopy = async () => {
-    if (!formData.name || !formData.target_audience) {
-      alert('Please fill in campaign name and target audience first');
+  const applyCampaignDraft = (campaign, meta) => {
+    setFormData((prev) => ({
+      ...prev,
+      name: campaign.name || prev.name,
+      language: campaign.language || prev.language,
+      target_audience: campaign.target_audience || prev.target_audience,
+      email_subject: campaign.email_subject || prev.email_subject,
+      email_body: campaign.email_body || prev.email_body,
+    }));
+    setSubjectVariants(campaign.email_subjects || []);
+    setKeyMessages(campaign.key_messages || []);
+    setVideoIdeas(campaign.video_url_suggestions || []);
+    setGrokRationale(campaign.rationale || '');
+    setGrokSource(meta?.source || null);
+    if (campaign.suggested_video_url) {
+      setVideoUrl(campaign.suggested_video_url);
+    }
+  };
+
+  const handleGenerateFullCampaign = async () => {
+    const brief = grokBrief.trim();
+    if (!brief) {
+      toast({
+        title: 'Describe your campaign',
+        description: 'e.g. "Q1 2025 IoT Training Launch for automotive industry"',
+        variant: 'destructive',
+      });
       return;
     }
-    
+
+    setIsGeneratingFull(true);
+    try {
+      const { campaign, meta } = await generateCampaignWithGrok({
+        brief_description: brief,
+        language: formData.language,
+      });
+      applyCampaignDraft(campaign, meta);
+      setShowGrokBrief(false);
+      toast({
+        title: meta?.source === 'grok' ? 'Campaign generated with Grok' : 'Demo campaign draft ready',
+        description: 'Review and edit all fields before saving.',
+      });
+    } catch (err) {
+      toast({
+        title: 'Grok generation failed',
+        description: err.message,
+        variant: 'destructive',
+      });
+    } finally {
+      setIsGeneratingFull(false);
+    }
+  };
+
+  const handleGenerateCopy = async () => {
+    if (!formData.name?.trim() || !formData.target_audience?.trim()) {
+      toast({
+        title: 'Name and audience required',
+        description: 'Fill in campaign name and target audience first.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
     setIsGeneratingCopy(true);
     try {
-      const prompt = `Create a cold email for KG PROTECH. Product: Automatic Fault Simulator for vehicles via internet, enabling remote diagnostic training with 60% cost savings and reduced setup time.
-
-      Campaign Name: ${formData.name}
-      Target Audience: ${formData.target_audience}
-      Language: ${formData.language}
-
-      MANDATORY RULES (NEVER SKIP):
-      1. EXTREMELY concise (2-3 short paragraphs maximum)
-      2. Get straight to the point in first sentence
-      3. Ask for a 15-minute webinar (not a sales pitch)
-      4. Emphasize: 60% cost savings and reduced setup time
-      5. Include this EXACT call-to-action at the end of email body (before signature):
-      "📅 Schedule your 15-minute webinar: https://calendar.google.com/calendar/appointments/schedules/AcZssZ0H5P8VL5P_7YDKGZmLJZBQGgKpB5mTl8jC8yz8dXQr0YJZQ0?gv=true"
-      6. Professional, direct tone
-
-      End with this exact signature:
-      Best regards,
-      Cintia Kimura
-      Founder and COO
-      cintia@kgprotech.com
-      Tel: +33 07 68 62 07 04
-
-      Return the result in the following JSON format:
-      {
-      "subject": "email subject line here",
-      "body": "email body content here with proper formatting"
-      }`;
-
-      const result = await invokeLLM({
-        prompt: prompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            subject: { type: "string" },
-            body: { type: "string" }
-          }
-        }
+      const { campaign, meta } = await generateCampaignEmailCopy({
+        name: formData.name,
+        target_audience: formData.target_audience,
+        language: formData.language,
       });
-
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        email_subject: result.subject,
-        email_body: result.body
+        email_subject: campaign.email_subject || prev.email_subject,
+        email_body: campaign.email_body || prev.email_body,
       }));
-    } catch (error) {
-      alert('Failed to generate copy. Please try again.');
+      setSubjectVariants(campaign.email_subjects || []);
+      setGrokSource(meta?.source || null);
+      toast({
+        title: 'Email copy updated',
+        description:
+          meta?.source === 'grok'
+            ? 'Pick a subject variant below or edit the body.'
+            : 'Demo copy — enable GROK_API_KEY_LUMEN for live Grok.',
+      });
+    } catch (err) {
+      toast({
+        title: 'Copy generation failed',
+        description: err.message,
+        variant: 'destructive',
+      });
     } finally {
       setIsGeneratingCopy(false);
     }
@@ -94,81 +155,173 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
   const handleMediaUpload = async (e, type) => {
     const file = e.target.files[0];
     if (!file) return;
-    
+
     setIsUploading(true);
     try {
       const { file_url } = await uploadFile({ file });
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         media_type: type,
-        media_url: file_url
+        media_url: file_url,
       }));
-    } catch (error) {
-      alert('Failed to upload file. Please try again.');
+    } catch {
+      toast({ title: 'Upload failed', variant: 'destructive' });
     } finally {
       setIsUploading(false);
     }
   };
 
   const handleDeleteMedia = () => {
-    setFormData(prev => ({
-      ...prev,
-      media_type: '',
-      media_url: ''
-    }));
+    setFormData((prev) => ({ ...prev, media_type: '', media_url: '' }));
     setVideoUrl('');
   };
 
   const handleAddVideoUrl = () => {
     if (!videoUrl.trim()) {
-      alert('Please enter a video URL');
+      toast({ title: 'Enter a video URL', variant: 'destructive' });
       return;
     }
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       media_type: 'video_url',
-      media_url: videoUrl
+      media_url: videoUrl,
     }));
   };
 
   const handleSubmit = async () => {
     try {
-      await Campaign.create({
-        ...formData,
-        status: 'draft'
-      });
+      await Campaign.create({ ...formData, status: 'draft' });
       onSuccess();
-      onClose();
-    } catch (error) {
-      alert('Failed to create campaign');
+      handleClose();
+      toast({ title: 'Campaign created' });
+    } catch {
+      toast({ title: 'Failed to create campaign', variant: 'destructive' });
     }
+  };
+
+  const handleClose = () => {
+    setFormData(EMPTY_FORM);
+    setVideoUrl('');
+    setShowGrokBrief(false);
+    setGrokBrief('');
+    setSubjectVariants([]);
+    setKeyMessages([]);
+    setVideoIdeas([]);
+    setGrokRationale('');
+    setGrokSource(null);
+    onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
       <div className="bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
-        <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Create New Campaign</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
+        <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between z-10">
+          <h2 className="text-xl font-medium text-white">Create New Campaign</h2>
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-white transition-colors"
+          >
             <X className="w-6 h-6" />
           </button>
         </div>
 
         <div className="p-6 space-y-6">
+          {/* Grok full campaign */}
+          <div className="rounded-xl border border-[#00c600]/40 bg-[#00c600]/5 p-4 space-y-3">
+            <p className="text-sm text-gray-300">
+              Describe your campaign in one sentence — Grok will draft name, audience, email,
+              and video ideas (KG ProTech on-brand, no invented stats).
+            </p>
+            {!showGrokBrief ? (
+              <Button
+                type="button"
+                onClick={() => setShowGrokBrief(true)}
+                disabled={isGeneratingFull}
+                variant="kg"
+                className="w-full"
+              >
+                {isGeneratingFull ? (
+                  <>
+                    <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                    Generating with Grok…
+                  </>
+                ) : (
+                  <>
+                    <Wand2 className="w-5 h-5 mr-2" />
+                    ✨ Generate Campaign with Grok
+                  </>
+                )}
+              </Button>
+            ) : (
+              <div className="space-y-3">
+                <Textarea
+                  value={grokBrief}
+                  onChange={(e) => setGrokBrief(e.target.value)}
+                  placeholder='e.g. "Q1 2025 IoT Training Launch for automotive OEM training centers"'
+                  rows={3}
+                  className="bg-[#333333] border-[#444444] text-white"
+                  autoFocus
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    onClick={handleGenerateFullCampaign}
+                    disabled={isGeneratingFull || !grokBrief.trim()}
+                    variant="kg" className="flex-1"
+                  >
+                    {isGeneratingFull ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Generating…
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-4 h-4 mr-2" />
+                        Generate
+                      </>
+                    )}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setShowGrokBrief(false)}
+                    className="border-[#444444] text-gray-300"
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </div>
+            )}
+            {grokSource && (
+              <p className="text-sm text-gray-400 leading-relaxed">
+                Source: {grokSource === 'grok' ? 'Grok AI' : 'Demo (set GROK_API_KEY_LUMEN)'}
+              </p>
+            )}
+          </div>
+
+          {grokRationale && (
+            <p className="text-sm text-gray-400 italic border-l-2 border-[#00c600] pl-3">
+              {grokRationale}
+            </p>
+          )}
+
           <div>
             <Label className="text-gray-300 mb-2">Campaign Name</Label>
             <Input
               value={formData.name}
-              onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+              onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
               placeholder="Q1 2025 IoT Training Launch"
               className="bg-[#333333] border-[#444444] text-white"
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <Label className="text-gray-300 mb-2">Language</Label>
-              <Select value={formData.language} onValueChange={(val) => setFormData(prev => ({ ...prev, language: val }))}>
+              <Select
+                value={formData.language}
+                onValueChange={(val) => setFormData((prev) => ({ ...prev, language: val }))}
+              >
                 <SelectTrigger className="bg-[#333333] border-[#444444] text-white">
                   <SelectValue />
                 </SelectTrigger>
@@ -185,35 +338,42 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
               <Label className="text-gray-300 mb-2">Target Audience</Label>
               <Input
                 value={formData.target_audience}
-                onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, target_audience: e.target.value }))
+                }
                 placeholder="Automotive engineers, fleet managers"
                 className="bg-[#333333] border-[#444444] text-white"
               />
             </div>
-            </div>
+          </div>
 
-            <div className="flex gap-3 flex-wrap">
+          <div className="flex gap-3 flex-wrap">
             <Button
-            onClick={handleGenerateCopy}
-            disabled={isGeneratingCopy}
-            className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              type="button"
+              onClick={handleGenerateCopy}
+              disabled={isGeneratingCopy || isGeneratingFull}
+              variant="kgOutline"
             >
-            {isGeneratingCopy ? (
-            <>Generating Copy...</>
-            ) : (
-            <>
-              <Sparkles className="w-4 h-4 mr-2" />
-              Generate Copy with AI
-            </>
-            )}
+              {isGeneratingCopy ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4 mr-2" />
+                  Regenerate Email with Grok
+                </>
+              )}
             </Button>
             <Button
-              onClick={() => document.getElementById('image-upload').click()}
+              type="button"
+              onClick={() => document.getElementById('image-upload')?.click()}
               disabled={isUploading}
               className="bg-[#333333] hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
-              {isUploading ? 'Uploading...' : 'Upload Image'}
+              {isUploading ? 'Uploading…' : 'Upload Image'}
             </Button>
             <input
               type="file"
@@ -224,12 +384,13 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
               disabled={isUploading}
             />
             <Button
-              onClick={() => document.getElementById('presentation-upload').click()}
+              type="button"
+              onClick={() => document.getElementById('presentation-upload')?.click()}
               disabled={isUploading}
               className="bg-[#333333] hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
-              {isUploading ? 'Uploading...' : 'Upload Presentation'}
+              Presentation
             </Button>
             <input
               type="file"
@@ -241,11 +402,37 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
+          {subjectVariants.length > 0 && (
+            <div>
+              <Label className="text-gray-300 mb-2">Subject line options (Grok)</Label>
+              <div className="flex flex-col gap-2">
+                {subjectVariants.map((subj, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={() =>
+                      setFormData((prev) => ({ ...prev, email_subject: subj }))
+                    }
+                    className={`text-left text-sm px-3 py-2 rounded-lg border transition-colors ${
+                      formData.email_subject === subj
+                        ? 'border-[#00c600] bg-[#00c600]/10 text-[#00c600]'
+                        : 'border-[#444444] text-gray-300 hover:border-[#00c600]/50'
+                    }`}
+                  >
+                    {subj}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
           <div>
             <Label className="text-gray-300 mb-2">Email Subject</Label>
             <Input
               value={formData.email_subject}
-              onChange={(e) => setFormData(prev => ({ ...prev, email_subject: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email_subject: e.target.value }))
+              }
               placeholder="Subject line"
               className="bg-[#333333] border-[#444444] text-white"
             />
@@ -255,12 +442,39 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
             <Label className="text-gray-300 mb-2">Email Body</Label>
             <Textarea
               value={formData.email_body}
-              onChange={(e) => setFormData(prev => ({ ...prev, email_body: e.target.value }))}
+              onChange={(e) =>
+                setFormData((prev) => ({ ...prev, email_body: e.target.value }))
+              }
               placeholder="Email content"
-              rows={8}
-              className="bg-[#333333] border-[#444444] text-white"
+              rows={10}
+              className="bg-[#333333] border-[#444444] text-white font-mono text-sm"
             />
           </div>
+
+          {(keyMessages.length > 0 || videoIdeas.length > 0) && (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              {keyMessages.length > 0 && (
+                <div className="bg-[#333333] rounded-lg p-4">
+                  <Label className="text-gray-400 text-xs mb-2 block">Key messages</Label>
+                  <ul className="text-sm text-gray-300 space-y-1 list-disc list-inside">
+                    {keyMessages.map((m, i) => (
+                      <li key={i}>{m}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {videoIdeas.length > 0 && (
+                <div className="bg-[#333333] rounded-lg p-4">
+                  <Label className="text-gray-400 text-xs mb-2 block">Video ideas</Label>
+                  <ul className="text-sm text-gray-300 space-y-1 list-disc list-inside">
+                    {videoIdeas.map((v, i) => (
+                      <li key={i}>{v}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
 
           <div>
             <Label className="text-gray-300 mb-2">Video URL (YouTube, Vimeo, etc.)</Label>
@@ -272,6 +486,7 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
                 className="bg-[#333333] border-[#444444] text-white"
               />
               <Button
+                type="button"
                 onClick={handleAddVideoUrl}
                 className="bg-[#333333] hover:bg-[#444444] text-white"
               >
@@ -284,38 +499,52 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <Label className="text-gray-300">
-                  Campaign {formData.media_type === 'image' ? 'Image' : 
-                           formData.media_type === 'presentation' ? 'Presentation' : 'Video'}
+                  Campaign{' '}
+                  {formData.media_type === 'image'
+                    ? 'Image'
+                    : formData.media_type === 'presentation'
+                      ? 'Presentation'
+                      : 'Video'}
                 </Label>
                 <Button
+                  type="button"
                   onClick={handleDeleteMedia}
                   size="sm"
                   variant="ghost"
-                  className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                  className="text-red-400 hover:text-red-300"
                 >
                   <Trash2 className="w-4 h-4 mr-1" />
                   Delete
                 </Button>
               </div>
               {formData.media_type === 'image' && (
-                <img 
-                  src={formData.media_url} 
-                  alt="Campaign" 
+                <img
+                  src={formData.media_url}
+                  alt="Campaign"
                   className="w-full rounded-lg border-2 border-[#00c600]"
                 />
               )}
               {formData.media_type === 'presentation' && (
                 <div className="p-4 bg-[#333333] rounded-lg border-2 border-[#00c600] text-center">
                   <p className="text-white">📄 Presentation attached</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-[#00c600] text-sm">
+                  <a
+                    href={formData.media_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#00c600] text-sm"
+                  >
                     View file
                   </a>
                 </div>
               )}
               {formData.media_type === 'video_url' && (
                 <div className="p-4 bg-[#333333] rounded-lg border-2 border-[#00c600]">
-                  <p className="text-white mb-2">🎥 Video URL:</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-[#00c600] text-sm break-all">
+                  <a
+                    href={formData.media_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-[#00c600] text-sm break-all"
+                  >
                     {formData.media_url}
                   </a>
                 </div>
@@ -326,7 +555,9 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
           <div className="border-t border-[#333333] pt-6">
             <FollowupSequenceEditor
               sequences={formData.followup_sequences}
-              onChange={(sequences) => setFormData(prev => ({ ...prev, followup_sequences: sequences }))}
+              onChange={(sequences) =>
+                setFormData((prev) => ({ ...prev, followup_sequences: sequences }))
+              }
               targetAudience={formData.target_audience}
               language={formData.language}
             />
@@ -334,15 +565,17 @@ export default function CreateCampaignModal({ isOpen, onClose, onSuccess }) {
 
           <div className="flex gap-3 pt-4 border-t border-[#333333]">
             <Button
+              type="button"
               onClick={handleSubmit}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
-              disabled={!formData.name}
+              variant="kg" className="flex-1"
+              disabled={!formData.name?.trim()}
             >
               <Send className="w-4 h-4 mr-2" />
               Create Campaign
             </Button>
             <Button
-              onClick={onClose}
+              type="button"
+              onClick={handleClose}
               variant="outline"
               className="border-[#444444] text-gray-300 hover:bg-[#333333]"
             >

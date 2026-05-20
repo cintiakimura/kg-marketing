@@ -75,7 +75,7 @@ export default function Webmail() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Webmail</h1>
+          <h1 className="text-3xl font-medium text-white mb-2">Webmail</h1>
           <p className="text-gray-400">Synced with info@kgprotech.com</p>
         </div>
         <div className="flex gap-3">
@@ -88,7 +88,7 @@ export default function Webmail() {
           </Button>
           <Button
             onClick={() => setIsComposeOpen(true)}
-            className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium">
+            variant="kg">
             <Plus className="w-5 h-5 mr-2" />
             Compose
           </Button>
@@ -141,7 +141,7 @@ export default function Webmail() {
         <div className="col-span-12 lg:col-span-4">
           <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] overflow-hidden">
             <div className="p-4 border-b border-[#333333]">
-              <h2 className="text-lg font-bold text-white">
+              <h2 className="text-lg font-medium text-white">
                 {folders.find((f) => f.id === activeFolder)?.label}
               </h2>
             </div>
@@ -164,14 +164,14 @@ export default function Webmail() {
                       <p className={`text-sm ${!email.is_read ? 'text-white font-bold' : 'text-gray-300'}`}>
                         {activeFolder === 'sent' ? email.to_email : email.from_email}
                       </p>
-                      <span className="text-xs text-gray-500">
+                      <span className="text-sm text-gray-400">
                         {email.date ? format(new Date(email.date), 'MMM dd') : format(new Date(email.created_date), 'MMM dd')}
                       </span>
                     </div>
                     <p className={`text-sm mb-1 ${!email.is_read ? 'text-white font-semibold' : 'text-gray-400'}`}>
                       {email.subject}
                     </p>
-                    <p className="text-xs text-gray-500 line-clamp-2">
+                    <p className="text-sm text-gray-400 line-clamp-2">
                       {email.body}
                     </p>
                   </button>
@@ -186,7 +186,7 @@ export default function Webmail() {
           {selectedEmail ?
           <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6">
               <div className="mb-6">
-                <h2 className="text-2xl font-bold text-white mb-4">{selectedEmail.subject}</h2>
+                <h2 className="text-2xl font-medium text-white mb-4">{selectedEmail.subject}</h2>
                 <div className="space-y-2 text-sm">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">From:</span>
@@ -225,7 +225,7 @@ export default function Webmail() {
       <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
           <div className="bg-[#2a2a2a] rounded-xl max-w-2xl w-full">
             <div className="border-b border-[#333333] p-6 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">New Message</h2>
+              <h2 className="text-xl font-medium text-white">New Message</h2>
               <button onClick={() => setIsComposeOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-6 h-6" />
               </button>
@@ -267,7 +267,7 @@ export default function Webmail() {
                 <Button
                 onClick={() => sendEmailMutation.mutate(composeData)}
                 disabled={!composeData.to_email || !composeData.subject || sendEmailMutation.isPending}
-                className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium">
+                variant="kg" className="flex-1">
 
                   <Send className="w-4 h-4 mr-2" />
                   Send Email

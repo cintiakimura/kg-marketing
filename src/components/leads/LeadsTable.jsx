@@ -30,7 +30,7 @@ function notesPreview(notes) {
 }
 
 function fitBadgeClass(score) {
-  if (score >= 9) return 'bg-[#00c600] text-[#212121]';
+  if (score >= 9) return 'bg-[#00c600] text-white font-semibold';
   if (score >= 7) return 'bg-emerald-600/90 text-white';
   return 'bg-gray-600 text-white';
 }

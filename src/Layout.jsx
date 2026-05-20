@@ -1,5 +1,5 @@
 import { useAuth } from '@/lib/AuthContext';
-import React from 'react';
+import { NavLink } from 'react-router-dom';
 import {
   LayoutDashboard,
   Building2,
@@ -9,10 +9,10 @@ import {
 } from 'lucide-react';
 
 const tabs = [
-  { id: 'Dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { id: 'Leads', label: 'Leads', icon: Target },
-  { id: 'Campaigns', label: 'Campaigns', icon: Megaphone },
-  { id: 'Clients', label: 'Clients', icon: Building2 },
+  { path: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { path: 'leads', label: 'Leads', icon: Target },
+  { path: 'campaigns', label: 'Campaigns', icon: Megaphone },
+  { path: 'clients', label: 'Clients', icon: Building2 },
 ];
 
 export default function Layout({ children, currentPageName }) {
@@ -58,7 +58,7 @@ export default function Layout({ children, currentPageName }) {
       <header className="bg-[#2a2a2a] border-b border-[#333333] sticky top-0 z-50">
         <div className="max-w-[1600px] mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
+            <NavLink to="/dashboard" className="flex items-center gap-3 hover:opacity-90">
               <img
                 src="/kg-logo.png"
                 alt="KG"
@@ -75,8 +75,9 @@ export default function Layout({ children, currentPageName }) {
                 <h1 className="text-white font-bold text-xl">KG Marketing</h1>
                 <p className="text-gray-400 text-xs">Internal workspace</p>
               </div>
-            </div>
+            </NavLink>
             <button
+              type="button"
               onClick={() => logout()}
               className="flex items-center gap-2 px-4 py-2 text-gray-300 hover:text-[#00c600] transition-colors"
             >
@@ -90,27 +91,28 @@ export default function Layout({ children, currentPageName }) {
           <div className="flex gap-1 overflow-x-auto scrollbar-custom">
             {tabs.map((tab) => {
               const Icon = tab.icon;
-              const isActive = currentPageName === tab.id;
               return (
-                <a
-                  key={tab.id}
-                  href={`/${tab.id}`}
-                  className={`flex items-center gap-2 px-6 py-3 border-b-2 transition-all whitespace-nowrap ${
-                    isActive
-                      ? 'border-[#00c600] text-[#00c600]'
-                      : 'border-transparent text-gray-400 hover:text-gray-200'
-                  }`}
+                <NavLink
+                  key={tab.path}
+                  to={`/${tab.path}`}
+                  className={({ isActive }) =>
+                    `flex items-center gap-2 px-6 py-3 border-b-2 transition-all whitespace-nowrap ${
+                      isActive || currentPageName === tab.path
+                        ? 'border-[#00c600] text-[#00c600]'
+                        : 'border-transparent text-gray-400 hover:text-gray-200'
+                    }`
+                  }
                 >
                   <Icon className="w-4 h-4" />
                   <span className="text-sm font-medium">{tab.label}</span>
-                </a>
+                </NavLink>
               );
             })}
           </div>
         </nav>
       </header>
 
-      <main className="max-w-[1600px] mx-auto px-6 py-8">{children}</main>
+      <main className="max-w-[1600px] mx-auto px-6 md:px-8 py-8 md:py-10">{children}</main>
     </div>
   );
 }

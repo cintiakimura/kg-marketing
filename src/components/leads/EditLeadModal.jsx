@@ -64,7 +64,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
       <div className="bg-[#2a2a2a] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
         <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Edit Lead</h2>
+          <h2 className="text-xl font-medium text-white">Edit Lead</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
@@ -163,7 +163,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
             <Button
               type="submit"
               disabled={isSaving}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg" className="flex-1"
             >
               <Save className="w-4 h-4 mr-2" />
               {isSaving ? 'Saving...' : 'Save Changes'}

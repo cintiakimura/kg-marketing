@@ -69,7 +69,34 @@ ANTI-HALLUCINATION & PRECISION RULES:
 - confidence_level: "high" (LinkedIn + 2+ activity signals) | "medium" (one strong signal) | "low" (insufficient — do not include lead).
 - Return valid JSON only when asked.`;
 
-async function callGrok(messages, { jsonMode = true, tools = true, temperature = 0.25 } = {}) {
+const WEBINAR_CTA =
+  '📅 Schedule your 15-minute webinar: https://calendar.google.com/calendar/appointments/schedules/AcZssZ0H5P8VL5P_7YDKGZmLJZBQGgKpB5mTl8jC8yz8dXQr0YJZQ0?gv=true';
+
+const KG_SIGNATURE = `Best regards,
+Cintia Kimura
+Founder and COO
+cintia@kgprotech.com
+Tel: +33 07 68 62 07 04`;
+
+const CAMPAIGN_SYSTEM_PROMPT = `You are a senior B2B marketing strategist and copywriter for KG ProTech (industrial IoT, automotive diagnostic training, remote learning).
+
+PRODUCT FACTS YOU MAY USE (do not invent others):
+- Automatic Fault Simulator for vehicles over the internet
+- Enables remote diagnostic training for technicians and engineers
+- ~60% cost savings vs traditional setups
+- Reduced setup time for training labs
+- Buyers: automotive OEMs, fleets, training centers, engineering teams
+
+ANTI-HALLUCINATION & QUALITY RULES (same rigor as lead research):
+- Do NOT invent customer names, logos, case studies, awards, or statistics beyond the facts above.
+- Do NOT fabricate URLs except the webinar CTA link provided in the user message.
+- Do NOT claim partnerships or certifications unless the user brief explicitly states them.
+- Write concise, professional, persuasive industrial/tech B2B copy — no hype spam.
+- Email body: 2–3 short paragraphs max, direct opening, webinar CTA (not a hard sales pitch).
+- Always end email_body with the exact signature block provided in the user message.
+- Return valid JSON only when asked. No markdown fences.`;
+
+async function callGrok(messages, { jsonMode = true, tools = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
   const apiKey = process.env.GROK_API_KEY_LUMEN;
   if (!apiKey) {
     const err = new Error('GROK_API_KEY_LUMEN is not set');
@@ -79,7 +106,7 @@ async function callGrok(messages, { jsonMode = true, tools = true, temperature =
 
   const body = {
     model: GROK_MODEL(),
-    messages: [{ role: 'system', content: SYSTEM_PROMPT }, ...messages],
+    messages: [{ role: 'system', content: systemPrompt }, ...messages],
     temperature,
     max_tokens: 8192,
   };
@@ -239,7 +266,9 @@ function normalizeLead(raw, index, { demo = false } = {}) {
 function buildDemoLeads(icp) {
   const industry = icp.industry || 'automotive technology';
   const geo = icp.geography || 'Europe';
-  const roles = icp.targetRoles?.length ? icp.targetRoles : ['Head of Product', 'L&D Manager'];
+  const roles = icp.targetRoles?.length
+    ? icp.targetRoles
+    : ['Training Manager', 'Aftersales Training Manager', 'Technical Training Manager'];
   const pain = icp.painPoints || 'technician training and onboarding';
 
   const raw = [
@@ -441,6 +470,184 @@ router.post('/find-leads', async (req, res, next) => {
   }
 });
 
+function normalizeCampaignGeneration(parsed, { language = 'English' } = {}) {
+  const subjects = Array.isArray(parsed.email_subjects)
+    ? parsed.email_subjects.filter(Boolean).slice(0, 3)
+    : [];
+  const primary =
+    parsed.email_subject?.trim() ||
+    subjects[0] ||
+    'KG ProTech — Remote diagnostic training for your team';
+
+  return {
+    name: parsed.name?.trim() || 'New Campaign',
+    target_audience: parsed.target_audience?.trim() || '',
+    language: parsed.language || language,
+    email_subjects: subjects.length ? subjects : [primary],
+    email_subject: primary,
+    email_body: parsed.email_body?.trim() || '',
+    video_url_suggestions: Array.isArray(parsed.video_url_suggestions)
+      ? parsed.video_url_suggestions.filter(Boolean)
+      : [],
+    key_messages: Array.isArray(parsed.key_messages)
+      ? parsed.key_messages.filter(Boolean)
+      : [],
+    suggested_video_url: parsed.suggested_video_url?.trim() || null,
+    rationale: parsed.rationale?.trim() || '',
+    status: 'draft',
+  };
+}
+
+function buildDemoCampaign(brief, language = 'English') {
+  const name = brief.length > 60 ? `${brief.slice(0, 57)}…` : brief;
+  return {
+    name: name || 'KG ProTech Training Outreach',
+    target_audience:
+      'Automotive engineering leaders, L&D managers, and technical training directors at OEMs and tier-1 suppliers',
+    language,
+    email_subjects: [
+      'Cut diagnostic training setup time — 15-min overview?',
+      'Remote fault simulation for your technicians',
+      '60% savings on automotive training labs',
+    ],
+    email_subject: 'Cut diagnostic training setup time — 15-min overview?',
+    email_body: `Dear {{first_name}},
+
+KG ProTech helps engineering and training teams run remote diagnostic exercises with our internet-based Automatic Fault Simulator — typically ~60% lower cost and faster lab setup than traditional approaches.
+
+If you're scaling technician upskilling this quarter, I'd welcome 15 minutes to show how peers in automotive are using it.
+
+${WEBINAR_CTA}
+
+${KG_SIGNATURE}`,
+    video_url_suggestions: [
+      'Product walkthrough: remote fault injection in a browser-based lab',
+      'Before/after: setup time for a diagnostic training session',
+      'Customer-style demo: technician troubleshooting a simulated CAN fault',
+    ],
+    key_messages: [
+      'Remote diagnostic training without shipping hardware',
+      '~60% cost reduction vs legacy training rigs',
+      'Faster lab setup for engineering and L&D teams',
+    ],
+    suggested_video_url: null,
+    rationale:
+      'Demo draft — set GROK_API_KEY_LUMEN on the server for live Grok-generated campaigns.',
+    status: 'draft',
+  };
+}
+
+/**
+ * POST /api/ai/generate-campaign
+ * Body: { brief_description, language?, mode?: 'full' | 'email_only', name?, target_audience? }
+ */
+router.post('/generate-campaign', async (req, res, next) => {
+  try {
+    const {
+      brief_description,
+      language = 'English',
+      mode = 'full',
+      name = '',
+      target_audience = '',
+    } = req.body || {};
+
+    const brief = (brief_description || '').trim();
+    const emailOnly = mode === 'email_only';
+
+    if (emailOnly) {
+      if (!name?.trim() || !target_audience?.trim()) {
+        return res.status(400).json({
+          success: false,
+          error: 'Campaign name and target audience are required for email generation',
+        });
+      }
+    } else if (!brief) {
+      return res.status(400).json({
+        success: false,
+        error: 'brief_description is required (e.g. "Q1 2025 IoT Training Launch for automotive")',
+      });
+    }
+
+    let campaign = buildDemoCampaign(brief || `${name} — ${target_audience}`, language);
+    let meta = { source: 'demo' };
+
+    if (process.env.GROK_API_KEY_LUMEN) {
+      const userPrompt = emailOnly
+        ? `MODE: email_only — Regenerate email subject variations and body only.
+
+Campaign name: ${name}
+Target audience: ${target_audience}
+Language: ${language}
+
+Include this exact CTA before the signature:
+${WEBINAR_CTA}
+
+Include this exact signature at the end:
+${KG_SIGNATURE}
+
+Return JSON:
+{
+  "email_subjects": ["variant 1", "variant 2", "variant 3"],
+  "email_subject": "best primary subject",
+  "email_body": "full email with CTA and signature"
+}`
+        : `MODE: full — Create a complete B2B campaign from this brief:
+"${brief}"
+
+Language: ${language}
+
+Include this exact CTA in email_body before the signature:
+${WEBINAR_CTA}
+
+Include this exact signature at the end of email_body:
+${KG_SIGNATURE}
+
+Return JSON:
+{
+  "name": "campaign name",
+  "target_audience": "specific audience description",
+  "language": "${language}",
+  "email_subjects": ["subject line 1", "subject line 2", "subject line 3"],
+  "email_subject": "recommended primary subject",
+  "email_body": "professional email body with CTA and signature",
+  "video_url_suggestions": ["video idea 1", "video idea 2", "video idea 3"],
+  "key_messages": ["bullet 1", "bullet 2", "bullet 3"],
+  "suggested_video_url": "optional real YouTube search URL or null",
+  "rationale": "2-3 sentences on strategy"
+}`;
+
+      const content = await callGrok(
+        [{ role: 'user', content: userPrompt }],
+        { tools: false, jsonMode: true, temperature: 0.35, systemPrompt: CAMPAIGN_SYSTEM_PROMPT }
+      );
+
+      const parsed = parseJson(content);
+      if (parsed) {
+        if (emailOnly) {
+          campaign = {
+            ...normalizeCampaignGeneration(
+              { ...parsed, name, target_audience, language },
+              { language }
+            ),
+            name: name.trim(),
+            target_audience: target_audience.trim(),
+          };
+        } else {
+          campaign = normalizeCampaignGeneration(parsed, { language });
+        }
+        meta = { source: 'grok' };
+      }
+    } else {
+      meta.message = 'Set GROK_API_KEY_LUMEN for live Grok campaign generation';
+    }
+
+    res.json({ success: true, data: { campaign, meta } });
+  } catch (err) {
+    console.error('[ai/generate-campaign]', err.message);
+    next(err);
+  }
+});
+
 /**
  * POST /api/ai/generate-email
  */
@@ -462,10 +669,13 @@ router.post('/generate-email', async (req, res, next) => {
         [
           {
             role: 'user',
-            content: `Write a short B2B email. Tone: ${tone}. JSON only: { "subject", "body", "bodyHtml" }\nLead: ${JSON.stringify(lead)}\nCampaign: ${JSON.stringify(campaign)}`,
+            content: `Write a short personalized B2B email for KG ProTech. Tone: ${tone}. JSON only: { "subject", "body", "bodyHtml" }
+Use only verified product claims (remote fault simulator, ~60% savings). No invented case studies.
+Lead: ${JSON.stringify(lead)}
+Campaign: ${JSON.stringify(campaign)}`,
           },
         ],
-        { tools: false }
+        { tools: false, systemPrompt: CAMPAIGN_SYSTEM_PROMPT }
       );
       const parsed = parseJson(content);
       if (parsed?.subject && parsed?.body) {

@@ -13,7 +13,7 @@ export default function PageNotFound() {
           <span className="text-gray-300">"{pageName}"</span> is not part of this app.
         </p>
         <a
-          href="/Leads"
+          href="/leads"
           className="inline-flex items-center px-4 py-2 text-sm font-medium text-[#212121] bg-[#00c600] rounded-lg hover:bg-[#00dd00]"
         >
           Go to Leads

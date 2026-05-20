@@ -13,6 +13,7 @@ import {
   Loader2,
   AlertCircle,
 } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import {
@@ -79,10 +80,10 @@ export default function Dashboard() {
   const hasError = leadsError || campaignsError;
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-10">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Dashboard</h1>
-        <p className="text-gray-400">
+        <h1 className="kg-page-title mb-2">Dashboard</h1>
+        <p className="text-base text-gray-400 leading-relaxed">
           Overview of leads, campaigns, and follow-ups
         </p>
       </div>
@@ -125,44 +126,42 @@ export default function Dashboard() {
           <div className="flex flex-wrap gap-3">
             <Button
               asChild
-              className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg"
             >
-              <a href="/Leads">
+              <Link to="/leads">
                 <Plus className="w-4 h-4 mr-2" />
                 New Lead
-              </a>
+              </Link>
             </Button>
             <Button
               asChild
-              variant="outline"
-              className="border-[#444444] text-gray-200 hover:bg-[#333333] hover:text-[#00c600]"
+              variant="kgMuted"
             >
-              <a href="/Leads">
+              <Link to="/leads">
                 <Sparkles className="w-4 h-4 mr-2" />
                 Smart Lead Finder
-              </a>
+              </Link>
             </Button>
             <Button
               asChild
-              variant="outline"
-              className="border-[#444444] text-gray-200 hover:bg-[#333333] hover:text-[#00c600]"
+              variant="kgMuted"
             >
-              <a href="/Campaigns">
+              <Link to="/campaigns">
                 <Megaphone className="w-4 h-4 mr-2" />
                 New Campaign
-              </a>
+              </Link>
             </Button>
           </div>
 
           <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] overflow-hidden">
             <div className="flex items-center justify-between p-6 border-b border-[#333333]">
-              <h2 className="text-lg font-bold text-white">Recent Leads</h2>
-              <a
-                href="/Leads"
+              <h2 className="text-lg font-medium text-white">Recent Leads</h2>
+              <Link
+                to="/leads"
                 className="text-sm text-[#00c600] hover:text-[#00dd00] flex items-center gap-1"
               >
                 View all <ArrowRight className="w-4 h-4" />
-              </a>
+              </Link>
             </div>
             {recentLeads.length === 0 ? (
               <p className="p-8 text-gray-400 text-center text-sm">

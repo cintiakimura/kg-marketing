@@ -191,7 +191,7 @@ Return JSON:
             <Button
               onClick={generateEmailBodies}
               disabled={isGenerating}
-              className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg"
             >
               <Wand2 className="w-4 h-4 mr-2" />
               {isGenerating ? 'Generating...' : 'Generate Email Variations'}

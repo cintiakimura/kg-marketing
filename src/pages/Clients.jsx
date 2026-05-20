@@ -53,15 +53,15 @@ export default function Clients() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      <div className="flex items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Clients</h1>
-          <p className="text-gray-400">Manage client companies and deals</p>
+          <h1 className="kg-page-title mb-2">Clients</h1>
+          <p className="text-base text-gray-400 leading-relaxed">Manage client companies and deals</p>
         </div>
         <Button
           onClick={() => setIsCreateModalOpen(true)}
-          className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+          variant="kg"
         >
           <Plus className="w-5 h-5 mr-2" />
           Add Client

@@ -75,7 +75,7 @@ export default function Calendar() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Calendar & Webinars</h1>
+          <h1 className="text-3xl font-medium text-white mb-2">Calendar & Webinars</h1>
           <p className="text-gray-400">Synced with info@kgprotech.com</p>
         </div>
         <div className="flex gap-3">
@@ -88,7 +88,7 @@ export default function Calendar() {
           </Button>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium">
+            variant="kg">
             <Plus className="w-5 h-5 mr-2" />
             Schedule Webinar
           </Button>
@@ -97,7 +97,7 @@ export default function Calendar() {
 
       {/* Upcoming Webinars */}
       <div>
-        <h2 className="text-xl font-bold text-white mb-4">Upcoming Sessions</h2>
+        <h2 className="text-xl font-medium text-white mb-4">Upcoming Sessions</h2>
         {upcomingWebinars.length === 0 ?
         <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-8 text-center">
             <CalendarIcon className="w-12 h-12 text-gray-600 mx-auto mb-3" />
@@ -108,7 +108,7 @@ export default function Calendar() {
             {upcomingWebinars.map((webinar) =>
           <div key={webinar.id} className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6 hover:border-[#00c600] transition-all">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-white">{webinar.title}</h3>
+                  <h3 className="text-lg font-medium text-white">{webinar.title}</h3>
                   <Badge className="bg-[#00c600] text-white border-0">Upcoming</Badge>
                 </div>
                 
@@ -163,12 +163,12 @@ export default function Calendar() {
       {/* Past Webinars */}
       {pastWebinars.length > 0 &&
       <div>
-          <h2 className="text-xl font-bold text-white mb-4">Past Sessions</h2>
+          <h2 className="text-xl font-medium text-white mb-4">Past Sessions</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             {pastWebinars.map((webinar) =>
           <div key={webinar.id} className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6 opacity-75">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-white">{webinar.title}</h3>
+                  <h3 className="text-lg font-medium text-white">{webinar.title}</h3>
                   <Badge className="bg-gray-500 text-white border-0">Completed</Badge>
                 </div>
                 
@@ -192,7 +192,7 @@ export default function Calendar() {
       <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
           <div className="bg-[#2a2a2a] rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
             <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between">
-              <h2 className="text-xl font-bold text-white">Schedule Webinar</h2>
+              <h2 className="text-xl font-medium text-white">Schedule Webinar</h2>
               <button onClick={() => setIsCreateModalOpen(false)} className="text-gray-400 hover:text-white transition-colors">
                 <X className="w-6 h-6" />
               </button>
@@ -277,7 +277,7 @@ export default function Calendar() {
                 <Button
                 onClick={() => createWebinarMutation.mutate(formData)}
                 disabled={!formData.title || !formData.start_time || createWebinarMutation.isPending}
-                className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium">
+                variant="kg" className="flex-1">
 
                   Schedule Webinar
                 </Button>

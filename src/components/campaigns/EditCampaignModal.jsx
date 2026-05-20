@@ -1,5 +1,7 @@
 import { Campaign, Lead } from '@/api/entities';
-import { invokeLLM, uploadFile } from '@/api/integrations';
+import { generateCampaignEmailCopy } from '@/api/campaignAi';
+import { uploadFile } from '@/api/integrations';
+import { useToast } from '@/components/ui/use-toast';
 import React, { useState } from 'react';
 import { X, Sparkles, Image as ImageIcon, Send, Upload, Trash2, Save, Rocket, UserPlus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -26,6 +28,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
   const [isCreateLeadModalOpen, setIsCreateLeadModalOpen] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const queryClient = useQueryClient();
+  const { toast } = useToast();
 
   const { data: campaigns = [] } = useQuery({
     queryKey: ['campaigns'],
@@ -54,59 +57,33 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
   if (!isOpen || !campaign) return null;
 
   const handleGenerateCopy = async () => {
-    if (!formData.name || !formData.target_audience) {
-      alert('Please fill in campaign name and target audience first');
+    if (!formData.name?.trim() || !formData.target_audience?.trim()) {
+      toast({
+        title: 'Name and audience required',
+        variant: 'destructive',
+      });
       return;
     }
-    
+
     setIsGeneratingCopy(true);
     try {
-      const prompt = `Create a cold email for KG PROTECH. Product: Automatic Fault Simulator for vehicles via internet, enabling remote diagnostic training with 60% cost savings and reduced setup time.
-
-      Campaign Name: ${formData.name}
-      Target Audience: ${formData.target_audience}
-      Language: ${formData.language}
-
-      MANDATORY RULES (NEVER SKIP):
-      1. EXTREMELY concise (2-3 short paragraphs maximum)
-      2. Get straight to the point in first sentence
-      3. Ask for a 15-minute webinar (not a sales pitch)
-      4. Emphasize: 60% cost savings and reduced setup time
-      5. Include this EXACT call-to-action at the end of email body (before signature):
-      "📅 Schedule your 15-minute webinar: https://calendar.google.com/calendar/appointments/schedules/AcZssZ0H5P8VL5P_7YDKGZmLJZBQGgKpB5mTl8jC8yz8dXQr0YJZQ0?gv=true"
-      6. Professional, direct tone
-
-      End with this exact signature:
-      Best regards,
-      Cintia Kimura
-      Founder and COO
-      cintia@kgprotech.com
-      Tel: +33 07 68 62 07 04
-
-      Return the result in the following JSON format:
-      {
-      "subject": "email subject line here",
-      "body": "email body content here with proper formatting"
-      }`;
-
-      const result = await invokeLLM({
-        prompt: prompt,
-        response_json_schema: {
-          type: "object",
-          properties: {
-            subject: { type: "string" },
-            body: { type: "string" }
-          }
-        }
+      const { campaign } = await generateCampaignEmailCopy({
+        name: formData.name,
+        target_audience: formData.target_audience,
+        language: formData.language,
       });
-
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
-        email_subject: result.subject,
-        email_body: result.body
+        email_subject: campaign.email_subject || prev.email_subject,
+        email_body: campaign.email_body || prev.email_body,
       }));
-    } catch (error) {
-      alert('Failed to generate copy. Please try again.');
+      toast({ title: 'Email copy updated with Grok' });
+    } catch (err) {
+      toast({
+        title: 'Copy generation failed',
+        description: err.message,
+        variant: 'destructive',
+      });
     } finally {
       setIsGeneratingCopy(false);
     }
@@ -171,7 +148,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
     <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 p-4">
       <div className="bg-[#2a2a2a] rounded-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto scrollbar-custom">
         <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] p-6 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">Edit Campaign</h2>
+          <h2 className="text-xl font-medium text-white">Edit Campaign</h2>
           <button onClick={onClose} className="text-gray-400 hover:text-white transition-colors">
             <X className="w-6 h-6" />
           </button>
@@ -219,7 +196,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
             onClick={handleGenerateCopy}
             disabled={isGeneratingCopy}
-            className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+            variant="kg"
             >
             {isGeneratingCopy ? (
             <>Generating Copy...</>
@@ -365,7 +342,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             </Button>
             <Button
               onClick={handleSubmit}
-              className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg" className="flex-1"
               disabled={!formData.name}
             >
               <Save className="w-4 h-4 mr-2" />
@@ -374,7 +351,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             {(campaign?.status === 'draft' || campaign?.status === 'active') && (
               <Button
                 onClick={handleLaunch}
-                className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+                variant="kg" className="flex-1"
                 disabled={!formData.name}
               >
                 <Rocket className="w-4 h-4 mr-2" />

@@ -225,12 +225,12 @@ function buildDemoLeads(icpData) {
   const industry = icpData.industry || 'automotive technology';
   const roles = icpData.targetRoles?.length
     ? icpData.targetRoles
-    : ['Head of Product Development', 'Training Manager'];
+    : ['Training Manager', 'Aftersales Training Manager', 'Technical Training Manager'];
 
   const demos = [
     {
       name: 'Elena Vasquez',
-      title: roles[0] || 'Head of Product Development',
+      title: roles[0] || 'Training Manager',
       company: 'NordDrive Systems',
       linkedinUrl: '',
       location: 'Munich, Germany',

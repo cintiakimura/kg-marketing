@@ -294,14 +294,14 @@ export default function Leads() {
   }, [leads]);
 
   return (
-    <div className="space-y-6 pb-24">
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="space-y-8 pb-24">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2 flex items-center gap-2">
+          <h1 className="kg-page-title mb-2 flex items-center gap-2">
             <LayoutGrid className="w-8 h-8 text-[#00c600]" />
             Leads Workspace
           </h1>
-          <p className="text-gray-400">
+          <p className="text-base text-gray-400 leading-relaxed">
             Pipeline, follow-ups, and Smart Finder imports — {stats.total} leads
             {stats.due > 0 && (
               <span className="text-amber-400"> · {stats.due} follow-up overdue</span>
@@ -312,7 +312,7 @@ export default function Leads() {
           <Button
             onClick={() => sendFollowupsMutation.mutate()}
             disabled={pendingFollowupsCount === 0 || sendFollowupsMutation.isPending}
-            className="bg-blue-600 hover:bg-blue-700 text-white"
+            variant="kgBlue"
           >
             <Send className="w-4 h-4 mr-2" />
             Campaign follow-ups
@@ -324,22 +324,21 @@ export default function Leads() {
           </Button>
           <Button
             onClick={() => setIsSmartFinderOpen(true)}
-            className="bg-gradient-to-r from-[#00c600] to-emerald-500 hover:from-[#00dd00] hover:to-emerald-400 text-[#212121] font-semibold"
+            variant="kg"
           >
             <Sparkles className="w-4 h-4 mr-2" />
             Smart Lead Finder
           </Button>
           <Button
             onClick={() => setIsCreateModalOpen(true)}
-            className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+            variant="kg"
           >
             <Plus className="w-4 h-4 mr-2" />
             Add Lead
           </Button>
           <Button
             onClick={() => setIsImportModalOpen(true)}
-            variant="outline"
-            className="border-[#444444] text-gray-300"
+            variant="kgMuted"
           >
             <Upload className="w-4 h-4 mr-2" />
             Import
@@ -355,7 +354,7 @@ export default function Leads() {
       )}
 
       {isLoading ? (
-        <div className="text-center py-16 text-gray-400">Loading leads…</div>
+        <div className="empty-state">Loading leads…</div>
       ) : (
         <>
           <LeadsPipeline
@@ -364,7 +363,7 @@ export default function Leads() {
             onOpenLead={setDetailLead}
           />
 
-          <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-4 md:p-6 space-y-4">
+          <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6 md:p-8 space-y-5">
             <div className="flex flex-col md:flex-row gap-3">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500" />

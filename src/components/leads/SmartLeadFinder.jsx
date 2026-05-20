@@ -52,21 +52,27 @@ import {
   CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 
-export const TARGET_ROLE_OPTIONS = [
-  'Head of Product',
-  'Head of Product Development',
+/** Most relevant roles for automotive training materials & tools — shown first. */
+export const PRIMARY_TARGET_ROLES = [
   'Training Manager',
-  'L&D Manager',
+  'Aftersales Training Manager',
   'Head of Learning & Development',
-  'Chief Learning Officer',
-  'CTO',
-  'VP Engineering',
-  'Head of People Development',
-  'Director of Operations',
-  'Plant Manager',
-  'Technical Training Lead',
-  'Chief People Officer',
-  'HR Director',
+  'Technical Training Manager',
+];
+
+export const TARGET_ROLE_OPTIONS = [
+  ...PRIMARY_TARGET_ROLES,
+  'Service Training Manager',
+  'L&D Manager',
+  'Director of Training',
+  'Fleet Training Manager',
+  'Vocational Training Coordinator',
+  'Service Manager',
+  'Parts & Service Director',
+  'Fixed Operations Manager',
+  'Head of Product Development',
+  'Talent Development Manager',
+  'Lead Technical Instructor',
 ];
 
 const COMPANY_SIZE_OPTIONS = [
@@ -88,7 +94,12 @@ const PROGRESS_STEPS = [
 const EMPTY_ICP = {
   industry: '',
   companySize: '51-200',
-  targetRoles: ['Head of Product', 'Training Manager', 'L&D Manager'],
+  targetRoles: [
+    'Training Manager',
+    'Aftersales Training Manager',
+    'Head of Learning & Development',
+    'Technical Training Manager',
+  ],
   geography: '',
   painPoints: '',
   customPrompt: '',
@@ -110,7 +121,7 @@ function activityBullets(text) {
 }
 
 function fitScoreColor(score) {
-  if (score >= 9) return 'bg-[#00c600] text-[#212121]';
+  if (score >= 9) return 'bg-[#00c600] text-white font-semibold';
   if (score >= 7) return 'bg-emerald-600/90 text-white';
   if (score >= 5) return 'bg-amber-500/90 text-[#212121]';
   return 'bg-gray-500 text-white';
@@ -284,7 +295,8 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     setError('');
   };
 
-  const inputClass = 'bg-[#333333] border-[#444444] text-white';
+  const inputClass =
+    'bg-[#333333] border-[#444444] text-white text-[15px] leading-relaxed rounded-xl';
 
   return (
     <AnimatePresence>
@@ -302,14 +314,14 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
         transition={{ type: 'spring', damping: 26, stiffness: 320 }}
         className="bg-[#2a2a2a] rounded-xl max-w-6xl w-full max-h-[92vh] overflow-hidden flex flex-col border border-[#333333] shadow-2xl"
       >
-        <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] px-6 py-4 flex items-center justify-between shrink-0">
+        <div className="sticky top-0 bg-[#2a2a2a] border-b border-[#333333] px-6 md:px-8 py-5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-[#00c600]/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#00c600]/20 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-[#00c600]" />
             </div>
             <div>
-              <h2 className="text-xl font-bold text-white">Smart Lead Finder</h2>
-              <p className="text-sm text-gray-400">
+              <h2 className="text-xl font-medium text-white">Smart Lead Finder</h2>
+              <p className="text-sm text-gray-400 leading-relaxed">
                 Up to 12 verified decision-makers — evidence-backed, anti-hallucination research
               </p>
             </div>
@@ -430,22 +442,29 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
               </div>
 
               <div>
-                <Label className="text-gray-300 mb-2 flex items-center gap-2">
+                <Label className="text-gray-300 mb-1 flex items-center gap-2">
                   <Target className="w-4 h-4 text-[#00c600]" />
                   Target roles {hasFullCustomPrompt ? '' : '*'} (multi-select)
                 </Label>
+                <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+                  Roles responsible for purchasing training materials, simulators, and tools in
+                  automotive schools, OEM aftersales departments, dealerships, and resellers.
+                </p>
                 <div className="flex flex-wrap gap-2">
                   {TARGET_ROLE_OPTIONS.map((role) => {
                     const active = icp.targetRoles.includes(role);
+                    const isPrimary = PRIMARY_TARGET_ROLES.includes(role);
                     return (
                       <button
                         key={role}
                         type="button"
                         onClick={() => toggleRole(role)}
-                        className={`px-3 py-1.5 rounded-full text-xs font-medium border transition-all ${
+                        className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
                           active
-                            ? 'bg-[#00c600]/20 border-[#00c600] text-[#00c600]'
-                            : 'bg-[#333333] border-[#444444] text-gray-400 hover:border-gray-500'
+                            ? 'bg-[#00c600]/20 border-[#00c600] text-[#00c600] font-semibold'
+                            : isPrimary
+                              ? 'bg-[#00c600]/5 border-[#00c600]/60 text-gray-200 font-semibold hover:border-[#00c600] hover:text-[#00c600]'
+                              : 'bg-[#333333] border-[#444444] text-gray-400 font-medium hover:border-gray-500'
                         }`}
                       >
                         {role}
@@ -504,16 +523,16 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </div>
               </div>
 
-              <div className="p-5 rounded-xl border-2 border-[#00c600]/50 bg-gradient-to-b from-[#00c600]/10 to-[#333333]/90 shadow-lg shadow-[#00c600]/10">
+              <div className="p-6 md:p-8 rounded-xl border-2 border-[#00c600]/50 bg-gradient-to-b from-[#00c600]/10 to-[#333333]/90 shadow-lg shadow-[#00c600]/15">
                 <div className="flex items-start gap-3 mb-3">
                   <div className="w-10 h-10 rounded-lg bg-[#00c600]/25 flex items-center justify-center shrink-0">
                     <Wand2 className="w-5 h-5 text-[#00c600]" />
                   </div>
                   <div>
-                    <Label className="text-white text-base font-semibold block">
+                    <Label className="text-white text-base font-medium block">
                       Or write your full custom prompt here (optional but powerful)
                     </Label>
-                    <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+                    <p className="text-sm text-gray-400 mt-2 leading-relaxed">
                       Maximum control: describe exactly who you want in plain language. When filled,
                       Grok treats this as the <strong className="text-[#00c600]">primary directive</strong>{' '}
                       — you can use this alone or combine it with the structured fields above.
@@ -523,9 +542,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 <Textarea
                   value={icp.customPrompt}
                   onChange={(e) => setIcp((p) => ({ ...p, customPrompt: e.target.value }))}
-                  placeholder="Find Training Managers or Heads of Product in the cybersecurity industry in Germany or France who have recently posted about implementing new employee training platforms or AI tools..."
-                  rows={7}
-                  className={`${inputClass} min-h-[160px] text-sm leading-relaxed border-[#00c600]/30 focus-visible:ring-[#00c600]`}
+                  placeholder="Find Training Managers or Aftersales Training Managers at automotive OEMs in Germany who recently posted about technician upskilling, diagnostic training, or L&D tooling..."
+                  rows={10}
+                  className={`${inputClass} min-h-[220px] text-[15px] leading-relaxed border-[#00c600]/40 focus-visible:ring-2 focus-visible:ring-[#00c600]/50 py-4`}
                 />
                 {hasFullCustomPrompt && (
                   <p className="text-xs text-[#00c600] mt-2 flex items-center gap-1">
@@ -566,7 +585,8 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   type="button"
                   onClick={handleSearch}
                   disabled={isSearching}
-                  className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold sm:min-w-[200px]"
+                  variant="kg"
+                  className="sm:min-w-[220px]"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
                   Find high-quality leads
@@ -681,8 +701,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                           : new Set(leads.map((l) => l.id))
                       )
                     }
-                    variant="outline"
-                    className="border-[#444444] text-gray-300"
+                    variant="kgMuted"
                   >
                     {selectedIds.size === leads.length ? 'Deselect all' : 'Select all'}
                   </Button>
@@ -812,7 +831,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   onClick={() => {
                     onClose();
                   }}
-                  className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold"
+                  variant="kg" className="flex-1"
                 >
                   <ExternalLink className="w-4 h-4 mr-2" />
                   View Leads list
@@ -823,7 +842,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 type="button"
                 onClick={handleImportSelected}
                 disabled={isImporting || selectedIds.size === 0}
-                className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold min-w-[200px]"
+                variant="kg" className="flex-1 min-w-[200px]"
               >
                 {isImporting ? (
                   <Loader2 className="w-4 h-4 mr-2 animate-spin" />

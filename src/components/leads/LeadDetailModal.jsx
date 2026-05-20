@@ -117,7 +117,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
         <div className="shrink-0 border-b border-[#333333] px-6 py-4 flex items-start justify-between gap-4">
           <div>
             <div className="flex flex-wrap items-center gap-2 mb-1">
-              <h2 className="text-xl font-bold text-white">{lead.full_name}</h2>
+              <h2 className="text-xl font-medium text-white">{lead.full_name}</h2>
               {isSmartFinderLead(lead) && (
                 <Badge className="bg-[#00c600]/20 text-[#00c600] border-[#00c600]/40">
                   <Sparkles className="w-3 h-3 mr-1" />
@@ -125,12 +125,12 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
                 </Badge>
               )}
               {lead.fit_score != null && (
-                <Badge className="bg-[#00c600] text-[#212121]">Fit {lead.fit_score}/10</Badge>
+                <Badge className="bg-[#00c600] text-white font-semibold">Fit {lead.fit_score}/10</Badge>
               )}
             </div>
             <p className="text-[#00c600] text-sm">{lead.title || '—'}</p>
             <p className="text-gray-400 text-sm">{lead.company || '—'}</p>
-            <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
+            <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-400">
               {lead.email && (
                 <span className="flex items-center gap-1">
                   <Mail className="w-3 h-3" />
@@ -268,7 +268,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            className="flex-1 bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-semibold"
+            variant="kg" className="flex-1"
           >
             <Save className="w-4 h-4 mr-2" />
             {isSaving ? 'Saving…' : 'Save'}

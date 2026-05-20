@@ -108,7 +108,7 @@ export default function ScheduleWebinar() {
               <strong>Time:</strong> {selectedTime}
             </p>
           </div>
-          <p className="text-xs text-gray-500">We'll send you the meeting link 24 hours before.</p>
+          <p className="text-sm text-gray-400">We'll send you the meeting link 24 hours before.</p>
         </div>
       </div>
     );
@@ -122,7 +122,7 @@ export default function ScheduleWebinar() {
             <div className="w-12 h-12 bg-[#00c600] rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">KG</span>
             </div>
-            <h1 className="text-4xl font-bold text-white">Schedule Your Webinar</h1>
+            <h1 className="text-4xl font-medium text-white">Schedule Your Webinar</h1>
           </div>
           <p className="text-gray-400 text-lg">15-minute demo of IoT automotive training solutions</p>
           <p className="text-[#00c600] font-medium mt-2">Save days in setup • Reduce training costs by 60%</p>

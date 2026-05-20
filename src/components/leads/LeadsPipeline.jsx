@@ -22,13 +22,13 @@ function LeadCard({ lead, onOpen }) {
       tabIndex={0}
       onClick={() => onOpen(lead)}
       onKeyDown={(e) => e.key === 'Enter' && onOpen(lead)}
-      className="bg-[#333333] border border-[#444444] rounded-lg p-3 cursor-pointer hover:border-[#00c600]/50 transition-colors"
+      className="bg-[#333333] border border-[#444444] rounded-xl p-4 cursor-pointer hover:border-[#00c600]/50 transition-colors"
     >
       <div className="flex items-start gap-2">
         <GripVertical className="w-4 h-4 text-gray-600 shrink-0 mt-0.5" />
         <div className="min-w-0 flex-1">
           <p className="text-sm font-medium text-white truncate">{lead.full_name}</p>
-          <p className="text-xs text-gray-500 truncate">{lead.title || '—'}</p>
+          <p className="text-xs text-gray-400 truncate">{lead.title || '—'}</p>
           <p className="text-xs text-[#00c600]/90 truncate">{lead.company || '—'}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {lead.fit_score != null && (
@@ -77,8 +77,8 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
   };
 
   return (
-    <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-4 overflow-hidden">
-      <h2 className="text-sm font-semibold text-gray-400 uppercase tracking-wide mb-4">
+    <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6 md:p-8 overflow-hidden mb-8">
+      <h2 className="text-sm font-medium text-gray-300 uppercase tracking-wide mb-5">
         Pipeline
       </h2>
       <DragDropContext onDragEnd={handleDragEnd}>

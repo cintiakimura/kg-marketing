@@ -4,15 +4,16 @@ import Dashboard from './pages/Dashboard';
 import Leads from './pages/Leads';
 import __Layout from './Layout.jsx';
 
+/** Lowercase URL segments — avoids /dashboard vs /Dashboard routing conflicts. */
 export const PAGES = {
-  Dashboard,
-  Leads,
-  Campaigns,
-  Clients,
+  dashboard: Dashboard,
+  leads: Leads,
+  campaigns: Campaigns,
+  clients: Clients,
 };
 
 export const pagesConfig = {
-  mainPage: 'Leads',
+  mainPage: 'leads',
   Pages: PAGES,
   Layout: __Layout,
 };

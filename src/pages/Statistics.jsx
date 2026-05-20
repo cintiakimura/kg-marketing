@@ -51,7 +51,7 @@ export default function Statistics() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Statistics</h1>
+        <h1 className="text-3xl font-medium text-white mb-2">Statistics</h1>
         <p className="text-gray-400">Analytics and performance metrics</p>
       </div>
 
@@ -89,7 +89,7 @@ export default function Statistics() {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Lead Status Distribution */}
         <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6">
-          <h2 className="text-lg font-bold text-white mb-6">Lead Status Distribution</h2>
+          <h2 className="text-lg font-medium text-white mb-6">Lead Status Distribution</h2>
           <ResponsiveContainer width="100%" height={300}>
             <PieChart>
               <Pie
@@ -120,7 +120,7 @@ export default function Statistics() {
 
         {/* Campaign Performance */}
         <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6">
-          <h2 className="text-lg font-bold text-white mb-6">Campaign Performance</h2>
+          <h2 className="text-lg font-medium text-white mb-6">Campaign Performance</h2>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart data={campaignData}>
               <CartesianGrid strokeDasharray="3 3" stroke="#333333" />
@@ -148,7 +148,7 @@ export default function Statistics() {
 
         {/* Language Preferences */}
         <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6">
-          <h2 className="text-lg font-bold text-white mb-6">Lead Language Preferences</h2>
+          <h2 className="text-lg font-medium text-white mb-6">Lead Language Preferences</h2>
           <div className="space-y-4">
             {languageData.map((item, index) => {
               const percentage = (item.value / leads.length) * 100;
@@ -174,7 +174,7 @@ export default function Statistics() {
 
         {/* Conversion Funnel */}
         <div className="bg-[#2a2a2a] rounded-xl border border-[#333333] p-6">
-          <h2 className="text-lg font-bold text-white mb-6">Lead Conversion Funnel</h2>
+          <h2 className="text-lg font-medium text-white mb-6">Lead Conversion Funnel</h2>
           <div className="space-y-3">
             {[
               { label: 'New Leads', value: leads.filter(l => l.status === 'new').length, color: '#3b82f6' },

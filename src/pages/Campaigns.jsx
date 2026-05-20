@@ -299,18 +299,22 @@ Return JSON with:
   });
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-8">
+      <div className="flex items-center justify-between gap-6">
         <div>
-          <h1 className="text-3xl font-bold text-white mb-2">Campaigns</h1>
-          <p className="text-gray-400">Create and manage marketing campaigns</p>
+          <h1 className="kg-page-title mb-2">Campaigns</h1>
+          <p className="text-base text-gray-400 leading-relaxed max-w-2xl">
+            Create and launch B2B campaigns — use{' '}
+            <span className="text-[#00c600]">✨ Generate Campaign with Grok</span> in the
+            create modal for full drafts (name, audience, email, video ideas).
+          </p>
         </div>
         <Button
           onClick={() => setIsCreateModalOpen(true)}
-          className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+          variant="kg"
         >
           <Plus className="w-5 h-5 mr-2" />
-          Create Campaign
+          New Campaign
         </Button>
       </div>
 
@@ -330,7 +334,7 @@ Return JSON with:
             size="sm"
             variant={viewMode === 'table' ? 'default' : 'ghost'}
             onClick={() => setViewMode('table')}
-            className={viewMode === 'table' ? 'bg-[#00c600] text-[#212121]' : 'text-gray-400'}
+            className={viewMode === 'table' ? 'bg-[#00c600] text-white shadow-sm' : 'text-gray-400'}
           >
             <List className="w-4 h-4" />
           </Button>
@@ -339,7 +343,7 @@ Return JSON with:
             size="sm"
             variant={viewMode === 'cards' ? 'default' : 'ghost'}
             onClick={() => setViewMode('cards')}
-            className={viewMode === 'cards' ? 'bg-[#00c600] text-[#212121]' : 'text-gray-400'}
+            className={viewMode === 'cards' ? 'bg-[#00c600] text-white shadow-sm' : 'text-gray-400'}
           >
             <LayoutGrid className="w-4 h-4" />
           </Button>
@@ -365,7 +369,7 @@ Return JSON with:
           {!searchQuery && (
             <Button
               onClick={() => setIsCreateModalOpen(true)}
-              className="bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+              variant="kg"
             >
               <Plus className="w-5 h-5 mr-2" />
               Create Campaign
@@ -469,7 +473,7 @@ Return JSON with:
               
               <div className="p-6">
                 <div className="flex items-start justify-between mb-3">
-                  <h3 className="text-lg font-bold text-white">{campaign.name}</h3>
+                  <h3 className="text-lg font-medium text-white">{campaign.name}</h3>
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
@@ -508,7 +512,7 @@ Return JSON with:
                   <Button
                     onClick={() => handleLaunchClick(campaign)}
                     disabled={leads.length === 0}
-                    className="w-full bg-[#00c600] hover:bg-[#00dd00] text-[#212121] font-medium"
+                    variant="kg" className="w-full"
                   >
                     <Rocket className="w-4 h-4 mr-2" />
                     {leads.length === 0 ? 'No Leads Available' : campaign.status === 'draft' ? 'Select Recipients & Launch' : 'Send to More Recipients'}

@@ -49,18 +49,7 @@ function AppRoutes() {
       <Route
         path="/"
         element={
-          isAuthenticated ? <Navigate to="/Leads" replace /> : <Landing />
-        }
-      />
-
-      <Route
-        path="/dashboard"
-        element={
-          isAuthenticated ? (
-            <Navigate to="/Leads" replace />
-          ) : (
-            <Navigate to="/" replace />
-          )
+          isAuthenticated ? <Navigate to="/leads" replace /> : <Landing />
         }
       />
 
@@ -77,6 +66,11 @@ function AppRoutes() {
               }
             />
           ))}
+          {/* Legacy capitalized URLs from older builds */}
+          <Route path="/Dashboard" element={<Navigate to="/dashboard" replace />} />
+          <Route path="/Leads" element={<Navigate to="/leads" replace />} />
+          <Route path="/Campaigns" element={<Navigate to="/campaigns" replace />} />
+          <Route path="/Clients" element={<Navigate to="/clients" replace />} />
           <Route path="*" element={<PageNotFound />} />
         </>
       ) : (
