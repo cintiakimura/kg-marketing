@@ -120,29 +120,40 @@ function parseJson(text) {
   }
 }
 
-function buildCustomInstructionsBlock(icp) {
-  const customPrompt = (icp.customPrompt || '').trim();
-  if (!customPrompt) return '';
+function buildStructuredIcp(icp) {
   return [
-    '',
-    `Additional user instructions: ${customPrompt}`,
-    'Respect these instructions as much as possible while maintaining quality and anti-hallucination rules. Do not invent people, URLs, or activity to satisfy them.',
-  ].join('\n');
-}
-
-function buildIcpSummary(icp) {
-  const base = [
-    `Industry / sector: ${icp.industry}`,
-    `Company size: ${icp.companySize}`,
-    `Target roles: ${(icp.targetRoles || []).join(', ')}`,
-    `Geography: ${icp.geography}`,
+    `Industry / sector: ${icp.industry || 'not specified'}`,
+    `Company size: ${icp.companySize || 'not specified'}`,
+    `Target roles: ${(icp.targetRoles || []).join(', ') || 'not specified'}`,
+    `Geography: ${icp.geography || 'not specified'}`,
     `Pain points / keywords: ${icp.painPoints || 'not specified'}`,
     icp.focusCompanies
       ? `Priority companies / competitors: ${icp.focusCompanies}`
       : 'Discover best-fit organizations (no fixed list).',
   ].join('\n');
-  const extra = buildCustomInstructionsBlock(icp);
-  return extra ? `${base}${extra}` : base;
+}
+
+function buildIcpSummary(icp) {
+  const customPrompt = (icp.customPrompt || '').trim();
+  const structured = buildStructuredIcp(icp);
+
+  if (customPrompt) {
+    return [
+      '=== PRIMARY RESEARCH DIRECTIVE (HIGHEST PRIORITY) ===',
+      'The user wrote a full custom prompt below. Treat it as the main definition of who to find,',
+      'which roles, industries, geographies, signals, and filters matter. Follow it closely.',
+      '',
+      customPrompt,
+      '',
+      'While honoring the directive, still obey anti-hallucination rules: only real people with evidence.',
+      'Return fewer leads rather than inventing profiles.',
+      '',
+      '=== Supporting structured ICP (secondary — fill gaps only) ===',
+      structured,
+    ].join('\n');
+  }
+
+  return structured;
 }
 
 function hasCustomPrompt(icp) {
@@ -376,10 +387,17 @@ Return JSON: { "leads": [...], "discarded_count", "quality_summary" }`,
 router.post('/find-leads', async (req, res, next) => {
   try {
     const icp = req.body;
-    if (!icp.industry?.trim() || !icp.geography?.trim() || !icp.targetRoles?.length) {
+    const hasFullPrompt = hasCustomPrompt(icp);
+    const hasStructured =
+      icp.industry?.trim() &&
+      icp.geography?.trim() &&
+      icp.targetRoles?.length > 0;
+
+    if (!hasFullPrompt && !hasStructured) {
       return res.status(400).json({
         success: false,
-        error: 'industry, geography, and targetRoles are required',
+        error:
+          'Provide structured fields (industry, geography, roles) or a full custom prompt',
       });
     }
 
@@ -397,6 +415,7 @@ router.post('/find-leads', async (req, res, next) => {
       meta = {
         source: 'grok',
         maxLeads: MAX_LEADS,
+        customPromptPrioritized: hasCustomPrompt(icp),
         ...result.meta,
         companiesResearched: result.meta.phases?.find((p) => p.step === 'companies')?.count ?? 0,
         candidatesReviewed: result.meta.phases?.find((p) => p.step === 'candidates')?.count ?? 0,

@@ -29,6 +29,7 @@ import {
   ShieldCheck,
   ExternalLink,
   ScrollText,
+  Wand2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -187,9 +188,17 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
     }));
   };
 
+  const hasFullCustomPrompt = Boolean(icp.customPrompt?.trim());
+  const hasStructuredIcp =
+    Boolean(icp.industry?.trim()) &&
+    Boolean(icp.geography?.trim()) &&
+    icp.targetRoles.length > 0;
+
   const handleSearch = async () => {
-    if (!icp.industry?.trim() || !icp.geography?.trim() || icp.targetRoles.length === 0) {
-      setError('Please set industry, geography, and at least one target role.');
+    if (!hasFullCustomPrompt && !hasStructuredIcp) {
+      setError(
+        'Fill in the structured fields (industry, geography, roles) — or write a full custom prompt below.'
+      );
       return;
     }
     setError('');
@@ -331,6 +340,10 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </p>
               </div>
 
+              <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+                Option 1 — Structured search
+              </p>
+
               <Collapsible open={showTemplates} onOpenChange={setShowTemplates}>
                 <CollapsibleTrigger asChild>
                   <Button
@@ -384,7 +397,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 <div>
                   <Label className="text-gray-300 mb-2 flex items-center gap-2">
                     <Building2 className="w-4 h-4 text-[#00c600]" />
-                    Target industry / sector *
+                    Target industry / sector {hasFullCustomPrompt ? '' : '*'}
                   </Label>
                   <Input
                     value={icp.industry}
@@ -419,7 +432,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
               <div>
                 <Label className="text-gray-300 mb-2 flex items-center gap-2">
                   <Target className="w-4 h-4 text-[#00c600]" />
-                  Target roles * (multi-select)
+                  Target roles {hasFullCustomPrompt ? '' : '*'} (multi-select)
                 </Label>
                 <div className="flex flex-wrap gap-2">
                   {TARGET_ROLE_OPTIONS.map((role) => {
@@ -445,7 +458,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
               <div>
                 <Label className="text-gray-300 mb-2 flex items-center gap-2">
                   <Globe2 className="w-4 h-4 text-[#00c600]" />
-                  Geographic focus *
+                  Geographic focus {hasFullCustomPrompt ? '' : '*'}
                 </Label>
                 <Input
                   value={icp.geography}
@@ -469,23 +482,6 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 />
               </div>
 
-              <div className="p-4 rounded-xl border border-[#00c600]/30 bg-[#333333]/80">
-                <Label className="text-white mb-2 flex items-center gap-2 text-base font-medium">
-                  <ScrollText className="w-5 h-5 text-[#00c600]" />
-                  Custom Instructions (Optional)
-                </Label>
-                <p className="text-xs text-gray-500 mb-3">
-                  Refine how Grok searches and scores leads — applied across all research phases.
-                </p>
-                <Textarea
-                  value={icp.customPrompt}
-                  onChange={(e) => setIcp((p) => ({ ...p, customPrompt: e.target.value }))}
-                  placeholder="Example: Focus on people who recently posted about implementing AI training tools, or commented on employee development topics, or work at companies that raised funding in the last 6 months..."
-                  rows={5}
-                  className={`${inputClass} min-h-[120px] text-sm leading-relaxed`}
-                />
-              </div>
-
               <div>
                 <Label className="text-gray-300 mb-2">Optional: focus companies</Label>
                 <Textarea
@@ -495,6 +491,48 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   rows={2}
                   className={inputClass}
                 />
+              </div>
+
+              <div className="relative py-4">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-[#444444]" />
+                </div>
+                <div className="relative flex justify-center">
+                  <span className="bg-[#2a2a2a] px-4 text-sm font-semibold text-[#00c600] uppercase tracking-wider">
+                    or
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-xl border-2 border-[#00c600]/50 bg-gradient-to-b from-[#00c600]/10 to-[#333333]/90 shadow-lg shadow-[#00c600]/10">
+                <div className="flex items-start gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#00c600]/25 flex items-center justify-center shrink-0">
+                    <Wand2 className="w-5 h-5 text-[#00c600]" />
+                  </div>
+                  <div>
+                    <Label className="text-white text-base font-semibold block">
+                      Or write your full custom prompt here (optional but powerful)
+                    </Label>
+                    <p className="text-sm text-gray-400 mt-1 leading-relaxed">
+                      Maximum control: describe exactly who you want in plain language. When filled,
+                      Grok treats this as the <strong className="text-[#00c600]">primary directive</strong>{' '}
+                      — you can use this alone or combine it with the structured fields above.
+                    </p>
+                  </div>
+                </div>
+                <Textarea
+                  value={icp.customPrompt}
+                  onChange={(e) => setIcp((p) => ({ ...p, customPrompt: e.target.value }))}
+                  placeholder="Find Training Managers or Heads of Product in the cybersecurity industry in Germany or France who have recently posted about implementing new employee training platforms or AI tools..."
+                  rows={7}
+                  className={`${inputClass} min-h-[160px] text-sm leading-relaxed border-[#00c600]/30 focus-visible:ring-[#00c600]`}
+                />
+                {hasFullCustomPrompt && (
+                  <p className="text-xs text-[#00c600] mt-2 flex items-center gap-1">
+                    <Wand2 className="w-3 h-3" />
+                    Full custom prompt will be prioritized in research
+                  </p>
+                )}
               </div>
 
               <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-[#333333]">
@@ -599,7 +637,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         title={appliedCustomPrompt}
                       >
                         <ScrollText className="w-3 h-3 mr-1 inline" />
-                        Custom instructions applied
+                        {appliedCustomPrompt.length > 60
+                          ? 'Full custom prompt applied'
+                          : 'Custom instructions applied'}
                       </Badge>
                     )}
                   </div>

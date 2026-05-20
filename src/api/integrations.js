@@ -88,29 +88,36 @@ const GROK_RESEARCH_TOOLS = [
   },
 ];
 
-function buildCustomInstructionsBlock(icpData) {
-  const customPrompt = (icpData.customPrompt || '').trim();
-  if (!customPrompt) return '';
+function buildStructuredIcp(icpData) {
   return [
-    '',
-    `Additional user instructions: ${customPrompt}`,
-    'Respect these instructions as much as possible while maintaining quality and anti-hallucination rules. Do not invent people, URLs, or activity to satisfy them.',
-  ].join('\n');
-}
-
-function buildIcpSummary(icpData) {
-  const base = [
-    `Industry / sector: ${icpData.industry}`,
-    `Company size: ${icpData.companySize}`,
-    `Target roles: ${(icpData.targetRoles || []).join(', ')}`,
-    `Geography: ${icpData.geography}`,
-    `Pain points / keywords: ${icpData.painPoints}`,
+    `Industry / sector: ${icpData.industry || 'not specified'}`,
+    `Company size: ${icpData.companySize || 'not specified'}`,
+    `Target roles: ${(icpData.targetRoles || []).join(', ') || 'not specified'}`,
+    `Geography: ${icpData.geography || 'not specified'}`,
+    `Pain points / keywords: ${icpData.painPoints || 'not specified'}`,
     icpData.focusCompanies
       ? `Priority companies: ${icpData.focusCompanies}`
       : 'No specific company list — discover best-fit orgs.',
   ].join('\n');
-  const extra = buildCustomInstructionsBlock(icpData);
-  return extra ? `${base}${extra}` : base;
+}
+
+function buildIcpSummary(icpData) {
+  const customPrompt = (icpData.customPrompt || '').trim();
+  const structured = buildStructuredIcp(icpData);
+
+  if (customPrompt) {
+    return [
+      '=== PRIMARY RESEARCH DIRECTIVE (HIGHEST PRIORITY) ===',
+      customPrompt,
+      '',
+      'Honor this directive first. Anti-hallucination rules still apply.',
+      '',
+      '=== Supporting structured ICP ===',
+      structured,
+    ].join('\n');
+  }
+
+  return structured;
 }
 
 function slugify(str) {
