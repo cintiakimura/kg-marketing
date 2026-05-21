@@ -36,7 +36,7 @@ Optional:
 - `GROK_API_KEY_LUMEN` — set on the **backend** for live multi-step research (Render env)
 - `VITE_GROK_API_KEY` — optional; direct browser Grok if not using backend proxy
 - `VITE_GROK_USE_BACKEND_PROXY=true` — force backend proxy when both keys are set
-- `VITE_GROK_MODEL` — default `grok-2-latest`
+- `VITE_GROK_MODEL` — default `grok-4.3` (backend: `GROK_MODEL`)
 
 ## Scripts
 

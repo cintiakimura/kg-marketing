@@ -6,8 +6,29 @@ import { Router } from 'express';
 
 const router = Router();
 
+function isGrokConfigured() {
+  return Boolean(process.env.GROK_API_KEY_LUMEN?.trim());
+}
+
+/**
+ * GET /api/ai/status — whether live Grok is available (no secrets exposed).
+ */
+router.get('/status', (_req, res) => {
+  res.json({
+    success: true,
+    data: {
+      grok_configured: isGrokConfigured(),
+      model: GROK_MODEL(),
+      api_url: GROK_URL(),
+      message: isGrokConfigured()
+        ? 'Live Grok research is enabled on this server.'
+        : 'Set GROK_API_KEY_LUMEN in server environment (e.g. Render → Environment) and redeploy.',
+    },
+  });
+});
+
 const GROK_URL = () => process.env.GROK_API_URL || 'https://api.x.ai/v1';
-const GROK_MODEL = () => process.env.GROK_MODEL || 'grok-2-latest';
+const GROK_MODEL = () => process.env.GROK_MODEL || 'grok-4.3';
 
 const MAX_LEADS = 12;
 const MIN_FIT_SCORE = 7;
@@ -97,7 +118,7 @@ ANTI-HALLUCINATION & QUALITY RULES (same rigor as lead research):
 - Return valid JSON only when asked. No markdown fences.`;
 
 async function callGrok(messages, { jsonMode = true, tools = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
-  const apiKey = process.env.GROK_API_KEY_LUMEN;
+  const apiKey = process.env.GROK_API_KEY_LUMEN?.trim();
   if (!apiKey) {
     const err = new Error('GROK_API_KEY_LUMEN is not set');
     err.status = 503;
@@ -431,13 +452,15 @@ router.post('/find-leads', async (req, res, next) => {
     }
 
     let leads = [];
+    const grokEnvSet = isGrokConfigured();
     let meta = {
       source: 'demo',
       maxLeads: MAX_LEADS,
       customPromptApplied: hasCustomPrompt(icp),
+      grok_env_set: grokEnvSet,
     };
 
-    if (process.env.GROK_API_KEY_LUMEN) {
+    if (isGrokConfigured()) {
       console.log('[ai/find-leads] Grok rigorous multi-phase research', icp.industry);
       const result = await researchLeadsWithGrok(icp);
       leads = result.leads;
@@ -445,6 +468,7 @@ router.post('/find-leads', async (req, res, next) => {
         source: 'grok',
         maxLeads: MAX_LEADS,
         customPromptPrioritized: hasCustomPrompt(icp),
+        grok_env_set: true,
         ...result.meta,
         companiesResearched: result.meta.phases?.find((p) => p.step === 'companies')?.count ?? 0,
         candidatesReviewed: result.meta.phases?.find((p) => p.step === 'candidates')?.count ?? 0,
@@ -453,9 +477,11 @@ router.post('/find-leads', async (req, res, next) => {
       if (leads.length === 0) {
         leads = buildDemoLeads(icp);
         meta = {
+          ...meta,
           source: 'demo',
+          grok_env_set: true,
           message:
-            'Grok found no leads passing verification gates; showing demo set. Refine ICP or try again.',
+            'Grok ran but found no leads passing verification gates; showing demo set. Refine ICP or try again.',
         };
       }
     } else {
@@ -466,6 +492,14 @@ router.post('/find-leads', async (req, res, next) => {
     res.json({ success: true, data: { leads, meta } });
   } catch (err) {
     console.error('[ai/find-leads]', err.message);
+    if (isGrokConfigured()) {
+      return res.status(err.status || 502).json({
+        success: false,
+        error: err.message || 'Grok research failed',
+        hint:
+          'Verify GROK_API_KEY_LUMEN on this server (Render → Environment), then redeploy. Check x.ai billing and API access.',
+      });
+    }
     next(err);
   }
 });
@@ -571,7 +605,7 @@ router.post('/generate-campaign', async (req, res, next) => {
     let campaign = buildDemoCampaign(brief || `${name} — ${target_audience}`, language);
     let meta = { source: 'demo' };
 
-    if (process.env.GROK_API_KEY_LUMEN) {
+    if (isGrokConfigured()) {
       const userPrompt = emailOnly
         ? `MODE: email_only — Regenerate email subject variations and body only.
 
@@ -664,7 +698,7 @@ router.post('/generate-email', async (req, res, next) => {
       bodyHtml: '',
     };
 
-    if (process.env.GROK_API_KEY_LUMEN) {
+    if (isGrokConfigured()) {
       const content = await callGrok(
         [
           {

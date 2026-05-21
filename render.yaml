@@ -31,6 +31,11 @@ services:
         sync: false
       - key: VITE_GROK_USE_BACKEND_PROXY
         value: "true"
+      # Required for live Grok (Smart Lead Finder, campaigns) — set in Render Dashboard
+      - key: GROK_API_KEY_LUMEN
+        sync: false
+      - key: GROK_MODEL
+        value: "grok-4.3"
       - key: CORS_ORIGIN
         sync: false
       - key: AUTH_SECRET

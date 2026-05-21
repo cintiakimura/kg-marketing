@@ -15,8 +15,9 @@ const HAS_FRONTEND = fs.existsSync(path.join(DIST_DIR, 'index.html'));
 try {
   const require = createRequire(import.meta.url);
   const dotenv = require('dotenv');
-  dotenv.config({ path: path.resolve(__dirname, '../.env') });
-  dotenv.config({ path: path.resolve(__dirname, '.env'), override: true });
+  // Never override vars already set by Render/host (e.g. GROK_API_KEY_LUMEN)
+  dotenv.config({ path: path.resolve(__dirname, '../.env'), override: false });
+  dotenv.config({ path: path.resolve(__dirname, '.env'), override: false });
 } catch {
   console.log('[env] Using platform environment variables (Render/dashboard)');
 }
@@ -80,6 +81,7 @@ app.get('/api/health', async (_req, res) => {
     database = 'error';
     console.error('[health] DB ping failed:', err.message);
   }
+  const grokConfigured = Boolean(process.env.GROK_API_KEY_LUMEN?.trim());
   res.json({
     success: true,
     data: {
@@ -87,6 +89,8 @@ app.get('/api/health', async (_req, res) => {
       service: 'kg-marketing-api',
       database,
       users_table: usersTable,
+      grok_configured: grokConfigured,
+      grok_model: process.env.GROK_MODEL || 'grok-4.3',
       timestamp: new Date().toISOString(),
     },
   });
@@ -181,6 +185,13 @@ function start() {
   const server = app.listen(PORT, HOST, () => {
     console.log(`[server] Listening on ${HOST}:${PORT}`);
     console.log(`[server] Health → /api/health`);
+    console.log(
+      `[server] Grok: ${
+        process.env.GROK_API_KEY_LUMEN?.trim()
+          ? 'configured (live AI)'
+          : 'NOT SET — Smart Lead Finder & campaigns use demo data'
+      }`
+    );
   });
 
   server.on('error', (err) => {

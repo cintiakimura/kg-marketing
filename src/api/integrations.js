@@ -38,7 +38,7 @@ export async function extractDataFromUploadedFile(_params) {
 const GROK_API_URL = () =>
   import.meta.env.VITE_GROK_API_URL || 'https://api.x.ai/v1';
 const GROK_MODEL = () =>
-  import.meta.env.VITE_GROK_MODEL || 'grok-2-latest';
+  import.meta.env.VITE_GROK_MODEL || 'grok-4.3';
 
 const MAX_LEADS = 12;
 const MIN_FIT_SCORE = 7;
@@ -331,15 +331,20 @@ async function findHighQualityLeadsViaBackend(icpData, options = {}) {
       throw new Error(json.error || `Backend error (${res.status})`);
     }
 
+    const meta = json.data?.meta || { source: 'grok' };
     const leads = (json.data?.leads || [])
       .map((l, i) => normalizeLead(l, i))
-      .filter((l) => l.fitScore >= MIN_FIT_SCORE && l.verificationNotes)
+      .filter((l) => {
+        if (l.fitScore < MIN_FIT_SCORE) return false;
+        if (meta.source === 'demo') return true;
+        return Boolean(l.verificationNotes?.trim());
+      })
       .slice(0, MAX_LEADS);
     onProgress?.('complete', 'Research complete');
 
     return {
       leads,
-      meta: json.data?.meta || { source: 'grok' },
+      meta,
     };
   } finally {
     clearInterval(tick);

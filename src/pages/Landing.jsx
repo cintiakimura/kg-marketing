@@ -55,7 +55,7 @@ export default function Landing() {
   return (
     <div
       className="min-h-screen flex flex-col text-white overflow-x-hidden"
-      style={{ backgroundColor: BG, fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
+      style={{ backgroundColor: BG, fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 400 }}
     >
       <header className="w-full px-6 sm:px-10 py-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
@@ -115,7 +115,7 @@ export default function Landing() {
       <Dialog open={loginOpen} onOpenChange={setLoginOpen}>
         <DialogContent
           className="border-green-500/20 text-white sm:max-w-md font-normal"
-          style={{ backgroundColor: '#0a1f0a', fontFamily: '"Akkurat", sans-serif', fontWeight: 400 }}
+          style={{ backgroundColor: '#0a1f0a', fontFamily: 'system-ui, -apple-system, sans-serif', fontWeight: 400 }}
         >
           <DialogHeader>
             <DialogTitle className="text-white" style={{ fontWeight: 400 }}>

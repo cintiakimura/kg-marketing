@@ -40,8 +40,19 @@ Then sign up again on the landing page.
 
 ## Also set (same Web Service)
 
-- `GROK_API_KEY_LUMEN` — for Smart Lead Finder
+- `GROK_API_KEY_LUMEN` — your **xAI API key** (Smart Lead Finder + Grok campaigns). Without this, the app uses **demo** sample data.
+- `GROK_MODEL` — optional; default is `grok-4.3`. Do **not** use retired names like `grok-2-latest` (API returns “Model not found” and find-leads fails).
 - `CORS_ORIGIN` — `https://kg-marketing-api.onrender.com` (your real URL)
 - `VITE_KG_MARKETING_API_URL` — only needed at **build** time; set to same URL and redeploy
 
 Your local `.env` file is **not** uploaded to Render — env vars must be set in the dashboard.
+
+### Verify Grok (not demo)
+
+1. After deploy, open: `https://YOUR-SERVICE.onrender.com/api/ai/status`  
+   Expect: `"grok_configured": true`
+2. Or: `https://YOUR-SERVICE.onrender.com/api/health`  
+   Expect: `"grok_configured": true`
+3. In the app, open **Smart Lead Finder** — you should see “Live Grok enabled” at the top (not the amber demo warning).
+
+A permanent public URL is **not** required for Grok — only the API key on the **server** that handles `/api/ai/find-leads`.

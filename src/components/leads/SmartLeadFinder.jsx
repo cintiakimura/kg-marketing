@@ -1,4 +1,5 @@
 import { findHighQualityLeads } from '@/api/integrations';
+import { fetchAiStatus } from '@/api/aiStatus';
 import { createLeadsBulk } from '@/api/leads';
 import {
   loadSearchTemplates,
@@ -6,7 +7,7 @@ import {
   deleteSearchTemplate,
 } from '@/lib/smartLeadFinderStorage';
 import { useToast } from '@/components/ui/use-toast';
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   X,
@@ -182,6 +183,18 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
   const [importDone, setImportDone] = useState(false);
   const [importedCount, setImportedCount] = useState(0);
   const [appliedCustomPrompt, setAppliedCustomPrompt] = useState('');
+  const [aiStatus, setAiStatus] = useState(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    let cancelled = false;
+    fetchAiStatus().then((status) => {
+      if (!cancelled) setAiStatus(status);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [isOpen]);
 
   const progressIndex = PROGRESS_STEPS.findIndex((s) => s.key === progressKey);
   const progressPercent = useMemo(() => {
@@ -339,8 +352,27 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
           {view === 'form' && (
             <div className="p-6 space-y-6">
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-[18px]">
                   {error}
+                </div>
+              )}
+
+              {aiStatus && !aiStatus.grokConfigured && (
+                <div className="p-4 rounded-lg bg-amber-500/10 border border-amber-500/40 text-amber-100 text-[18px] leading-relaxed">
+                  <p className="font-medium text-amber-200 mb-2">Demo mode on this server</p>
+                  <p className="mb-2">{aiStatus.message}</p>
+                  <p className="text-amber-200/90 text-[16px]">
+                    Add <code className="text-green-400">GROK_API_KEY_LUMEN</code> in{' '}
+                    <strong>Render → your API service → Environment</strong>, then Manual Deploy.
+                    Your local <code className="text-green-400">.env</code> file is not uploaded to
+                    Render automatically.
+                  </p>
+                </div>
+              )}
+
+              {aiStatus?.grokConfigured && (
+                <div className="p-3 rounded-lg bg-green-500/10 border border-green-500/30 text-green-300 text-[16px]">
+                  Live Grok enabled{aiStatus.model ? ` (${aiStatus.model})` : ''}.
                 </div>
               )}
 
@@ -667,9 +699,11 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     </p>
                   )}
                   {meta?.source === 'demo' && (
-                    <p className="text-xs text-amber-400/90 mt-1">
-                      Demo mode — set <code className="text-green-400">GROK_API_KEY_LUMEN</code> on
-                      backend or <code className="text-green-400">VITE_KG_MARKETING_API_URL</code>
+                    <p className="text-[16px] text-amber-400/90 mt-1 leading-relaxed">
+                      {meta.message ||
+                        (meta.grok_env_set
+                          ? 'Demo fallback — Grok is configured on the server but returned no verified leads (or an error occurred). Check Render logs.'
+                          : 'Demo leads — server does not see GROK_API_KEY_LUMEN. In Render → Environment the name must be exactly GROK_API_KEY_LUMEN, then Manual Deploy.')}
                     </p>
                   )}
                   {meta?.source === 'grok' && (
