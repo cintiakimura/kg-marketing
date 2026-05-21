@@ -122,7 +122,7 @@ Return JSON with 3 time slot suggestions:
         body: `Dear ${lead.full_name},<br><br>
 Your 15-minute webinar with KG PROTECH has been scheduled for:<br><br>
 <strong>${suggestion.day_name}, ${suggestion.time_display}</strong><br><br>
-Meeting Link: <a href="https://meet.google.com/xyz" style="color: #14532d;">Join Meeting</a><br><br>
+Meeting Link: <a href="https://meet.google.com/xyz" style="color: #22A855;">Join Meeting</a><br><br>
 We look forward to discussing how our IoT Automatic Fault Simulator can benefit ${lead.company || 'your organization'}.<br><br>
 Best regards,<br>
 Cintia Kimura<br>
@@ -150,18 +150,18 @@ KG PROTECH`
   };
 
   return (
-    <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
+    <div className="p-4 bg-kg-input rounded-lg border border-green-500/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <Calendar className="w-4 h-4 text-green-400" />
-          <span className="text-white font-medium text-sm">AI Meeting Scheduler</span>
+          <span className="text-white font-medium text-[18px]">AI Meeting Scheduler</span>
         </div>
         {!suggestions && (
           <Button
             onClick={handleAnalyze}
             disabled={isAnalyzing}
             size="sm"
-            className="bg-kg-btn hover:bg-kg-btn-hover text-white"
+            variant="kgAi"
           >
             {isAnalyzing ? (
               <>
@@ -181,7 +181,7 @@ KG PROTECH`
       {suggestions && (
         <div className="space-y-3">
           <div className="p-2 bg-kg-card rounded">
-            <p className="text-gray-300 text-xs">{suggestions.analysis}</p>
+            <p className="text-gray-300 text-[18px]">{suggestions.analysis}</p>
           </div>
 
           {suggestions.suggestions.map((suggestion, idx) => (
@@ -189,22 +189,22 @@ KG PROTECH`
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
-                    <span className="text-white font-medium text-sm">{suggestion.day_name}</span>
-                    <Badge className={`${confidenceColors[suggestion.confidence]} border-0 text-xs`}>
+                    <span className="text-white font-medium text-[18px]">{suggestion.day_name}</span>
+                    <Badge className={`${confidenceColors[suggestion.confidence]} border-0 text-[18px]`}>
                       {suggestion.confidence}
                     </Badge>
                   </div>
-                  <div className="flex items-center gap-2 text-green-400 text-sm mb-1">
+                  <div className="flex items-center gap-2 text-green-400 text-[18px] mb-1">
                     <Clock className="w-3 h-3" />
                     <span>{suggestion.time_display}</span>
                   </div>
-                  <p className="text-gray-400 text-xs">{suggestion.reason}</p>
+                  <p className="text-gray-400 text-[18px]">{suggestion.reason}</p>
                 </div>
                 <Button
                   onClick={() => handleSchedule(suggestion)}
                   disabled={isScheduling}
                   size="sm"
-                  className="bg-kg-btn hover:bg-kg-btn-hover text-white"
+                  variant="kgAi"
                 >
                   {isScheduling ? (
                     <Loader2 className="w-3 h-3 animate-spin" />
@@ -223,7 +223,7 @@ KG PROTECH`
             onClick={() => setSuggestions(null)}
             size="sm"
             variant="outline"
-            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-raised"
+            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-input"
           >
             Clear Suggestions
           </Button>
@@ -231,7 +231,7 @@ KG PROTECH`
       )}
 
       {!suggestions && !isAnalyzing && (
-        <p className="text-gray-400 text-xs">
+        <p className="text-gray-400 text-[18px]">
           AI analyzes historical patterns, timezones, and engagement data to suggest optimal meeting times
         </p>
       )}

@@ -169,7 +169,7 @@ Return JSON:
 
   return (
     <div className="space-y-4">
-      <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
+      <div className="p-4 bg-kg-input rounded-lg border border-green-500/20">
         <div className="flex items-center gap-2 mb-3">
           <Sparkles className="w-5 h-5 text-green-400" />
           <Label className="text-white font-semibold">AI Email Assistant</Label>
@@ -177,7 +177,7 @@ Return JSON:
 
         <div className="space-y-3">
           <div>
-            <Label className="text-gray-400 text-xs mb-1">Describe your email topic or goal</Label>
+            <Label className="text-gray-400 text-[18px] mb-1">Describe your email topic or goal</Label>
             <Textarea
               value={description}
               onChange={(e) => setDescription(e.target.value)}
@@ -191,7 +191,7 @@ Return JSON:
             <Button
               onClick={generateEmailBodies}
               disabled={isGenerating}
-              variant="kg"
+              variant="kgAi"
             >
               <Wand2 className="w-4 h-4 mr-2" />
               {isGenerating ? 'Generating...' : 'Generate Email Variations'}
@@ -199,7 +199,7 @@ Return JSON:
             <Button
               onClick={generateSubjectLines}
               disabled={isGenerating}
-              className="bg-kg-raised hover:bg-[#444444] text-white"
+              className="bg-kg-input hover:bg-[#444444] text-white"
             >
               <Sparkles className="w-4 h-4 mr-2" />
               {isGenerating ? 'Generating...' : 'Suggest Subject Lines'}
@@ -214,17 +214,18 @@ Return JSON:
           {emailOptions.map((option, index) => (
             <div key={index} className="p-4 bg-kg-card rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
               <div className="flex items-center justify-between mb-2">
-                <span className="text-green-400 font-medium text-sm">{option.label}</span>
+                <span className="text-green-400 font-medium text-[18px]">{option.label}</span>
                 <Button
                   size="sm"
                   onClick={() => onApplyBody(option.body)}
-                  className="bg-kg-btn hover:bg-kg-btn-hover text-white h-7 text-xs"
+                  variant="kg"
+                  size="sm"
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use This
                 </Button>
               </div>
-              <p className="text-gray-300 text-sm whitespace-pre-wrap">{option.body}</p>
+              <p className="text-gray-300 text-[18px] whitespace-pre-wrap">{option.body}</p>
             </div>
           ))}
         </div>
@@ -236,17 +237,18 @@ Return JSON:
           {subjectSuggestions.map((suggestion, index) => (
             <div key={index} className="p-3 bg-kg-card rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
               <div className="flex items-center justify-between mb-1">
-                <span className="text-white font-medium text-sm">{suggestion.text}</span>
+                <span className="text-white font-medium text-[18px]">{suggestion.text}</span>
                 <Button
                   size="sm"
                   onClick={() => onApplySubject(suggestion.text)}
-                  className="bg-kg-btn hover:bg-kg-btn-hover text-white h-6 text-xs"
+                  variant="kg"
+                  size="sm"
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use
                 </Button>
               </div>
-              <p className="text-gray-400 text-xs">{suggestion.reason}</p>
+              <p className="text-gray-400 text-[18px]">{suggestion.reason}</p>
             </div>
           ))}
         </div>

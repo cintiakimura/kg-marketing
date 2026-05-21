@@ -95,17 +95,17 @@ Return JSON with:
   };
 
   return (
-    <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
+    <div className="p-4 bg-kg-input rounded-lg border border-green-500/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-green-400" />
-          <span className="text-white font-medium text-sm">AI Media Recommendation</span>
+          <span className="text-white font-medium text-[18px]">AI Media Recommendation</span>
         </div>
         <Button
           onClick={handleGenerateSuggestion}
           disabled={isGenerating || campaigns.length === 0}
           size="sm"
-          className="bg-kg-btn hover:bg-kg-btn-hover text-white"
+          variant="kgAi"
         >
           <Sparkles className="w-3 h-3 mr-1" />
           {isGenerating ? 'Analyzing...' : 'Get Suggestion'}
@@ -115,10 +115,10 @@ Return JSON with:
       {suggestion && (
         <div className="space-y-3">
           <div className="p-3 bg-kg-card rounded border border-green-500/30">
-            <p className="text-green-400 font-medium text-sm mb-1">
+            <p className="text-green-400 font-medium text-[18px] mb-1">
               Recommended: {suggestion.recommended_media === 'none' ? 'No Media' : suggestion.recommended_media.replace('_', ' ').toUpperCase()}
             </p>
-            <p className="text-gray-300 text-xs">{suggestion.reason}</p>
+            <p className="text-gray-300 text-[18px]">{suggestion.reason}</p>
           </div>
           <div className="flex gap-2">
             <Button
@@ -133,7 +133,7 @@ Return JSON with:
               onClick={() => setSuggestion(null)}
               size="sm"
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
             >
               Dismiss
             </Button>
@@ -142,7 +142,7 @@ Return JSON with:
       )}
 
       {!suggestion && campaigns.length === 0 && (
-        <p className="text-gray-400 text-xs">
+        <p className="text-gray-400 text-[18px]">
           Create and launch some campaigns first to get AI-powered media recommendations
         </p>
       )}

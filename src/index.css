@@ -6,29 +6,29 @@
   :root {
     --kg-bg: #000000;
     --kg-card: #0a1f0a;
-    --kg-raised: #0d2812;
-    --kg-btn: #14532d;
-    --kg-btn-hover: #166534;
+    --kg-input: #0C180E;
+    --kg-btn: #22A855;
+    --kg-btn-hover: #28BC5C;
 
     --background: 0 0% 0%;
     --foreground: 0 0% 98%;
     --card: 142 40% 8%;
     --card-foreground: 0 0% 98%;
-    --popover: 142 40% 8%;
+    --popover: 142 28% 7%;
     --popover-foreground: 0 0% 98%;
-    --primary: 142 61% 20%;
+    --primary: 142 65% 38%;
     --primary-foreground: 0 0% 100%;
-    --secondary: 142 35% 10%;
+    --secondary: 142 28% 7%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 142 30% 12%;
+    --muted: 142 28% 7%;
     --muted-foreground: 0 0% 65%;
-    --accent: 142 35% 12%;
+    --accent: 142 28% 7%;
     --accent-foreground: 0 0% 98%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
     --border: 142 25% 18%;
-    --input: 142 30% 12%;
-    --ring: 142 61% 35%;
+    --input: 142 28% 7%;
+    --ring: 142 65% 42%;
     --radius: 0.75rem;
   }
 }
@@ -38,7 +38,7 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-kg-black text-[13px] leading-relaxed font-normal text-gray-200 antialiased;
+    @apply bg-kg-black text-[18px] leading-relaxed font-normal text-gray-200 antialiased;
   }
   h1,
   h2,
@@ -50,21 +50,24 @@
 
 @layer components {
   .kg-helper {
-    @apply text-[13px] font-normal text-gray-400 leading-relaxed;
+    @apply text-[18px] font-normal text-gray-400 leading-relaxed;
   }
   .kg-page-title {
     @apply text-2xl font-medium text-white tracking-tight;
   }
   .kg-section-title {
-    @apply text-base font-medium text-white;
+    @apply text-xl font-medium text-white;
   }
   .kg-label-important {
-    @apply text-[13px] font-medium text-gray-300;
+    @apply text-[18px] font-medium text-gray-300;
   }
   .kg-card {
     @apply bg-kg-card rounded-xl border border-green-500/30 p-6 md:p-8 shadow-kg-card-glow;
   }
   .kg-card-hover {
     @apply kg-card transition-colors hover:border-green-500/45;
+  }
+  .kg-link {
+    @apply uppercase tracking-wide text-[18px] font-normal;
   }
 }

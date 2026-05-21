@@ -109,7 +109,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
     }
   };
 
-  const inputClass = 'bg-kg-raised border-green-500/20 text-white';
+  const inputClass = 'bg-kg-input border-green-500/20 text-white';
 
   return (
     <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
@@ -128,9 +128,9 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
                 <Badge className="bg-kg-btn text-white font-semibold">Fit {lead.fit_score}/10</Badge>
               )}
             </div>
-            <p className="text-green-400 text-sm">{lead.title || '—'}</p>
-            <p className="text-gray-400 text-sm">{lead.company || '—'}</p>
-            <div className="flex flex-wrap gap-3 mt-2 text-sm text-gray-400">
+            <p className="text-green-400 text-[18px]">{lead.title || '—'}</p>
+            <p className="text-gray-400 text-[18px]">{lead.company || '—'}</p>
+            <div className="flex flex-wrap gap-3 mt-2 text-[18px] text-gray-400">
               {lead.email && (
                 <span className="flex items-center gap-1">
                   <Mail className="w-3 h-3" />
@@ -194,9 +194,9 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           </div>
 
           {parsed.suggestedMessage && (
-            <div className="p-4 rounded-lg bg-kg-raised border border-green-500/20">
+            <div className="p-4 rounded-lg bg-kg-input border border-green-500/20">
               <div className="flex items-center justify-between mb-2">
-                <Label className="text-gray-400 text-xs uppercase tracking-wide">
+                <Label className="text-gray-400 text-[18px] uppercase tracking-wide">
                   Suggested first message
                 </Label>
                 <Button
@@ -210,7 +210,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
                   Copy
                 </Button>
               </div>
-              <p className="text-gray-200 text-sm italic leading-relaxed">
+              <p className="text-gray-200 text-[18px] italic leading-relaxed">
                 {parsed.suggestedMessage}
               </p>
             </div>
@@ -218,20 +218,20 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
 
           {parsed.verificationNotes && (
             <div className="p-4 rounded-lg bg-kg-btn/5 border border-green-500/20">
-              <Label className="text-gray-400 text-xs uppercase tracking-wide flex items-center gap-1 mb-2">
+              <Label className="text-gray-400 text-[18px] uppercase tracking-wide flex items-center gap-1 mb-2">
                 <ShieldCheck className="w-3 h-3 text-green-400" />
                 Verification notes (read-only)
               </Label>
-              <p className="text-gray-400 text-sm leading-relaxed">{parsed.verificationNotes}</p>
+              <p className="text-gray-400 text-[18px] leading-relaxed">{parsed.verificationNotes}</p>
             </div>
           )}
 
           {parsed.fitReasoning && (
             <div>
-              <Label className="text-gray-400 text-xs uppercase tracking-wide mb-2">
+              <Label className="text-gray-400 text-[18px] uppercase tracking-wide mb-2">
                 Fit reasoning (read-only)
               </Label>
-              <p className="text-gray-300 text-sm leading-relaxed bg-kg-raised p-3 rounded-lg border border-green-500/20">
+              <p className="text-gray-300 text-[18px] leading-relaxed bg-kg-input p-3 rounded-lg border border-green-500/20">
                 {parsed.fitReasoning}
               </p>
             </div>
@@ -239,10 +239,10 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
 
           {parsed.recentActivity && (
             <div>
-              <Label className="text-gray-400 text-xs uppercase tracking-wide mb-2">
+              <Label className="text-gray-400 text-[18px] uppercase tracking-wide mb-2">
                 Recent activity (read-only)
               </Label>
-              <p className="text-gray-300 text-sm leading-relaxed whitespace-pre-line bg-kg-raised p-3 rounded-lg border border-green-500/20">
+              <p className="text-gray-300 text-[18px] leading-relaxed whitespace-pre-line bg-kg-input p-3 rounded-lg border border-green-500/20">
                 {parsed.recentActivity}
               </p>
             </div>
@@ -257,7 +257,7 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
               placeholder="Call notes, next steps, objections..."
               className={inputClass}
             />
-            <p className="text-xs text-gray-600 mt-1">
+            <p className="text-[18px] text-gray-600 mt-1">
               Your follow-up notes. Smart Finder research blocks above are preserved on save.
             </p>
           </div>

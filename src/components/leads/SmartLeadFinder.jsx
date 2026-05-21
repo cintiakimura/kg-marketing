@@ -296,7 +296,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
   };
 
   const inputClass =
-    'bg-kg-raised border-green-500/20 text-white text-[13px] leading-relaxed rounded-xl';
+    'bg-kg-input border-green-500/20 text-white text-[18px] leading-relaxed rounded-xl';
 
   return (
     <AnimatePresence>
@@ -321,7 +321,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
             </div>
             <div>
               <h2 className="text-xl font-medium text-white">Smart Lead Finder</h2>
-              <p className="text-sm text-gray-400 leading-relaxed">
+              <p className="text-[18px] text-gray-400 leading-relaxed">
                 Up to 12 verified decision-makers — evidence-backed, anti-hallucination research
               </p>
             </div>
@@ -339,20 +339,20 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
           {view === 'form' && (
             <div className="p-6 space-y-6">
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-[18px]">
                   {error}
                 </div>
               )}
 
               <div className="flex items-start gap-3 p-4 rounded-lg bg-kg-btn/5 border border-green-500/25">
                 <ShieldCheck className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
-                <p className="text-sm text-gray-300 leading-relaxed">
+                <p className="text-[18px] text-gray-300 leading-relaxed">
                   Grok uses multi-step web + X search, then a verification pass. Leads without
                   solid sources, LinkedIn evidence, or recent activity are discarded — never invented.
                 </p>
               </div>
 
-              <p className="text-xs text-gray-500 uppercase tracking-wide font-medium">
+              <p className="text-[18px] text-gray-500 uppercase tracking-wide font-medium">
                 Option 1 — Structured search
               </p>
 
@@ -372,20 +372,20 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </CollapsibleTrigger>
                 <CollapsibleContent className="mt-2 space-y-2">
                   {templates.length === 0 ? (
-                    <p className="text-sm text-gray-500 px-1">No saved templates yet.</p>
+                    <p className="text-[18px] text-gray-500 px-1">No saved templates yet.</p>
                   ) : (
                     templates.map((tpl) => (
                       <div
                         key={tpl.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-kg-raised border border-green-500/20"
+                        className="flex items-center justify-between p-3 rounded-lg bg-kg-input border border-green-500/20"
                       >
                         <button
                           type="button"
                           onClick={() => handleLoadTemplate(tpl)}
-                          className="text-left text-sm text-white hover:text-green-400"
+                          className="text-left text-[18px] text-white hover:text-green-400"
                         >
                           {tpl.name}
-                          <span className="block text-xs text-gray-500">
+                          <span className="block text-[18px] text-gray-500">
                             {new Date(tpl.savedAt).toLocaleDateString()}
                           </span>
                         </button>
@@ -446,7 +446,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   <Target className="w-4 h-4 text-green-400" />
                   Target roles {hasFullCustomPrompt ? '' : '*'} (multi-select)
                 </Label>
-                <p className="text-sm text-gray-400 mb-4 leading-relaxed">
+                <p className="text-[18px] text-gray-400 mb-4 leading-relaxed">
                   Roles responsible for purchasing training materials, simulators, and tools in
                   automotive schools, OEM aftersales departments, dealerships, and resellers.
                 </p>
@@ -459,12 +459,12 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         key={role}
                         type="button"
                         onClick={() => toggleRole(role)}
-                        className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
+                        className={`px-3 py-1.5 rounded-full text-[18px] border transition-all ${
                           active
                             ? 'bg-kg-btn/20 border-green-500/40 text-green-400 font-semibold'
                             : isPrimary
                               ? 'bg-kg-btn/5 border-green-500/60 text-gray-200 font-semibold hover:border-green-500/40 hover:text-green-400'
-                              : 'bg-kg-raised border-green-500/20 text-gray-400 font-medium hover:border-gray-500'
+                              : 'bg-kg-input border-green-500/20 text-gray-400 font-medium hover:border-gray-500'
                         }`}
                       >
                         {role}
@@ -517,7 +517,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   <div className="w-full border-t border-green-500/20" />
                 </div>
                 <div className="relative flex justify-center">
-                  <span className="bg-kg-card px-4 text-sm font-semibold text-green-400 uppercase tracking-wider">
+                  <span className="bg-kg-card px-4 text-[18px] font-semibold text-green-400 uppercase tracking-wider">
                     or
                   </span>
                 </div>
@@ -532,7 +532,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     <Label className="text-white text-base font-medium block">
                       Or write your full custom prompt here (optional but powerful)
                     </Label>
-                    <p className="text-sm text-gray-400 mt-2 leading-relaxed">
+                    <p className="text-[18px] text-gray-400 mt-2 leading-relaxed">
                       Maximum control: describe exactly who you want in plain language. When filled,
                       Grok treats this as the <strong className="text-green-400">primary directive</strong>{' '}
                       — you can use this alone or combine it with the structured fields above.
@@ -544,10 +544,10 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   onChange={(e) => setIcp((p) => ({ ...p, customPrompt: e.target.value }))}
                   placeholder="Find Training Managers or Aftersales Training Managers at automotive OEMs in Germany who recently posted about technician upskilling, diagnostic training, or L&D tooling..."
                   rows={10}
-                  className={`${inputClass} min-h-[220px] text-[13px] leading-relaxed border-green-500/40 focus-visible:ring-2 focus-visible:ring-green-500/50 py-4`}
+                  className={`${inputClass} min-h-[220px] text-[18px] leading-relaxed border-green-500/40 focus-visible:ring-2 focus-visible:ring-green-500/50 py-4`}
                 />
                 {hasFullCustomPrompt && (
-                  <p className="text-xs text-green-400 mt-2 flex items-center gap-1">
+                  <p className="text-[18px] text-green-400 mt-2 flex items-center gap-1">
                     <Wand2 className="w-3 h-3" />
                     Full custom prompt will be prioritized in research
                   </p>
@@ -585,7 +585,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   type="button"
                   onClick={handleSearch}
                   disabled={isSearching}
-                  variant="kg"
+                  variant="kgAi"
                   className="sm:min-w-[220px]"
                 >
                   <Sparkles className="w-5 h-5 mr-2" />
@@ -599,12 +599,12 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
             <div className="p-12 flex flex-col items-center justify-center min-h-[400px]">
               <Loader2 className="w-12 h-12 text-green-400 animate-spin mb-6" />
               <h3 className="text-lg font-semibold text-white mb-2">Research in progress</h3>
-              <p className="text-gray-400 text-sm mb-8 text-center max-w-md">
+              <p className="text-gray-400 text-[18px] mb-8 text-center max-w-md">
                 Four-phase research: companies → decision-makers → recent activity → fit scoring
                 with source verification.
               </p>
               <div className="w-full max-w-md space-y-4">
-                <Progress value={progressPercent} className="h-2 bg-kg-raised" />
+                <Progress value={progressPercent} className="h-2 bg-kg-input" />
                 <ul className="space-y-2">
                   {PROGRESS_STEPS.map((step, i) => {
                     const done =
@@ -615,7 +615,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     return (
                       <li
                         key={step.key}
-                        className={`flex items-center gap-3 text-sm ${
+                        className={`flex items-center gap-3 text-[18px] ${
                           active ? 'text-green-400' : done ? 'text-gray-300' : 'text-gray-600'
                         }`}
                       >
@@ -630,7 +630,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                   })}
                 </ul>
                 {progressDetail && (
-                  <p className="text-xs text-gray-500 text-center">{progressDetail}</p>
+                  <p className="text-[18px] text-gray-500 text-center">{progressDetail}</p>
                 )}
               </div>
             </div>
@@ -639,7 +639,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
           {view === 'results' && (
             <div className="p-6 space-y-4">
               {error && (
-                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
+                <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-[18px]">
                   {error}
                 </div>
               )}
@@ -653,7 +653,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     {(appliedCustomPrompt || meta?.customPromptApplied) && (
                       <Badge
                         variant="outline"
-                        className="bg-kg-btn/10 text-green-400 border-green-500/40 text-xs"
+                        className="bg-kg-btn/10 text-green-400 border-green-500/40 text-[18px]"
                         title={appliedCustomPrompt}
                       >
                         <ScrollText className="w-3 h-3 mr-1 inline" />
@@ -664,18 +664,18 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     )}
                   </div>
                   {appliedCustomPrompt && (
-                    <p className="text-xs text-gray-500 mt-1 max-w-xl line-clamp-2">
+                    <p className="text-[18px] text-gray-500 mt-1 max-w-xl line-clamp-2">
                       “{appliedCustomPrompt}”
                     </p>
                   )}
                   {meta?.source === 'demo' && (
-                    <p className="text-xs text-amber-400/90 mt-1">
+                    <p className="text-[18px] text-amber-400/90 mt-1">
                       Demo mode — set <code className="text-green-400">GROK_API_KEY_LUMEN</code> on
                       backend or <code className="text-green-400">VITE_KG_MARKETING_API_URL</code>
                     </p>
                   )}
                   {meta?.source === 'grok' && (
-                    <p className="text-xs text-gray-500 mt-1">
+                    <p className="text-[18px] text-gray-500 mt-1">
                       {meta.companiesResearched ?? 0} companies ·{' '}
                       {meta.candidatesReviewed ?? 0} candidates ·{' '}
                       {meta.leadsReturned ?? leads.length} passed verification
@@ -717,7 +717,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     transition={{ delay: index * 0.05 }}
                   >
                   <Card
-                    className={`bg-kg-raised border transition-all ${
+                    className={`bg-kg-input border transition-all ${
                       selectedIds.has(lead.id)
                         ? 'border-green-500/40 ring-1 ring-green-500/30'
                         : 'border-green-500/20'
@@ -745,9 +745,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                               </Badge>
                             )}
                           </div>
-                          <p className="text-sm text-green-400">{lead.title}</p>
-                          <p className="text-sm text-gray-400">{lead.company}</p>
-                          <div className="flex flex-wrap gap-3 mt-2 text-xs text-gray-500">
+                          <p className="text-[18px] text-green-400">{lead.title}</p>
+                          <p className="text-[18px] text-gray-400">{lead.company}</p>
+                          <div className="flex flex-wrap gap-3 mt-2 text-[18px] text-gray-500">
                             {lead.location && (
                               <span className="flex items-center gap-1">
                                 <MapPin className="w-3 h-3" />
@@ -769,15 +769,15 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         </div>
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-3 text-sm">
+                    <CardContent className="space-y-3 text-[18px]">
                       <div>
-                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                        <p className="text-gray-500 text-[18px] uppercase tracking-wide mb-1">
                           Why they fit
                         </p>
                         <p className="text-gray-300 leading-relaxed">{lead.fitReasoning}</p>
                       </div>
                       <div>
-                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1">
+                        <p className="text-gray-500 text-[18px] uppercase tracking-wide mb-1">
                           Recent activity
                         </p>
                         <ul className="text-gray-300 leading-relaxed space-y-1 list-none">
@@ -790,7 +790,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         </ul>
                       </div>
                       <div className="p-3 rounded-lg bg-kg-card border border-green-500/20">
-                        <p className="text-gray-500 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
+                        <p className="text-gray-500 text-[18px] uppercase tracking-wide mb-1 flex items-center gap-1">
                           <MessageSquareQuote className="w-3 h-3" />
                           Suggested first message
                         </p>
@@ -800,11 +800,11 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                       </div>
                       {(lead.verificationNotes || lead.verification_notes) && (
                         <div className="p-3 rounded-lg bg-kg-btn/5 border border-green-500/20">
-                          <p className="text-gray-500 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
+                          <p className="text-gray-500 text-[18px] uppercase tracking-wide mb-1 flex items-center gap-1">
                             <ShieldCheck className="w-3 h-3 text-green-400" />
                             Verification notes
                           </p>
-                          <p className="text-gray-400 text-xs leading-relaxed">
+                          <p className="text-gray-400 text-[18px] leading-relaxed">
                             {lead.verificationNotes || lead.verification_notes}
                           </p>
                         </div>
@@ -822,7 +822,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
           <div className="shrink-0 border-t border-green-500/25 p-4 flex flex-wrap gap-3 bg-[#252525]">
             {importDone ? (
               <>
-                <p className="w-full text-sm text-green-400 flex items-center gap-2">
+                <p className="w-full text-[18px] text-green-400 flex items-center gap-2">
                   <CheckCircle2 className="w-4 h-4" />
                   {importedCount} lead{importedCount !== 1 ? 's' : ''} saved to your database.
                 </p>

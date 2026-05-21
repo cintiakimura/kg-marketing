@@ -77,7 +77,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
               value={formData.full_name}
               onChange={(e) => setFormData(prev => ({ ...prev, full_name: e.target.value }))}
               placeholder="John Doe"
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
               required
             />
           </div>
@@ -89,7 +89,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
               value={formData.email}
               onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
               placeholder="john@company.com"
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
               required
             />
           </div>
@@ -100,7 +100,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
               value={formData.company}
               onChange={(e) => setFormData(prev => ({ ...prev, company: e.target.value }))}
               placeholder="Company Name"
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -108,7 +108,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
             <div>
               <Label className="text-gray-300 mb-2">Status</Label>
               <Select value={formData.status} onValueChange={(val) => setFormData(prev => ({ ...prev, status: val }))}>
-                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
+                <SelectTrigger className="bg-kg-input border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -124,7 +124,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
             <div>
               <Label className="text-gray-300 mb-2">Language</Label>
               <Select value={formData.language_preference} onValueChange={(val) => setFormData(prev => ({ ...prev, language_preference: val }))}>
-                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
+                <SelectTrigger className="bg-kg-input border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -145,7 +145,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
               onChange={(e) => setFormData(prev => ({ ...prev, notes: e.target.value }))}
               placeholder="Additional notes..."
               rows={3}
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -172,7 +172,7 @@ export default function EditLeadModal({ isOpen, onClose, lead, onSuccess }) {
               type="button"
               onClick={onClose}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
             >
               Cancel
             </Button>

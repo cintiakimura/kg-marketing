@@ -73,7 +73,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
         <div className="border-b border-green-500/25 p-6 flex items-center justify-between">
           <div>
             <h2 className="text-xl font-medium text-white">Select Recipients</h2>
-            <p className="text-gray-400 text-sm mt-1">
+            <p className="text-gray-400 text-[18px] mt-1">
               {selectedLeads.length} leads + {manualEmails.length} manual recipients
             </p>
           </div>
@@ -83,7 +83,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
         </div>
 
         <div className="flex-1 overflow-y-auto scrollbar-custom p-6">
-          <div className="mb-6 p-4 bg-kg-raised rounded-lg">
+          <div className="mb-6 p-4 bg-kg-input rounded-lg">
             <h3 className="text-white font-semibold mb-3">Add Recipients Manually</h3>
             <div className="flex gap-2 mb-3">
               <Input
@@ -105,7 +105,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
               <div className="space-y-2">
                 {manualEmails.map((email) => (
                   <div key={email} className="flex items-center justify-between p-2 bg-kg-card rounded">
-                    <span className="text-white text-sm">{email}</span>
+                    <span className="text-white text-[18px]">{email}</span>
                     <Button
                       size="sm"
                       variant="ghost"
@@ -124,7 +124,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={toggleAll}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
             >
               {selectedLeads.length === leads.length ? 'Deselect All' : 'Select All'}
             </Button>
@@ -132,7 +132,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
 
           <div className="space-y-4">
             {Object.entries(leadsByCompany).map(([company, companyLeads]) =>
-            <div key={company} className="bg-kg-raised rounded-lg p-4">
+            <div key={company} className="bg-kg-input rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   {company}
                   <Badge className="bg-[#444444] text-gray-300 border-0">
@@ -153,7 +153,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
 
                       <div className="flex-1">
                         <p className="text-white font-medium">{lead.full_name}</p>
-                        <p className="text-gray-400 text-sm">{lead.email}</p>
+                        <p className="text-gray-400 text-[18px]">{lead.email}</p>
                       </div>
                       <Badge className={`${
                   lead.status === 'new' ? 'bg-blue-500' :
@@ -173,7 +173,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
         </div>
 
         <div className="border-t border-green-500/25 p-6">
-          <div className="flex items-center gap-3 mb-4 p-3 bg-kg-raised rounded-lg">
+          <div className="flex items-center gap-3 mb-4 p-3 bg-kg-input rounded-lg">
             <Checkbox
               checked={useAIPersonalization}
               onCheckedChange={setUseAIPersonalization}
@@ -186,7 +186,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                   AI-Powered Email Personalization
                 </Label>
               </div>
-              <p className="text-gray-400 text-xs mt-1">
+              <p className="text-gray-400 text-[18px] mt-1">
                 Automatically customize subject lines and email bodies based on each lead's company, industry, and interactions
               </p>
             </div>
@@ -204,7 +204,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
               disabled={isLaunching}
             >
               Cancel

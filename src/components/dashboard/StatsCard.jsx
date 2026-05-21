@@ -12,7 +12,7 @@ export default function StatsCard({ title, value, icon: Icon, trend, trendValue 
         </div>
         {trend && (
           <div
-            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-normal ${
+            className={`flex items-center gap-1 px-2.5 py-1 rounded-full text-[18px] font-normal ${
               isPositive
                 ? 'bg-green-500/15 text-green-400'
                 : 'bg-red-500/15 text-red-400'
@@ -23,7 +23,7 @@ export default function StatsCard({ title, value, icon: Icon, trend, trendValue 
           </div>
         )}
       </div>
-      <h3 className="text-gray-400 text-[13px] font-normal mb-2 leading-snug">{title}</h3>
+      <h3 className="text-gray-400 text-[18px] font-normal mb-2 leading-snug">{title}</h3>
       <p className="text-white text-2xl font-medium tracking-tight">{value}</p>
     </div>
   );

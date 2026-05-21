@@ -134,7 +134,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
             />
             <label 
               htmlFor="file-upload-input"
-              className={`inline-flex items-center gap-2 px-4 py-2 bg-kg-raised hover:bg-[#444444] text-white rounded-md transition-colors font-medium ${
+              className={`inline-flex items-center gap-2 px-4 py-2 bg-kg-input hover:bg-[#444444] text-white rounded-md transition-colors font-medium ${
                 isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
               }`}
             >
@@ -142,7 +142,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
               Choose File
             </label>
             {file && (
-              <p className="text-green-400 mt-3 text-sm font-medium">{file.name}</p>
+              <p className="text-green-400 mt-3 text-[18px] font-medium">{file.name}</p>
             )}
           </div>
 
@@ -154,12 +154,12 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
                 ? 'bg-green-500 bg-opacity-10 border border-green-500 text-green-400'
                 : 'bg-blue-500 bg-opacity-10 border border-blue-500 text-blue-400'
             }`}>
-              <p className="text-sm">{statusMessage}</p>
+              <p className="text-[18px]">{statusMessage}</p>
             </div>
           )}
 
-          <div className="bg-kg-raised rounded-lg p-4">
-            <p className="text-gray-400 text-sm">
+          <div className="bg-kg-input rounded-lg p-4">
+            <p className="text-gray-400 text-[18px]">
               <strong className="text-white">AI-Powered Import:</strong> Upload a file with lead information. The system will automatically extract names, emails, companies, and notes.
             </p>
           </div>
@@ -186,7 +186,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
               onClick={onClose}
               disabled={isProcessing}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
             >
               Cancel
             </Button>

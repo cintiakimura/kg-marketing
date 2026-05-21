@@ -27,7 +27,7 @@ export default function Statistics() {
     { name: 'Contacted', value: leads.filter(l => l.status === 'contacted').length, color: '#eab308' },
     { name: 'Interested', value: leads.filter(l => l.status === 'interested').length, color: '#a855f7' },
     { name: 'Scheduled', value: leads.filter(l => l.status === 'scheduled').length, color: '#f97316' },
-    { name: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#14532d' }
+    { name: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#22A855' }
   ];
 
   // Campaign performance
@@ -141,7 +141,7 @@ export default function Statistics() {
                   color: '#fff'
                 }}
               />
-              <Bar dataKey="sent" fill="#14532d" radius={[8, 8, 0, 0]} />
+              <Bar dataKey="sent" fill="#22A855" radius={[8, 8, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </div>
@@ -155,12 +155,12 @@ export default function Statistics() {
               return (
                 <div key={index}>
                   <div className="flex items-center justify-between mb-2">
-                    <span className="text-gray-300 text-sm">{item.name}</span>
-                    <span className="text-green-400 text-sm font-medium">
+                    <span className="text-gray-300 text-[18px]">{item.name}</span>
+                    <span className="text-green-400 text-[18px] font-medium">
                       {item.value} ({percentage.toFixed(1)}%)
                     </span>
                   </div>
-                  <div className="w-full bg-kg-raised rounded-full h-2">
+                  <div className="w-full bg-kg-input rounded-full h-2">
                     <div 
                       className="bg-kg-btn h-2 rounded-full transition-all"
                       style={{ width: `${percentage}%` }}
@@ -181,7 +181,7 @@ export default function Statistics() {
               { label: 'Contacted', value: leads.filter(l => l.status === 'contacted').length, color: '#eab308' },
               { label: 'Interested', value: leads.filter(l => l.status === 'interested').length, color: '#a855f7' },
               { label: 'Scheduled', value: leads.filter(l => l.status === 'scheduled').length, color: '#f97316' },
-              { label: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#14532d' }
+              { label: 'Closed', value: leads.filter(l => l.status === 'closed').length, color: '#22A855' }
             ].map((stage, index) => {
               const maxWidth = leads.length > 0 ? (stage.value / leads.length) * 100 : 0;
               return (
@@ -194,7 +194,7 @@ export default function Statistics() {
                     }}
                   >
                     <div className="flex items-center justify-between">
-                      <span className="text-white font-medium text-sm">{stage.label}</span>
+                      <span className="text-white font-medium text-[18px]">{stage.label}</span>
                       <span className="text-white font-bold">{stage.value}</span>
                     </div>
                   </div>

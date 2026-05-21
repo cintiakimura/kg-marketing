@@ -131,17 +131,17 @@ Return JSON with 3 A/B test suggestions:
   };
 
   return (
-    <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20">
+    <div className="p-4 bg-kg-input rounded-lg border border-green-500/20">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-4 h-4 text-green-400" />
-          <span className="text-white font-medium text-sm">AI A/B Testing Optimizer</span>
+          <span className="text-white font-medium text-[18px]">AI A/B Testing Optimizer</span>
         </div>
         <Button
           onClick={handleGenerateSuggestions}
           disabled={isGenerating || campaigns.length === 0}
           size="sm"
-          className="bg-kg-btn hover:bg-kg-btn-hover text-white"
+          variant="kgAi"
         >
           <Sparkles className="w-3 h-3 mr-1" />
           {isGenerating ? 'Analyzing...' : 'Generate Tests'}
@@ -154,40 +154,40 @@ Return JSON with 3 A/B test suggestions:
           <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-green-400" />
-              <span className="text-white font-medium text-sm">Subject Line Test</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
+              <span className="text-white font-medium text-[18px]">Subject Line Test</span>
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
                 +{suggestions.subject_line_test.expected_improvement}
               </Badge>
             </div>
-            <p className="text-gray-400 text-xs mb-3">{suggestions.subject_line_test.hypothesis}</p>
+            <p className="text-gray-400 text-[18px] mb-3">{suggestions.subject_line_test.hypothesis}</p>
             <div className="space-y-2">
-              <div className="p-2 bg-kg-raised rounded border border-[#555555]">
+              <div className="p-2 bg-kg-input rounded border border-[#555555]">
                 <div className="flex items-center justify-between mb-1">
-                  <Badge className="bg-blue-500/20 text-blue-400 border-0 text-xs">Variant A</Badge>
+                  <Badge className="bg-blue-500/20 text-blue-400 border-0 text-[18px]">Variant A</Badge>
                   <Button
                     onClick={() => applySubjectVariant('A')}
                     size="sm"
                     variant="ghost"
-                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-xs"
+                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-[18px]"
                   >
                     Apply
                   </Button>
                 </div>
-                <p className="text-white text-xs">{suggestions.subject_line_test.variant_a}</p>
+                <p className="text-white text-[18px]">{suggestions.subject_line_test.variant_a}</p>
               </div>
-              <div className="p-2 bg-kg-raised rounded border border-[#555555]">
+              <div className="p-2 bg-kg-input rounded border border-[#555555]">
                 <div className="flex items-center justify-between mb-1">
-                  <Badge className="bg-purple-500/20 text-purple-400 border-0 text-xs">Variant B</Badge>
+                  <Badge className="bg-purple-500/20 text-purple-400 border-0 text-[18px]">Variant B</Badge>
                   <Button
                     onClick={() => applySubjectVariant('B')}
                     size="sm"
                     variant="ghost"
-                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-xs"
+                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-[18px]"
                   >
                     Apply
                   </Button>
                 </div>
-                <p className="text-white text-xs">{suggestions.subject_line_test.variant_b}</p>
+                <p className="text-white text-[18px]">{suggestions.subject_line_test.variant_b}</p>
               </div>
             </div>
           </div>
@@ -196,20 +196,20 @@ Return JSON with 3 A/B test suggestions:
           <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Send className="w-4 h-4 text-green-400" />
-              <span className="text-white font-medium text-sm">Content Structure Test</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
+              <span className="text-white font-medium text-[18px]">Content Structure Test</span>
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
                 +{suggestions.content_test.expected_improvement}
               </Badge>
             </div>
-            <p className="text-gray-400 text-xs mb-3">{suggestions.content_test.hypothesis}</p>
+            <p className="text-gray-400 text-[18px] mb-3">{suggestions.content_test.hypothesis}</p>
             <div className="space-y-2">
-              <div className="p-2 bg-kg-raised rounded">
-                <Badge className="bg-blue-500/20 text-blue-400 border-0 text-xs mb-1">Variant A</Badge>
-                <p className="text-white text-xs">{suggestions.content_test.variant_a}</p>
+              <div className="p-2 bg-kg-input rounded">
+                <Badge className="bg-blue-500/20 text-blue-400 border-0 text-[18px] mb-1">Variant A</Badge>
+                <p className="text-white text-[18px]">{suggestions.content_test.variant_a}</p>
               </div>
-              <div className="p-2 bg-kg-raised rounded">
-                <Badge className="bg-purple-500/20 text-purple-400 border-0 text-xs mb-1">Variant B</Badge>
-                <p className="text-white text-xs">{suggestions.content_test.variant_b}</p>
+              <div className="p-2 bg-kg-input rounded">
+                <Badge className="bg-purple-500/20 text-purple-400 border-0 text-[18px] mb-1">Variant B</Badge>
+                <p className="text-white text-[18px]">{suggestions.content_test.variant_b}</p>
               </div>
             </div>
           </div>
@@ -218,20 +218,20 @@ Return JSON with 3 A/B test suggestions:
           <div className="p-3 bg-kg-card rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4 text-green-400" />
-              <span className="text-white font-medium text-sm">Send Time Optimization</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-xs">
+              <span className="text-white font-medium text-[18px]">Send Time Optimization</span>
+              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
                 +{suggestions.timing_test.expected_improvement}
               </Badge>
             </div>
-            <p className="text-gray-400 text-xs mb-3">{suggestions.timing_test.hypothesis}</p>
+            <p className="text-gray-400 text-[18px] mb-3">{suggestions.timing_test.hypothesis}</p>
             <div className="grid grid-cols-2 gap-2">
-              <div className="p-2 bg-kg-raised rounded text-center">
-                <Badge className="bg-blue-500/20 text-blue-400 border-0 text-xs mb-1">Variant A</Badge>
-                <p className="text-white text-xs font-medium">{suggestions.timing_test.variant_a}</p>
+              <div className="p-2 bg-kg-input rounded text-center">
+                <Badge className="bg-blue-500/20 text-blue-400 border-0 text-[18px] mb-1">Variant A</Badge>
+                <p className="text-white text-[18px] font-medium">{suggestions.timing_test.variant_a}</p>
               </div>
-              <div className="p-2 bg-kg-raised rounded text-center">
-                <Badge className="bg-purple-500/20 text-purple-400 border-0 text-xs mb-1">Variant B</Badge>
-                <p className="text-white text-xs font-medium">{suggestions.timing_test.variant_b}</p>
+              <div className="p-2 bg-kg-input rounded text-center">
+                <Badge className="bg-purple-500/20 text-purple-400 border-0 text-[18px] mb-1">Variant B</Badge>
+                <p className="text-white text-[18px] font-medium">{suggestions.timing_test.variant_b}</p>
               </div>
             </div>
           </div>
@@ -240,7 +240,7 @@ Return JSON with 3 A/B test suggestions:
             onClick={() => setSuggestions(null)}
             size="sm"
             variant="outline"
-            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-raised"
+            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-input"
           >
             Clear Suggestions
           </Button>
@@ -248,7 +248,7 @@ Return JSON with 3 A/B test suggestions:
       )}
 
       {!suggestions && campaigns.length === 0 && (
-        <p className="text-gray-400 text-xs">
+        <p className="text-gray-400 text-[18px]">
           Launch campaigns to collect performance data for AI-powered A/B testing suggestions
         </p>
       )}

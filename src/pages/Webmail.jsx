@@ -82,7 +82,7 @@ export default function Webmail() {
           <Button
             onClick={() => syncGmailMutation.mutate()}
             disabled={syncGmailMutation.isPending}
-            className="bg-kg-raised hover:bg-[#444444] text-white">
+            className="bg-kg-input hover:bg-[#444444] text-white">
             <RefreshCw className={`w-5 h-5 mr-2 ${syncGmailMutation.isPending ? 'animate-spin' : ''}`} />
             Sync Gmail
           </Button>
@@ -115,7 +115,7 @@ export default function Webmail() {
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
                     activeFolder === folder.id ?
                     'bg-kg-btn text-white' :
-                    'text-gray-300 hover:bg-kg-raised'}`
+                    'text-gray-300 hover:bg-kg-input'}`
                     }>
 
                     <div className="flex items-center gap-3">
@@ -124,11 +124,11 @@ export default function Webmail() {
                     </div>
                     <div className="flex items-center gap-2">
                       {unreadCount > 0 &&
-                      <Badge className="bg-red-500 text-white border-0 text-xs px-2">
+                      <Badge className="bg-red-500 text-white border-0 text-[18px] px-2">
                           {unreadCount}
                         </Badge>
                       }
-                      <span className="text-sm">{count}</span>
+                      <span className="text-[18px]">{count}</span>
                     </div>
                   </button>);
 
@@ -156,22 +156,22 @@ export default function Webmail() {
               <button
                 key={email.id}
                 onClick={() => handleEmailClick(email)}
-                className={`w-full p-4 text-left hover:bg-kg-raised transition-colors ${
-                selectedEmail?.id === email.id ? 'bg-kg-raised' : ''} ${
+                className={`w-full p-4 text-left hover:bg-kg-input transition-colors ${
+                selectedEmail?.id === email.id ? 'bg-kg-input' : ''} ${
                 !email.is_read ? 'border-l-4 border-green-500/40' : ''}`}>
 
                     <div className="flex items-start justify-between mb-1">
-                      <p className={`text-sm ${!email.is_read ? 'text-white font-bold' : 'text-gray-300'}`}>
+                      <p className={`text-[18px] ${!email.is_read ? 'text-white font-bold' : 'text-gray-300'}`}>
                         {activeFolder === 'sent' ? email.to_email : email.from_email}
                       </p>
-                      <span className="text-sm text-gray-400">
+                      <span className="text-[18px] text-gray-400">
                         {email.date ? format(new Date(email.date), 'MMM dd') : format(new Date(email.created_date), 'MMM dd')}
                       </span>
                     </div>
-                    <p className={`text-sm mb-1 ${!email.is_read ? 'text-white font-semibold' : 'text-gray-400'}`}>
+                    <p className={`text-[18px] mb-1 ${!email.is_read ? 'text-white font-semibold' : 'text-gray-400'}`}>
                       {email.subject}
                     </p>
-                    <p className="text-sm text-gray-400 line-clamp-2">
+                    <p className="text-[18px] text-gray-400 line-clamp-2">
                       {email.body}
                     </p>
                   </button>
@@ -187,7 +187,7 @@ export default function Webmail() {
           <div className="bg-kg-card rounded-xl border border-green-500/25 p-6">
               <div className="mb-6">
                 <h2 className="text-2xl font-medium text-white mb-4">{selectedEmail.subject}</h2>
-                <div className="space-y-2 text-sm">
+                <div className="space-y-2 text-[18px]">
                   <div className="flex items-center gap-2">
                     <span className="text-gray-500">From:</span>
                     <span className="text-gray-300">{selectedEmail.from_email}</span>
@@ -238,7 +238,7 @@ export default function Webmail() {
                 value={composeData.to_email}
                 onChange={(e) => setComposeData((prev) => ({ ...prev, to_email: e.target.value }))}
                 placeholder="recipient@example.com"
-                className="bg-kg-raised border-green-500/20 text-white" />
+                className="bg-kg-input border-green-500/20 text-white" />
 
               </div>
 
@@ -248,7 +248,7 @@ export default function Webmail() {
                 value={composeData.subject}
                 onChange={(e) => setComposeData((prev) => ({ ...prev, subject: e.target.value }))}
                 placeholder="Email subject"
-                className="bg-kg-raised border-green-500/20 text-white" />
+                className="bg-kg-input border-green-500/20 text-white" />
 
               </div>
 
@@ -259,7 +259,7 @@ export default function Webmail() {
                 onChange={(e) => setComposeData((prev) => ({ ...prev, body: e.target.value }))}
                 placeholder="Type your message here..."
                 rows={10}
-                className="bg-kg-raised border-green-500/20 text-white" />
+                className="bg-kg-input border-green-500/20 text-white" />
 
               </div>
 
@@ -274,7 +274,7 @@ export default function Webmail() {
                 </Button>
                 <Button
                 onClick={() => setIsComposeOpen(false)}
-                variant="outline" className="bg-kg-btn text-white px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-green-500/20 hover:bg-kg-raised">
+                variant="outline" className="bg-kg-btn text-white px-4 py-2 text-[18px] font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-green-500/20 hover:bg-kg-input">
 
 
                   Cancel

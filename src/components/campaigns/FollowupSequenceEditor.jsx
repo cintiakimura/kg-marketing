@@ -104,7 +104,7 @@ Return JSON:
           type="button"
           onClick={addSequence}
           size="sm"
-          className="bg-kg-raised hover:bg-[#444444] text-white"
+          className="bg-kg-input hover:bg-[#444444] text-white"
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Sequence
@@ -112,19 +112,19 @@ Return JSON:
       </div>
 
       {editingSequences.length === 0 ? (
-        <div className="p-4 bg-kg-raised rounded-lg border border-green-500/20 text-center">
+        <div className="p-4 bg-kg-input rounded-lg border border-green-500/20 text-center">
           <Mail className="w-8 h-8 text-gray-500 mx-auto mb-2" />
-          <p className="text-gray-400 text-sm">No follow-up sequences defined</p>
-          <p className="text-gray-500 text-xs mt-1">Click "Add Sequence" to create automated follow-ups</p>
+          <p className="text-gray-400 text-[18px]">No follow-up sequences defined</p>
+          <p className="text-gray-500 text-[18px] mt-1">Click "Add Sequence" to create automated follow-ups</p>
         </div>
       ) : (
         <div className="space-y-4">
           {editingSequences.map((sequence, index) => (
-            <div key={index} className="p-4 bg-kg-raised rounded-lg border border-green-500/20 space-y-3">
+            <div key={index} className="p-4 bg-kg-input rounded-lg border border-green-500/20 space-y-3">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-green-400" />
-                  <span className="text-white font-medium text-sm">Sequence {index + 1}</span>
+                  <span className="text-white font-medium text-[18px]">Sequence {index + 1}</span>
                 </div>
                 <div className="flex gap-2">
                   <Button
@@ -132,7 +132,8 @@ Return JSON:
                     onClick={() => generateFollowupContent(index, sequence)}
                     disabled={generatingIndex === index}
                     size="sm"
-                    className="bg-kg-btn hover:bg-kg-btn-hover text-white h-7 text-xs"
+                    variant="kgAi"
+                    size="sm"
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
                     {generatingIndex === index ? 'Generating...' : 'AI Generate'}
@@ -151,7 +152,7 @@ Return JSON:
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <Label className="text-gray-400 text-xs mb-1">Trigger on Status</Label>
+                  <Label className="text-gray-400 text-[18px] mb-1">Trigger on Status</Label>
                   <Select 
                     value={sequence.trigger_status} 
                     onValueChange={(val) => updateSequence(index, 'trigger_status', val)}
@@ -169,7 +170,7 @@ Return JSON:
                 </div>
 
                 <div>
-                  <Label className="text-gray-400 text-xs mb-1">Delay (Days)</Label>
+                  <Label className="text-gray-400 text-[18px] mb-1">Delay (Days)</Label>
                   <Input
                     type="number"
                     min="0"
@@ -181,7 +182,7 @@ Return JSON:
               </div>
 
               <div>
-                <Label className="text-gray-400 text-xs mb-1">Email Subject</Label>
+                <Label className="text-gray-400 text-[18px] mb-1">Email Subject</Label>
                 <Input
                   value={sequence.email_subject}
                   onChange={(e) => updateSequence(index, 'email_subject', e.target.value)}
@@ -191,7 +192,7 @@ Return JSON:
               </div>
 
               <div>
-                <Label className="text-gray-400 text-xs mb-1">Email Body</Label>
+                <Label className="text-gray-400 text-[18px] mb-1">Email Body</Label>
                 <Textarea
                   value={sequence.email_body}
                   onChange={(e) => updateSequence(index, 'email_body', e.target.value)}
@@ -210,11 +211,11 @@ Return JSON:
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
                     <Calendar className="w-4 h-4 text-green-400" />
-                    <Label className="text-white text-sm cursor-pointer" onClick={() => updateSequence(index, 'schedule_meeting', !sequence.schedule_meeting)}>
+                    <Label className="text-white text-[18px] cursor-pointer" onClick={() => updateSequence(index, 'schedule_meeting', !sequence.schedule_meeting)}>
                       Auto-schedule meeting with AI
                     </Label>
                   </div>
-                  <p className="text-gray-400 text-xs mt-1">
+                  <p className="text-gray-400 text-[18px] mt-1">
                     AI will find optimal meeting times and send calendar invites
                   </p>
                 </div>
@@ -225,7 +226,7 @@ Return JSON:
       )}
 
       <div className="p-3 bg-blue-500/10 border border-blue-500/20 rounded-lg">
-        <p className="text-blue-400 text-xs">
+        <p className="text-blue-400 text-[18px]">
           💡 Follow-ups are triggered manually. Go to the Leads page and click "Send Pending Follow-ups" to send emails that are due.
         </p>
       </div>
