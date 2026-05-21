@@ -160,9 +160,9 @@ export default function Statistics() {
                       {item.value} ({percentage.toFixed(1)}%)
                     </span>
                   </div>
-                  <div className="w-full bg-kg-raised rounded-full h-2">
+                  <div className="w-full bg-kg-input rounded-full h-2">
                     <div 
-                      className="bg-kg-btn h-2 rounded-full transition-all"
+                      className="bg-green-500/40 h-2 rounded-full transition-all"
                       style={{ width: `${percentage}%` }}
                     />
                   </div>

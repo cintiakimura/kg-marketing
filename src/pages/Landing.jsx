@@ -50,7 +50,7 @@ export default function Landing() {
   };
 
   const inputClass =
-    'bg-kg-raised border-green-500/20 text-white placeholder:text-gray-500 focus-visible:ring-green-500 font-normal';
+    'bg-kg-input border-green-500/20 text-white placeholder:text-gray-500 focus-visible:ring-green-500 font-normal';
 
   return (
     <div
@@ -72,10 +72,10 @@ export default function Landing() {
         </div>
         <Button
           type="button"
-          variant="ghost"
+          variant="kg"
+          size="sm"
           onClick={() => setLoginOpen(true)}
-          className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 font-normal"
-          style={{ fontWeight: 400 }}
+          className="uppercase tracking-wide"
         >
           Login
         </Button>
@@ -126,7 +126,7 @@ export default function Landing() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex rounded-lg bg-kg-raised p-1 mt-2">
+          <div className="flex rounded-lg bg-kg-input p-1 mt-2">
             <button
               type="button"
               onClick={() => switchAuthMode('login')}

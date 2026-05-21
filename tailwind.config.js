@@ -60,22 +60,16 @@ module.exports = {
           border: 'hsl(var(--sidebar-border))',
           ring: 'hsl(var(--sidebar-ring))',
         },
-        /** KG Lite — pure black + dark green cards + rich button green */
         kg: {
           black: '#000000',
           card: '#0a1f0a',
-          raised: '#0d2812',
-          btn: '#14532d',
-          'btn-hover': '#166534',
+          input: '#0C180E',
+          raised: '#0C180E',
           accent: '#4ade80',
-          muted: 'rgba(20, 83, 45, 0.35)',
         },
       },
       boxShadow: {
-        'kg-btn':
-          'inset 0 1px 0 rgba(255,255,255,0.14), 0 2px 6px rgba(0,0,0,0.45), 0 0 14px rgba(34,197,94,0.22)',
-        'kg-btn-hover':
-          'inset 0 1px 0 rgba(255,255,255,0.16), 0 2px 8px rgba(0,0,0,0.4), 0 0 18px rgba(34,197,94,0.32)',
+        'kg-border-glow': '0 0 10px rgba(34, 197, 94, 0.22)',
         'kg-card-glow': '0 0 20px rgba(34, 197, 94, 0.08)',
       },
       keyframes: {

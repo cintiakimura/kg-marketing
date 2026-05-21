@@ -34,7 +34,7 @@ export const PIPELINE_STATUSES = [
   {
     id: 'client',
     label: 'Client',
-    color: 'bg-kg-btn text-white shadow-sm ring-1 ring-[kg-btn-hover]/50',
+    color: 'bg-green-500/15 text-white border border-green-500/40 shadow-sm ring-1 ring-green-500/40/50',
     border: 'border-green-500/60',
   },
   {

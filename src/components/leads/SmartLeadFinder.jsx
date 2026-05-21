@@ -107,7 +107,7 @@ const EMPTY_ICP = {
 };
 
 function confidenceBadgeClass(level) {
-  if (level === 'high') return 'bg-kg-btn/20 text-green-400 border-green-500/40';
+  if (level === 'high') return 'bg-green-500/15 text-green-400 border-green-500/40';
   if (level === 'medium') return 'bg-amber-500/15 text-amber-300 border-amber-500/30';
   return 'bg-gray-500/20 text-gray-400 border-gray-500/30';
 }
@@ -121,7 +121,7 @@ function activityBullets(text) {
 }
 
 function fitScoreColor(score) {
-  if (score >= 9) return 'bg-kg-btn text-white font-semibold';
+  if (score >= 9) return 'bg-green-500/15 text-white border border-green-500/40 font-semibold';
   if (score >= 7) return 'bg-emerald-600/90 text-white';
   if (score >= 5) return 'bg-amber-500/90 text-white';
   return 'bg-gray-500 text-white';
@@ -296,7 +296,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
   };
 
   const inputClass =
-    'bg-kg-raised border-green-500/20 text-white text-[13px] leading-relaxed rounded-xl';
+    'bg-kg-input border-green-500/20 text-white text-[13px] leading-relaxed rounded-xl';
 
   return (
     <AnimatePresence>
@@ -316,7 +316,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
       >
         <div className="sticky top-0 bg-kg-card border-b border-green-500/25 px-6 md:px-8 py-5 flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-kg-btn/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-green-500/15 flex items-center justify-center">
               <Sparkles className="w-5 h-5 text-green-400" />
             </div>
             <div>
@@ -344,7 +344,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </div>
               )}
 
-              <div className="flex items-start gap-3 p-4 rounded-lg bg-kg-btn/5 border border-green-500/25">
+              <div className="flex items-start gap-3 p-4 rounded-lg bg-green-500/5 border border-green-500/25">
                 <ShieldCheck className="w-5 h-5 text-green-400 shrink-0 mt-0.5" />
                 <p className="text-sm text-gray-300 leading-relaxed">
                   Grok uses multi-step web + X search, then a verification pass. Leads without
@@ -377,7 +377,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     templates.map((tpl) => (
                       <div
                         key={tpl.id}
-                        className="flex items-center justify-between p-3 rounded-lg bg-kg-raised border border-green-500/20"
+                        className="flex items-center justify-between p-3 rounded-lg bg-kg-input border border-green-500/20"
                       >
                         <button
                           type="button"
@@ -461,10 +461,10 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         onClick={() => toggleRole(role)}
                         className={`px-3 py-1.5 rounded-full text-xs border transition-all ${
                           active
-                            ? 'bg-kg-btn/20 border-green-500/40 text-green-400 font-semibold'
+                            ? 'bg-green-500/15 border-green-500/40 text-green-400 font-semibold'
                             : isPrimary
-                              ? 'bg-kg-btn/5 border-green-500/60 text-gray-200 font-semibold hover:border-green-500/40 hover:text-green-400'
-                              : 'bg-kg-raised border-green-500/20 text-gray-400 font-medium hover:border-gray-500'
+                              ? 'bg-green-500/5 border-green-500/60 text-gray-200 font-semibold hover:border-green-500/40 hover:text-green-400'
+                              : 'bg-kg-input border-green-500/20 text-gray-400 font-medium hover:border-gray-500'
                         }`}
                       >
                         {role}
@@ -523,9 +523,9 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 </div>
               </div>
 
-              <div className="p-6 md:p-8 rounded-xl border-2 border-green-500/50 bg-gradient-to-b from-kg-btn/10 to-kg-raised/90 shadow-lg shadow-green-500/15">
+              <div className="p-6 md:p-8 rounded-xl border-2 border-green-500/50 bg-gradient-to-b from-green-500/10 to-kg-input shadow-lg shadow-green-500/15">
                 <div className="flex items-start gap-3 mb-3">
-                  <div className="w-10 h-10 rounded-lg bg-kg-btn/25 flex items-center justify-center shrink-0">
+                  <div className="w-10 h-10 rounded-lg bg-green-500/15 flex items-center justify-center shrink-0">
                     <Wand2 className="w-5 h-5 text-green-400" />
                   </div>
                   <div>
@@ -604,7 +604,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 with source verification.
               </p>
               <div className="w-full max-w-md space-y-4">
-                <Progress value={progressPercent} className="h-2 bg-kg-raised" />
+                <Progress value={progressPercent} className="h-2 bg-kg-input" />
                 <ul className="space-y-2">
                   {PROGRESS_STEPS.map((step, i) => {
                     const done =
@@ -653,7 +653,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     {(appliedCustomPrompt || meta?.customPromptApplied) && (
                       <Badge
                         variant="outline"
-                        className="bg-kg-btn/10 text-green-400 border-green-500/40 text-xs"
+                        className="bg-green-500/10 text-green-400 border-green-500/40 text-xs"
                         title={appliedCustomPrompt}
                       >
                         <ScrollText className="w-3 h-3 mr-1 inline" />
@@ -701,7 +701,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                           : new Set(leads.map((l) => l.id))
                       )
                     }
-                    variant="kgMuted"
+                    variant="kg"
                   >
                     {selectedIds.size === leads.length ? 'Deselect all' : 'Select all'}
                   </Button>
@@ -717,7 +717,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     transition={{ delay: index * 0.05 }}
                   >
                   <Card
-                    className={`bg-kg-raised border transition-all ${
+                    className={`bg-kg-input border transition-all ${
                       selectedIds.has(lead.id)
                         ? 'border-green-500/40 ring-1 ring-green-500/30'
                         : 'border-green-500/20'
@@ -728,7 +728,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         <Checkbox
                           checked={selectedIds.has(lead.id)}
                           onCheckedChange={() => toggleSelect(lead.id)}
-                          className="mt-1 border-[#555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40"
+                          className="mt-1 border-[#555] data-[state=checked]:bg-green-500/25 data-[state=checked]:border-green-500/40"
                         />
                         <div className="flex-1 min-w-0">
                           <div className="flex flex-wrap items-center gap-2 mb-1">
@@ -799,7 +799,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                         </p>
                       </div>
                       {(lead.verificationNotes || lead.verification_notes) && (
-                        <div className="p-3 rounded-lg bg-kg-btn/5 border border-green-500/20">
+                        <div className="p-3 rounded-lg bg-green-500/5 border border-green-500/20">
                           <p className="text-gray-500 text-xs uppercase tracking-wide mb-1 flex items-center gap-1">
                             <ShieldCheck className="w-3 h-3 text-green-400" />
                             Verification notes

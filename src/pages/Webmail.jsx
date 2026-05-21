@@ -114,7 +114,7 @@ export default function Webmail() {
                     }}
                     className={`w-full flex items-center justify-between px-4 py-3 rounded-lg transition-colors ${
                     activeFolder === folder.id ?
-                    'bg-kg-btn text-white' :
+                    'bg-green-500/15 text-white border border-green-500/40' :
                     'text-gray-300 hover:bg-kg-input'}`
                     }>
 
@@ -274,9 +274,9 @@ export default function Webmail() {
                 </Button>
                 <Button
                 onClick={() => setIsComposeOpen(false)}
-                variant="outline" className="bg-kg-btn text-white px-4 py-2 text-[18px] font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-9 border-green-500/20 hover:bg-kg-input">
-
-
+                variant="kg"
+                size="sm"
+              >
                   Cancel
                 </Button>
               </div>

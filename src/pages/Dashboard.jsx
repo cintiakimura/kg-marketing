@@ -9,7 +9,6 @@ import {
   TrendingUp,
   Plus,
   Sparkles,
-  ArrowRight,
   Loader2,
   AlertCircle,
 } from 'lucide-react';
@@ -135,7 +134,7 @@ export default function Dashboard() {
             </Button>
             <Button
               asChild
-              variant="kgMuted"
+              variant="kg"
             >
               <Link to="/leads">
                 <Sparkles className="w-4 h-4 mr-2" />
@@ -144,7 +143,7 @@ export default function Dashboard() {
             </Button>
             <Button
               asChild
-              variant="kgMuted"
+              variant="kg"
             >
               <Link to="/campaigns">
                 <Megaphone className="w-4 h-4 mr-2" />
@@ -158,9 +157,9 @@ export default function Dashboard() {
               <h2 className="text-lg font-medium text-white">Recent Leads</h2>
               <Link
                 to="/leads"
-                className="text-sm text-green-400 hover:text-[kg-btn-hover] flex items-center gap-1"
+                className="kg-link text-green-400 hover:text-green-300"
               >
-                View all <ArrowRight className="w-4 h-4" />
+                View All
               </Link>
             </div>
             {recentLeads.length === 0 ? (
@@ -184,7 +183,7 @@ export default function Dashboard() {
                       return (
                         <TableRow
                           key={lead.id}
-                          className="border-green-500/25 hover:bg-kg-raised"
+                          className="border-green-500/25 hover:bg-kg-input"
                         >
                           <TableCell className="text-white font-medium">
                             {lead.full_name}

@@ -109,7 +109,7 @@ export default function Calendar() {
           <div key={webinar.id} className="bg-kg-card rounded-xl border border-green-500/25 p-6 hover:border-green-500/40 transition-all">
                 <div className="flex items-start justify-between mb-3">
                   <h3 className="text-lg font-medium text-white">{webinar.title}</h3>
-                  <Badge className="bg-kg-btn text-white border-0">Upcoming</Badge>
+                  <Badge className="bg-green-500/15 text-white border border-green-500/40 border-0">Upcoming</Badge>
                 </div>
                 
                 <p className="text-gray-400 text-[18px] mb-4">{webinar.description}</p>
@@ -146,9 +146,10 @@ export default function Calendar() {
               }
                   <Button
                 size="sm"
-                variant="outline" className="bg-kg-btn text-white px-3 text-[18px] font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 border shadow-sm hover:text-accent-foreground h-8 border-green-500/20 hover:bg-kg-input"
-
-                onClick={() => window.open(generateGoogleCalendarLink(webinar), '_blank')}>
+                variant="kg"
+                size="sm"
+                onClick={() => window.open(generateGoogleCalendarLink(webinar), '_blank')}
+              >
 
                     <ExternalLink className="w-4 h-4 mr-2" />
                     Add to Calendar

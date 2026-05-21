@@ -155,7 +155,7 @@ Return JSON with 3 A/B test suggestions:
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Subject Line Test</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
+              <Badge className="bg-green-500/15 text-green-400 border-0 text-[18px]">
                 +{suggestions.subject_line_test.expected_improvement}
               </Badge>
             </div>
@@ -168,7 +168,7 @@ Return JSON with 3 A/B test suggestions:
                     onClick={() => applySubjectVariant('A')}
                     size="sm"
                     variant="ghost"
-                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-[18px]"
+                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-6 text-[18px]"
                   >
                     Apply
                   </Button>
@@ -182,7 +182,7 @@ Return JSON with 3 A/B test suggestions:
                     onClick={() => applySubjectVariant('B')}
                     size="sm"
                     variant="ghost"
-                    className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-6 text-[18px]"
+                    className="text-green-400 hover:text-green-300 hover:bg-green-500/10 h-6 text-[18px]"
                   >
                     Apply
                   </Button>
@@ -197,7 +197,7 @@ Return JSON with 3 A/B test suggestions:
             <div className="flex items-center gap-2 mb-2">
               <Send className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Content Structure Test</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
+              <Badge className="bg-green-500/15 text-green-400 border-0 text-[18px]">
                 +{suggestions.content_test.expected_improvement}
               </Badge>
             </div>
@@ -219,7 +219,7 @@ Return JSON with 3 A/B test suggestions:
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Send Time Optimization</span>
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[18px]">
+              <Badge className="bg-green-500/15 text-green-400 border-0 text-[18px]">
                 +{suggestions.timing_test.expected_improvement}
               </Badge>
             </div>

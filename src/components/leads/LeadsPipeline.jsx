@@ -22,24 +22,24 @@ function LeadCard({ lead, onOpen }) {
       tabIndex={0}
       onClick={() => onOpen(lead)}
       onKeyDown={(e) => e.key === 'Enter' && onOpen(lead)}
-      className="bg-kg-raised border border-green-500/20 rounded-xl p-4 cursor-pointer hover:border-green-500/50 transition-colors"
+      className="bg-kg-input border border-green-500/20 rounded-xl p-4 cursor-pointer hover:border-green-500/50 transition-colors"
     >
       <div className="flex items-start gap-2">
         <GripVertical className="w-4 h-4 text-gray-600 shrink-0 mt-0.5" />
         <div className="min-w-0 flex-1">
-          <p className="text-sm font-medium text-white truncate">{lead.full_name}</p>
-          <p className="text-xs text-gray-400 truncate">{lead.title || '—'}</p>
-          <p className="text-xs text-green-400/90 truncate">{lead.company || '—'}</p>
+          <p className="text-[18px] font-medium text-white truncate">{lead.full_name}</p>
+          <p className="text-[18px] text-gray-400 truncate">{lead.title || '—'}</p>
+          <p className="text-[18px] text-green-400/90 truncate">{lead.company || '—'}</p>
           <div className="flex flex-wrap gap-1 mt-2">
             {lead.fit_score != null && (
-              <Badge className="bg-kg-btn/20 text-green-400 border-0 text-[10px]">
+              <Badge className="bg-green-500/15 text-green-400 border border-green-500/30 text-[18px]">
                 Fit {lead.fit_score}
               </Badge>
             )}
             {isSmartFinderLead(lead) && (
               <Badge
                 variant="outline"
-                className="text-[10px] border-green-500/40 text-green-400 px-1"
+                className="text-[18px] border-green-500/40 text-green-400 px-1"
               >
                 <Sparkles className="w-2.5 h-2.5 mr-0.5 inline" />
                 Smart Finder
@@ -47,7 +47,7 @@ function LeadCard({ lead, onOpen }) {
             )}
             {followUp && (
               <Badge
-                className={`text-[10px] border-0 ${
+                className={`text-[18px] border-0 ${
                   isOverdue ? 'bg-red-500/80' : 'bg-amber-500/30 text-amber-200'
                 }`}
               >
@@ -78,7 +78,7 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
 
   return (
     <div className="bg-kg-card rounded-xl border border-green-500/25 p-6 md:p-8 overflow-hidden mb-8">
-      <h2 className="text-sm font-medium text-gray-300 uppercase tracking-wide mb-5">
+      <h2 className="text-[18px] font-medium text-gray-300 uppercase tracking-wide mb-5">
         Pipeline
       </h2>
       <DragDropContext onDragEnd={handleDragEnd}>
@@ -86,10 +86,10 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
           {columns.map((col) => (
             <div key={col.id} className="flex-shrink-0 w-[220px]">
               <div
-                className={`flex items-center justify-between mb-2 px-2 py-1 rounded-md border ${col.border} bg-[#252525]`}
+                className={`flex items-center justify-between mb-2 px-2 py-1 rounded-md border ${col.border} bg-kg-input`}
               >
-                <span className="text-xs font-medium text-white">{col.label}</span>
-                <span className={`text-xs px-2 py-0.5 rounded-full text-white ${col.color}`}>
+                <span className="text-[18px] font-medium text-white">{col.label}</span>
+                <span className={`text-[18px] px-2 py-0.5 rounded-full text-white ${col.color}`}>
                   {col.leads.length}
                 </span>
               </div>
@@ -98,8 +98,10 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`min-h-[120px] space-y-2 rounded-lg p-2 transition-colors ${
-                      snapshot.isDraggingOver ? 'bg-kg-btn/5' : 'bg-[#1f1f1f]'
+                    className={`min-h-[120px] space-y-2 rounded-lg p-2 transition-colors border border-green-500/15 ${
+                      snapshot.isDraggingOver
+                        ? 'bg-green-500/10 border-green-500/35'
+                        : 'bg-kg-input'
                     }`}
                   >
                     {col.leads.map((lead, index) => (

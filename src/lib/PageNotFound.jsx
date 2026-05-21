@@ -1,4 +1,5 @@
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import { Button } from '@/components/ui/button';
 
 export default function PageNotFound() {
   const location = useLocation();
@@ -12,12 +13,9 @@ export default function PageNotFound() {
         <p className="text-gray-400">
           <span className="text-gray-300">"{pageName}"</span> is not part of this app.
         </p>
-        <a
-          href="/leads"
-          className="inline-flex items-center px-4 py-2 text-sm font-medium text-white bg-kg-btn rounded-lg hover:bg-kg-btn-hover"
-        >
-          Go to Leads
-        </a>
+        <Button asChild variant="kg">
+          <Link to="/leads">Go to Leads</Link>
+        </Button>
       </div>
     </div>
   );

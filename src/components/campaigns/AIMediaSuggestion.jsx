@@ -125,7 +125,8 @@ Return JSON with:
               onClick={handleApplySuggestion}
               disabled={isGenerating}
               size="sm"
-              className="flex-1 bg-kg-btn hover:bg-kg-btn-hover text-white"
+              variant="kg"
+              className="flex-1"
             >
               {isGenerating ? 'Applying...' : 'Apply Suggestion'}
             </Button>

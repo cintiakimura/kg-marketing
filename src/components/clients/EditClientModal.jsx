@@ -78,7 +78,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Company name"
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -87,7 +87,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             <Input
               value={formData.contact_name}
               onChange={(e) => setFormData({ ...formData, contact_name: e.target.value })}
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -97,7 +97,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               value={formData.industry}
               onChange={(e) => setFormData({ ...formData, industry: e.target.value })}
               placeholder="e.g., Automotive, Technology"
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -108,7 +108,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               min="0"
               value={formData.deal_value}
               onChange={(e) => setFormData({ ...formData, deal_value: e.target.value })}
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -118,14 +118,14 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               type="date"
               value={formData.last_contact_at}
               onChange={(e) => setFormData({ ...formData, last_contact_at: e.target.value })}
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
           <div>
             <Label className="text-gray-300 mb-2">Status</Label>
             <Select value={formData.status} onValueChange={(val) => setFormData({ ...formData, status: val })}>
-              <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
+              <SelectTrigger className="bg-kg-input border-green-500/20 text-white">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -143,7 +143,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
               onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
               placeholder="Additional notes..."
               rows={4}
-              className="bg-kg-raised border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/20 text-white"
             />
           </div>
 
@@ -159,7 +159,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
             >
               Cancel
             </Button>

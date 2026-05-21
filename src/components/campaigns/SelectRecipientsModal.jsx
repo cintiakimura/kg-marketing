@@ -149,7 +149,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                       <Checkbox
                     checked={selectedLeads.includes(lead.id)}
                     onCheckedChange={() => toggleLead(lead.id)}
-                    className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40" />
+                    className="border-[#555555] data-[state=checked]:bg-green-500/25 data-[state=checked]:border-green-500/40" />
 
                       <div className="flex-1">
                         <p className="text-white font-medium">{lead.full_name}</p>
@@ -160,7 +160,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                   lead.status === 'contacted' ? 'bg-yellow-500' :
                   lead.status === 'interested' ? 'bg-purple-500' :
                   lead.status === 'scheduled' ? 'bg-orange-500' :
-                  'bg-kg-btn'} text-white border-0`
+                  'bg-green-500/15'} text-white border-0`
                   }>
                         {lead.status}
                       </Badge>
@@ -177,7 +177,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <Checkbox
               checked={useAIPersonalization}
               onCheckedChange={setUseAIPersonalization}
-              className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40"
+              className="border-[#555555] data-[state=checked]:bg-green-500/25 data-[state=checked]:border-green-500/40"
             />
             <div className="flex-1">
               <div className="flex items-center gap-2">

@@ -94,13 +94,13 @@ export default function ScheduleWebinar() {
     return (
       <div className="min-h-screen bg-kg-black flex items-center justify-center p-4">
         <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl p-8 text-center">
-          <div className="w-20 h-20 bg-kg-btn rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-20 h-20 bg-green-500/15 border border-green-500/40 rounded-full flex items-center justify-center mx-auto mb-6">
             <CheckCircle className="w-12 h-12 text-white" />
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-4">You're All Set!</h1>
           <p className="text-gray-600 mb-2">Your 15-minute webinar has been scheduled.</p>
           <p className="text-gray-600 mb-6">Check your email for confirmation details.</p>
-          <div className="bg-kg-btn bg-opacity-10 rounded-lg p-4 mb-6">
+          <div className="bg-green-500/15 border border-green-500/40 bg-opacity-10 rounded-lg p-4 mb-6">
             <p className="text-sm text-gray-700">
               <strong>Date:</strong> {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
@@ -119,7 +119,7 @@ export default function ScheduleWebinar() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-kg-btn rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-green-500/15 border border-green-500/40 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-xl">KG</span>
             </div>
             <h1 className="text-4xl font-medium text-white">Schedule Your Webinar</h1>
@@ -130,7 +130,7 @@ export default function ScheduleWebinar() {
 
         <div className="bg-white rounded-2xl shadow-2xl overflow-hidden">
           <div className="grid md:grid-cols-2 gap-0">
-            <div className="bg-kg-btn shadow-kg-btn p-8 text-white rounded-t-xl">
+            <div className="bg-green-500/15 border border-green-500/40  p-8 text-white rounded-t-xl">
               <h2 className="text-2xl font-bold mb-6">What to Expect</h2>
               <div className="space-y-4">
                 <div className="flex gap-3">
@@ -186,7 +186,7 @@ export default function ScheduleWebinar() {
                         onClick={() => setSelectedTime(time)}
                         className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                           selectedTime === time
-                            ? 'bg-kg-btn text-white'
+                            ? 'bg-green-500/15 text-white border border-green-500/40'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
                         }`}
                       >

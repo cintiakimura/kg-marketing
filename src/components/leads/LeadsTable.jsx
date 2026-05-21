@@ -30,7 +30,7 @@ function notesPreview(notes) {
 }
 
 function fitBadgeClass(score) {
-  if (score >= 9) return 'bg-kg-btn text-white font-semibold';
+  if (score >= 9) return 'bg-green-500/15 text-white border border-green-500/40 font-semibold';
   if (score >= 7) return 'bg-emerald-600/90 text-white';
   return 'bg-gray-600 text-white';
 }
@@ -52,7 +52,7 @@ export default function LeadsTable({
               <Checkbox
                 checked={allSelected}
                 onCheckedChange={onToggleSelectAll}
-                className="border-[#555] data-[state=checked]:bg-kg-btn"
+                className="border-[#555] data-[state=checked]:bg-green-500/25"
               />
             </TableHead>
             <TableHead className="text-gray-400">Name</TableHead>
@@ -75,14 +75,14 @@ export default function LeadsTable({
             return (
               <TableRow
                 key={lead.id}
-                className="border-green-500/25 hover:bg-kg-raised/80 cursor-pointer"
+                className="border-green-500/25 hover:bg-kg-input/80 cursor-pointer"
                 onClick={() => onOpenLead(lead)}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
                   <Checkbox
                     checked={selectedIds.has(lead.id)}
                     onCheckedChange={() => onToggleSelect(lead.id)}
-                    className="border-[#555] data-[state=checked]:bg-kg-btn"
+                    className="border-[#555] data-[state=checked]:bg-green-500/25"
                   />
                 </TableCell>
                 <TableCell className="text-white font-medium">

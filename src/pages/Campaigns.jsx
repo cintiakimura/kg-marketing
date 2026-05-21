@@ -8,7 +8,6 @@ import {
   Plus,
   Rocket,
   Image as ImageIcon,
-  Edit,
   Search,
   Copy,
   Archive,
@@ -282,7 +281,7 @@ Return JSON with:
 
   const statusColors = {
     draft: 'bg-gray-500',
-    active: 'bg-kg-btn',
+    active: 'bg-green-500/15',
     completed: 'bg-blue-500',
     paused: 'bg-yellow-500',
     archived: 'bg-gray-600',
@@ -325,25 +324,25 @@ Return JSON with:
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search campaigns..."
-            className="pl-10 bg-kg-card border-green-500/25 text-white"
+            className="pl-10 bg-kg-input border-green-500/25 text-white"
           />
         </div>
-        <div className="flex gap-1 border border-green-500/25 rounded-lg p-1 bg-kg-card">
+        <div className="flex gap-1 border border-green-500/25 rounded-lg p-1 bg-kg-input">
           <Button
             type="button"
             size="sm"
-            variant={viewMode === 'table' ? 'default' : 'ghost'}
+            variant="kg"
             onClick={() => setViewMode('table')}
-            className={viewMode === 'table' ? 'bg-kg-btn text-white shadow-sm' : 'text-gray-400'}
+            className={viewMode === 'table' ? 'kg-btn-surface-active' : 'opacity-70'}
           >
             <List className="w-4 h-4" />
           </Button>
           <Button
             type="button"
             size="sm"
-            variant={viewMode === 'cards' ? 'default' : 'ghost'}
+            variant="kg"
             onClick={() => setViewMode('cards')}
-            className={viewMode === 'cards' ? 'bg-kg-btn text-white shadow-sm' : 'text-gray-400'}
+            className={viewMode === 'cards' ? 'kg-btn-surface-active' : 'opacity-70'}
           >
             <LayoutGrid className="w-4 h-4" />
           </Button>
@@ -391,7 +390,7 @@ Return JSON with:
             </TableHeader>
             <TableBody>
               {filteredCampaigns.map((campaign) => (
-                <TableRow key={campaign.id} className="border-green-500/25 hover:bg-kg-raised">
+                <TableRow key={campaign.id} className="border-green-500/25 hover:bg-kg-input">
                   <TableCell className="text-white font-medium">{campaign.name}</TableCell>
                   <TableCell>
                     <Badge className={`${statusColors[campaign.status] || 'bg-gray-500'} text-white border-0`}>
@@ -407,25 +406,25 @@ Return JSON with:
                   <TableCell className="text-green-400">{campaign.performance ?? 0}%</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Button size="sm" variant="ghost" onClick={() => handleEditClick(campaign)} className="text-green-400">
-                        <Edit className="w-4 h-4" />
+                      <Button size="sm" variant="kg" onClick={() => handleEditClick(campaign)} className="uppercase tracking-wide">
+                        Edit
                       </Button>
                       <Button
                         size="sm"
-                        variant="ghost"
+                        variant="kg"
                         onClick={() => duplicateMutation.mutate(campaign.id)}
-                        className="text-gray-400 hover:text-white"
+                        className="uppercase tracking-wide"
                       >
-                        <Copy className="w-4 h-4" />
+                        Copy
                       </Button>
                       {campaign.status !== 'archived' && (
                         <Button
                           size="sm"
-                          variant="ghost"
+                          variant="kg"
                           onClick={() => archiveMutation.mutate(campaign.id)}
-                          className="text-gray-400 hover:text-amber-400"
+                          className="uppercase tracking-wide"
                         >
-                          <Archive className="w-4 h-4" />
+                          Archive
                         </Button>
                       )}
                     </div>
@@ -449,7 +448,7 @@ Return JSON with:
                     />
                   )}
                   {campaign.media_type === 'presentation' && (
-                    <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
+                    <div className="w-full h-48 bg-kg-input flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-6xl mb-2">📄</div>
                         <p className="text-gray-400 text-sm">Presentation attached</p>
@@ -457,7 +456,7 @@ Return JSON with:
                     </div>
                   )}
                   {campaign.media_type === 'video_url' && (
-                    <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
+                    <div className="w-full h-48 bg-kg-input flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-6xl mb-2">🎥</div>
                         <p className="text-gray-400 text-sm">Video URL attached</p>
@@ -466,7 +465,7 @@ Return JSON with:
                   )}
                 </>
               ) : (
-                <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
+                <div className="w-full h-48 bg-kg-input flex items-center justify-center">
                   <ImageIcon className="w-12 h-12 text-gray-600" />
                 </div>
               )}
@@ -477,11 +476,11 @@ Return JSON with:
                   <div className="flex items-center gap-2">
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="kg"
                       onClick={() => handleEditClick(campaign)}
-                      className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-8 px-2"
+                      className="uppercase tracking-wide"
                     >
-                      <Edit className="w-4 h-4" />
+                      Edit
                     </Button>
                     <Badge className={`${statusColors[campaign.status]} text-white border-0`}>
                       {campaign.status}
@@ -502,7 +501,7 @@ Return JSON with:
                 </div>
 
                 {campaign.email_subject && (
-                  <div className="mb-4 p-3 bg-kg-raised rounded-lg">
+                  <div className="mb-4 p-3 bg-kg-input rounded-lg">
                     <p className="text-gray-400 text-xs mb-1">Subject:</p>
                     <p className="text-white text-sm">{campaign.email_subject}</p>
                   </div>

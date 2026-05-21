@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Building2, Plus, Search, Edit, Loader2, AlertCircle } from 'lucide-react';
+import { Building2, Plus, Search, Loader2, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import CreateClientModal from '../components/clients/CreateClientModal';
 import EditClientModal from '../components/clients/EditClientModal';
@@ -115,7 +115,7 @@ export default function Clients() {
             </TableHeader>
             <TableBody>
               {filteredClients.map((client) => (
-                <TableRow key={client.id} className="border-green-500/25 hover:bg-kg-raised">
+                <TableRow key={client.id} className="border-green-500/25 hover:bg-kg-input">
                   <TableCell className="text-white font-medium">
                     {client.contact_name || client.name}
                   </TableCell>
@@ -125,7 +125,7 @@ export default function Clients() {
                     <Badge
                       className={`${
                         client.status === 'active'
-                          ? 'bg-kg-btn'
+                          ? 'bg-green-500/15'
                           : client.status === 'inactive'
                             ? 'bg-red-500'
                             : 'bg-gray-500'
@@ -145,11 +145,11 @@ export default function Clients() {
                   <TableCell>
                     <Button
                       size="sm"
-                      variant="ghost"
+                      variant="kg"
                       onClick={() => handleEditClient(client)}
-                      className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10"
+                      className="uppercase tracking-wide"
                     >
-                      <Edit className="w-4 h-4" />
+                      Edit
                     </Button>
                   </TableCell>
                 </TableRow>

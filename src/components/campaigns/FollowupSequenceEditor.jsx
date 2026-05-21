@@ -205,7 +205,7 @@ Return JSON:
                 <Checkbox
                   checked={sequence.schedule_meeting || false}
                   onCheckedChange={(checked) => updateSequence(index, 'schedule_meeting', checked)}
-                  className="border-[#555555] data-[state=checked]:bg-kg-btn data-[state=checked]:border-green-500/40"
+                  className="border-[#555555] data-[state=checked]:bg-green-500/25 data-[state=checked]:border-green-500/40"
                 />
                 <div className="flex-1">
                   <div className="flex items-center gap-2">

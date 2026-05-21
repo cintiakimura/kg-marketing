@@ -4,8 +4,12 @@ import { cva } from "class-variance-authority";
 
 import { cn } from "@/lib/utils"
 
+/** All KG action buttons share one look: transparent green, white text, green border */
+const kgButtonSurface =
+  "rounded-lg border border-green-500/40 bg-green-500/10 text-white font-normal hover:bg-green-500/15 hover:border-green-500/55 active:bg-green-500/20";
+
 const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-[13px] font-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap text-[18px] font-normal transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/40 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
@@ -19,20 +23,17 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground shadow-sm hover:bg-secondary/80 rounded-lg h-11",
         ghost: "hover:bg-accent hover:text-accent-foreground rounded-lg h-11",
         link: "text-primary underline-offset-4 hover:underline",
-        /** KG Lite primary — dark rich green, white text, inner highlight + glow */
-        kg: "h-11 rounded-lg bg-kg-btn text-white font-normal px-5 shadow-kg-btn hover:bg-kg-btn-hover hover:shadow-kg-btn-hover active:scale-[0.98]",
-        kgOutline:
-          "h-11 rounded-lg border border-green-500/40 bg-transparent text-green-400 font-normal px-5 hover:bg-kg-muted hover:border-green-500/55",
-        kgMuted:
-          "h-11 rounded-lg border border-green-500/25 bg-kg-raised text-gray-300 font-normal px-5 hover:bg-kg-card hover:border-green-500/40 hover:text-white",
-        kgBlue:
-          "h-11 rounded-lg bg-blue-700 text-white font-normal px-5 shadow-md hover:bg-blue-600",
+        kg: `h-11 px-5 ${kgButtonSurface}`,
+        kgOutline: `h-11 px-5 ${kgButtonSurface}`,
+        kgMuted: `h-11 px-5 ${kgButtonSurface}`,
+        kgBlue: `h-11 px-5 ${kgButtonSurface}`,
+        kgAi: `h-11 px-5 ${kgButtonSurface}`,
       },
       size: {
         default: "h-11 px-5",
-        sm: "h-9 rounded-md px-3 text-xs",
-        lg: "h-12 rounded-lg px-8 text-[13px]",
-        icon: "h-11 w-11 rounded-lg",
+        sm: "h-9 rounded-md px-3 text-[18px]",
+        lg: "h-12 rounded-lg px-8 text-[18px]",
+        icon: "h-11 w-11 rounded-lg p-0",
       },
     },
     defaultVariants: {

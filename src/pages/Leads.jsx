@@ -312,7 +312,7 @@ export default function Leads() {
           <Button
             onClick={() => sendFollowupsMutation.mutate()}
             disabled={pendingFollowupsCount === 0 || sendFollowupsMutation.isPending}
-            variant="kgBlue"
+            variant="kg"
           >
             <Send className="w-4 h-4 mr-2" />
             Campaign follow-ups
@@ -338,7 +338,7 @@ export default function Leads() {
           </Button>
           <Button
             onClick={() => setIsImportModalOpen(true)}
-            variant="kgMuted"
+            variant="kg"
           >
             <Upload className="w-4 h-4 mr-2" />
             Import
@@ -371,11 +371,11 @@ export default function Leads() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search name, company, title, notes…"
-                  className="pl-10 bg-kg-raised border-green-500/20 text-white"
+                  className="pl-10 bg-kg-input border-green-500/20 text-white"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-input border-green-500/20 text-white">
                   <Filter className="w-4 h-4 mr-2 text-green-400" />
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -389,7 +389,7 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               <Select value={followUpFilter} onValueChange={setFollowUpFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-input border-green-500/20 text-white">
                   <Bell className="w-4 h-4 mr-2 text-amber-400" />
                   <SelectValue placeholder="Follow-up" />
                 </SelectTrigger>
