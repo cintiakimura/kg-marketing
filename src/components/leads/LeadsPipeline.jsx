@@ -1,20 +1,9 @@
 import React from 'react';
 import { DragDropContext, Droppable, Draggable } from '@hello-pangea/dnd';
-import { PIPELINE_STATUSES, normalizeLeadStatus, isSmartFinderLead } from '@/lib/leadConstants';
-import { Badge } from '@/components/ui/badge';
-import { Sparkles, GripVertical } from 'lucide-react';
-
-function formatShortDate(value) {
-  if (!value) return null;
-  const d = new Date(value);
-  if (Number.isNaN(d.getTime())) return null;
-  return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
-}
+import { PIPELINE_STATUSES, normalizeLeadStatus } from '@/lib/leadConstants';
 
 function LeadCard({ lead, onOpen }) {
-  const followUp = lead.next_followup_date;
-  const isOverdue =
-    followUp && new Date(followUp) < new Date(new Date().toDateString());
+  const displayName = lead.full_name?.trim() || lead.email || 'Unnamed lead';
 
   return (
     <div
@@ -23,39 +12,11 @@ function LeadCard({ lead, onOpen }) {
       onClick={() => onOpen(lead)}
       onKeyDown={(e) => e.key === 'Enter' && onOpen(lead)}
       className="bg-kg-input border border-green-500/20 rounded-xl p-4 cursor-pointer hover:border-green-500/50 transition-colors"
+      title={displayName}
     >
-      <div className="flex items-start gap-2">
-        <GripVertical className="w-4 h-4 text-gray-600 shrink-0 mt-0.5" />
-        <div className="min-w-0 flex-1">
-          <p className="text-[18px] font-medium text-white truncate">{lead.full_name}</p>
-          <p className="text-[18px] text-gray-400 truncate">{lead.title || '—'}</p>
-          <p className="text-[18px] text-green-400/90 truncate">{lead.company || '—'}</p>
-          <div className="flex flex-wrap gap-1 mt-2">
-            {lead.fit_score != null && (
-              <Badge className="bg-green-500/15 text-green-400 border border-green-500/30 text-[18px]">
-                Fit {lead.fit_score}
-              </Badge>
-            )}
-            {isSmartFinderLead(lead) && (
-              <Badge
-                variant="kg"
-              >
-                <Sparkles className="w-2.5 h-2.5 mr-0.5 inline" />
-                Smart Finder
-              </Badge>
-            )}
-            {followUp && (
-              <Badge
-                className={`text-[18px] border-0 ${
-                  isOverdue ? 'bg-red-500/80' : 'bg-amber-500/30 text-amber-200'
-                }`}
-              >
-                {formatShortDate(followUp)}
-              </Badge>
-            )}
-          </div>
-        </div>
-      </div>
+      <p className="text-[16px] font-medium text-white truncate leading-snug">
+        {displayName}
+      </p>
     </div>
   );
 }
@@ -83,9 +44,9 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
       <DragDropContext onDragEnd={handleDragEnd}>
         <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-custom">
           {columns.map((col) => (
-            <div key={col.id} className="flex-shrink-0 w-[220px]">
+            <div key={col.id} className="flex-shrink-0 w-[220px] flex flex-col">
               <div
-                className={`flex items-center justify-between mb-2 px-2 py-1 rounded-md border ${col.border} bg-kg-input`}
+                className={`flex items-center justify-between mb-2 px-2 py-1 rounded-md border shrink-0 ${col.border} bg-kg-input`}
               >
                 <span className="text-[18px] font-medium text-white">{col.label}</span>
                 <span className={`text-[18px] px-2 py-0.5 rounded-full text-white ${col.color}`}>
@@ -97,7 +58,7 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
                   <div
                     ref={provided.innerRef}
                     {...provided.droppableProps}
-                    className={`min-h-[120px] space-y-2 rounded-lg p-2 transition-colors border border-green-500/15 ${
+                    className={`pipeline-column-scroll scrollbar-pipeline min-h-[120px] max-h-[min(420px,50vh)] space-y-2 rounded-lg p-2 transition-colors border border-green-500/15 overflow-y-auto ${
                       snapshot.isDraggingOver
                         ? 'bg-green-500/10 border-green-500/35'
                         : 'bg-kg-input'
@@ -110,7 +71,7 @@ export default function LeadsPipeline({ leads, onStatusChange, onOpenLead }) {
                             ref={dragProvided.innerRef}
                             {...dragProvided.draggableProps}
                             {...dragProvided.dragHandleProps}
-                            className={dragSnapshot.isDragging ? 'opacity-90 rotate-1' : ''}
+                            className={dragSnapshot.isDragging ? 'opacity-90' : ''}
                           >
                             <LeadCard lead={lead} onOpen={onOpenLead} />
                           </div>

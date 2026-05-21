@@ -85,3 +85,26 @@
     @apply bg-kg-input border border-green-500/25 text-white text-[18px] font-normal rounded-lg;
   }
 }
+
+/* Pipeline column list — slim neutral scrollbar */
+.pipeline-column-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.scrollbar-pipeline::-webkit-scrollbar {
+  width: 4px;
+}
+
+.scrollbar-pipeline::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scrollbar-pipeline::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+
+.scrollbar-pipeline::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
