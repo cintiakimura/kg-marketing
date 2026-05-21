@@ -161,7 +161,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               value={formData.name}
               onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
               placeholder="Q1 2025 IoT Training Launch"
-              className="bg-kg-input border-green-500/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -169,7 +169,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <div>
               <Label className="text-gray-300 mb-2">Language</Label>
               <Select value={formData.language} onValueChange={(val) => setFormData(prev => ({ ...prev, language: val }))}>
-                <SelectTrigger className="bg-kg-input border-green-500/20 text-white">
+                <SelectTrigger className="bg-kg-raised border-green-500/20 text-white">
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
@@ -187,7 +187,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 value={formData.target_audience}
                 onChange={(e) => setFormData(prev => ({ ...prev, target_audience: e.target.value }))}
                 placeholder="Automotive engineers, fleet managers"
-                className="bg-kg-input border-green-500/20 text-white"
+                className="bg-kg-raised border-green-500/20 text-white"
               />
             </div>
             </div>
@@ -196,7 +196,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
             onClick={handleGenerateCopy}
             disabled={isGeneratingCopy}
-            variant="kgAi"
+            variant="kg"
             >
             {isGeneratingCopy ? (
             <>Generating Copy...</>
@@ -210,7 +210,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-image-upload').click()}
               disabled={isUploading}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Image'}
@@ -226,7 +226,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-presentation-upload').click()}
               disabled={isUploading}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Presentation'}
@@ -247,7 +247,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               value={formData.email_subject}
               onChange={(e) => setFormData(prev => ({ ...prev, email_subject: e.target.value }))}
               placeholder="Subject line"
-              className="bg-kg-input border-green-500/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -258,7 +258,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               onChange={(e) => setFormData(prev => ({ ...prev, email_body: e.target.value }))}
               placeholder="Email content"
               rows={8}
-              className="bg-kg-input border-green-500/20 text-white"
+              className="bg-kg-raised border-green-500/20 text-white"
             />
           </div>
 
@@ -269,11 +269,11 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 value={videoUrl}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 placeholder="https://youtube.com/watch?v=..."
-                className="bg-kg-input border-green-500/20 text-white"
+                className="bg-kg-raised border-green-500/20 text-white"
               />
               <Button
                 onClick={handleAddVideoUrl}
-                className="bg-kg-input hover:bg-[#444444] text-white"
+                className="bg-kg-raised hover:bg-[#444444] text-white"
               >
                 Add
               </Button>
@@ -305,17 +305,17 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
                 />
               )}
               {formData.media_type === 'presentation' && (
-                <div className="p-4 bg-kg-input rounded-lg border-2 border-green-500/40 text-center">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-green-500/40 text-center">
                   <p className="text-white">📄 Presentation attached</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-green-400 text-[18px]">
+                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-green-400 text-sm">
                     View file
                   </a>
                 </div>
               )}
               {formData.media_type === 'video_url' && (
-                <div className="p-4 bg-kg-input rounded-lg border-2 border-green-500/40">
+                <div className="p-4 bg-kg-raised rounded-lg border-2 border-green-500/40">
                   <p className="text-white mb-2">🎥 Video URL:</p>
-                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-green-400 text-[18px] break-all">
+                  <a href={formData.media_url} target="_blank" rel="noopener noreferrer" className="text-green-400 text-sm break-all">
                     {formData.media_url}
                   </a>
                 </div>
@@ -335,7 +335,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
           <div className="flex gap-3 pt-4 border-t border-green-500/25">
             <Button
               onClick={() => setIsCreateLeadModalOpen(true)}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="bg-kg-raised hover:bg-[#444444] text-white"
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Add Lead
@@ -361,7 +361,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={onClose}
               variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              className="border-green-500/20 text-gray-300 hover:bg-kg-raised"
             >
               Cancel
             </Button>

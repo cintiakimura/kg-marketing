@@ -191,7 +191,7 @@ Return JSON:
             <Button
               onClick={generateEmailBodies}
               disabled={isGenerating}
-              variant="kgAi"
+              variant="kg"
             >
               <Wand2 className="w-4 h-4 mr-2" />
               {isGenerating ? 'Generating...' : 'Generate Email Variations'}
@@ -218,8 +218,7 @@ Return JSON:
                 <Button
                   size="sm"
                   onClick={() => onApplyBody(option.body)}
-                  variant="kg"
-                  size="sm"
+                  variant="kgAi" h-7 text-[18px]
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use This
@@ -241,8 +240,7 @@ Return JSON:
                 <Button
                   size="sm"
                   onClick={() => onApplySubject(suggestion.text)}
-                  variant="kg"
-                  size="sm"
+                  variant="kgAi" h-6 text-[18px]
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use

@@ -101,14 +101,14 @@ export default function ScheduleWebinar() {
           <p className="text-gray-600 mb-2">Your 15-minute webinar has been scheduled.</p>
           <p className="text-gray-600 mb-6">Check your email for confirmation details.</p>
           <div className="bg-kg-btn bg-opacity-10 rounded-lg p-4 mb-6">
-            <p className="text-[18px] text-gray-700">
+            <p className="text-sm text-gray-700">
               <strong>Date:</strong> {new Date(selectedDate).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
             </p>
-            <p className="text-[18px] text-gray-700 mt-1">
+            <p className="text-sm text-gray-700 mt-1">
               <strong>Time:</strong> {selectedTime}
             </p>
           </div>
-          <p className="text-[18px] text-gray-400">We'll send you the meeting link 24 hours before.</p>
+          <p className="text-sm text-gray-400">We'll send you the meeting link 24 hours before.</p>
         </div>
       </div>
     );
@@ -137,21 +137,21 @@ export default function ScheduleWebinar() {
                   <Clock className="w-6 h-6 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">15 Minutes</h3>
-                    <p className="text-[18px] opacity-90">Quick, focused demo tailored to your needs</p>
+                    <p className="text-sm opacity-90">Quick, focused demo tailored to your needs</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <Calendar className="w-6 h-6 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">Your Schedule</h3>
-                    <p className="text-[18px] opacity-90">Pick a time that works best for you</p>
+                    <p className="text-sm opacity-90">Pick a time that works best for you</p>
                   </div>
                 </div>
                 <div className="flex gap-3">
                   <User className="w-6 h-6 flex-shrink-0 mt-1" />
                   <div>
                     <h3 className="font-semibold mb-1">Personal Demo</h3>
-                    <p className="text-[18px] opacity-90">Direct session with our founder</p>
+                    <p className="text-sm opacity-90">Direct session with our founder</p>
                   </div>
                 </div>
               </div>
@@ -184,7 +184,7 @@ export default function ScheduleWebinar() {
                         key={time}
                         type="button"
                         onClick={() => setSelectedTime(time)}
-                        className={`py-2 px-3 rounded-lg text-[18px] font-medium transition-all ${
+                        className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
                           selectedTime === time
                             ? 'bg-kg-btn text-white'
                             : 'bg-gray-100 text-gray-700 hover:bg-gray-200'

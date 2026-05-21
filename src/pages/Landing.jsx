@@ -13,7 +13,7 @@ import {
 } from '@/components/ui/dialog';
 import { useAuthNavigate } from '@/lib/AuthContext';
 
-const ACCENT = '#22A855';
+const ACCENT = '#14532d';
 const BG = '#000000';
 
 export default function Landing() {
@@ -50,7 +50,7 @@ export default function Landing() {
   };
 
   const inputClass =
-    'bg-kg-input border-green-500/20 text-white placeholder:text-gray-500 focus-visible:ring-green-500 font-normal';
+    'bg-kg-raised border-green-500/20 text-white placeholder:text-gray-500 focus-visible:ring-green-500 font-normal';
 
   return (
     <div
@@ -74,7 +74,8 @@ export default function Landing() {
           type="button"
           variant="ghost"
           onClick={() => setLoginOpen(true)}
-          className="kg-link text-green-400 hover:text-kg-btn-hover hover:bg-kg-btn/10"
+          className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 font-normal"
+          style={{ fontWeight: 400 }}
         >
           Login
         </Button>
@@ -125,11 +126,11 @@ export default function Landing() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="flex rounded-lg bg-kg-input p-1 mt-2">
+          <div className="flex rounded-lg bg-kg-raised p-1 mt-2">
             <button
               type="button"
               onClick={() => switchAuthMode('login')}
-              className={`flex-1 py-2 text-[18px] rounded-md transition-colors ${
+              className={`flex-1 py-2 text-sm rounded-md transition-colors ${
                 authMode === 'login' ? 'text-white' : 'text-gray-400'
               }`}
               style={{
@@ -142,7 +143,7 @@ export default function Landing() {
             <button
               type="button"
               onClick={() => switchAuthMode('signup')}
-              className={`flex-1 py-2 text-[18px] rounded-md transition-colors ${
+              className={`flex-1 py-2 text-sm rounded-md transition-colors ${
                 authMode === 'signup' ? 'text-white' : 'text-gray-400'
               }`}
               style={{
@@ -202,7 +203,7 @@ export default function Landing() {
               />
             </div>
             {error && (
-              <p className="text-[18px] text-red-400 font-normal" role="alert" style={{ fontWeight: 400 }}>
+              <p className="text-sm text-red-400 font-normal" role="alert" style={{ fontWeight: 400 }}>
                 {error}
               </p>
             )}

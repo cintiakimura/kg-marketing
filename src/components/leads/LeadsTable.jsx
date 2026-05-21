@@ -75,7 +75,7 @@ export default function LeadsTable({
             return (
               <TableRow
                 key={lead.id}
-                className="border-green-500/25 hover:bg-kg-input/80 cursor-pointer"
+                className="border-green-500/25 hover:bg-kg-raised/80 cursor-pointer"
                 onClick={() => onOpenLead(lead)}
               >
                 <TableCell onClick={(e) => e.stopPropagation()}>
@@ -93,31 +93,31 @@ export default function LeadsTable({
                     )}
                   </div>
                 </TableCell>
-                <TableCell className="text-gray-400 text-[18px]">{lead.title || '—'}</TableCell>
-                <TableCell className="text-gray-300 text-[18px]">{lead.company || '—'}</TableCell>
+                <TableCell className="text-gray-400 text-sm">{lead.title || '—'}</TableCell>
+                <TableCell className="text-gray-300 text-sm">{lead.company || '—'}</TableCell>
                 <TableCell>
-                  <Badge className={`${statusMeta.color} text-white border-0 text-[18px]`}>
+                  <Badge className={`${statusMeta.color} text-white border-0 text-xs`}>
                     {statusMeta.label}
                   </Badge>
                 </TableCell>
                 <TableCell
-                  className={`text-[18px] ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-400'}`}
+                  className={`text-sm ${isOverdue ? 'text-red-400 font-medium' : 'text-gray-400'}`}
                 >
                   {formatDate(lead.next_followup_date)}
                 </TableCell>
                 <TableCell>
                   {lead.fit_score != null ? (
-                    <Badge className={`${fitBadgeClass(lead.fit_score)} border-0 text-[18px]`}>
+                    <Badge className={`${fitBadgeClass(lead.fit_score)} border-0 text-xs`}>
                       {lead.fit_score}/10
                     </Badge>
                   ) : (
                     <span className="text-gray-600">—</span>
                   )}
                 </TableCell>
-                <TableCell className="text-gray-400 text-[18px]">
+                <TableCell className="text-gray-400 text-sm">
                   {formatDate(lead.last_contact_at || lead.last_status_change)}
                 </TableCell>
-                <TableCell className="text-gray-500 text-[18px] max-w-[200px] truncate">
+                <TableCell className="text-gray-500 text-xs max-w-[200px] truncate">
                   {notesPreview(lead.notes)}
                 </TableCell>
               </TableRow>

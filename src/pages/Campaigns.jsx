@@ -8,6 +8,7 @@ import {
   Plus,
   Rocket,
   Image as ImageIcon,
+  Edit,
   Search,
   Copy,
   Archive,
@@ -184,14 +185,14 @@ Return JSON with:
       const hasErrors = data.errors && data.errors.length > 0;
       successMessage.innerHTML = `
         <div style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); 
-                    background: #0a1f0a; border: 2px solid ${hasErrors ? '#ff9900' : '#22A855'}; border-radius: 12px; 
+                    background: #0a1f0a; border: 2px solid ${hasErrors ? '#ff9900' : '#14532d'}; border-radius: 12px; 
                     padding: 32px; z-index: 9999; box-shadow: 0 10px 40px rgba(0,0,0,0.5);
                     text-align: center; min-width: 400px; max-width: 500px;">
           <div style="font-size: 48px; margin-bottom: 16px;">${hasErrors ? '⚠️' : '✅'}</div>
           <h2 style="color: white; font-size: 24px; font-weight: bold; margin-bottom: 12px;">
             ${hasErrors ? 'Campaign Partially Sent' : 'Campaign Sent Successfully!'}
           </h2>
-          <p style="color: ${hasErrors ? '#ff9900' : '#22A855'}; font-size: 18px; margin-bottom: 8px;">
+          <p style="color: ${hasErrors ? '#ff9900' : '#14532d'}; font-size: 18px; margin-bottom: 8px;">
             ${data.successCount} of ${data.totalCount} emails sent
           </p>
           ${hasErrors ? `<p style="color: #ff4444; font-size: 14px; margin-bottom: 8px;">${data.errors.length} failed</p>` : ''}
@@ -324,7 +325,7 @@ Return JSON with:
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search campaigns..."
-            className="pl-10 bg-kg-input border-green-500/25 text-white"
+            className="pl-10 bg-kg-card border-green-500/25 text-white"
           />
         </div>
         <div className="flex gap-1 border border-green-500/25 rounded-lg p-1 bg-kg-card">
@@ -352,7 +353,7 @@ Return JSON with:
       {isError && (
         <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
           <AlertCircle className="w-5 h-5" />
-          <p className="text-[18px]">{error?.message || 'Failed to load campaigns'}</p>
+          <p className="text-sm">{error?.message || 'Failed to load campaigns'}</p>
         </div>
       )}
 
@@ -390,7 +391,7 @@ Return JSON with:
             </TableHeader>
             <TableBody>
               {filteredCampaigns.map((campaign) => (
-                <TableRow key={campaign.id} className="border-green-500/25 hover:bg-kg-input">
+                <TableRow key={campaign.id} className="border-green-500/25 hover:bg-kg-raised">
                   <TableCell className="text-white font-medium">{campaign.name}</TableCell>
                   <TableCell>
                     <Badge className={`${statusColors[campaign.status] || 'bg-gray-500'} text-white border-0`}>
@@ -398,7 +399,7 @@ Return JSON with:
                     </Badge>
                   </TableCell>
                   <TableCell className="text-gray-300">{campaign.leads_count ?? 0}</TableCell>
-                  <TableCell className="text-gray-400 text-[18px]">
+                  <TableCell className="text-gray-400 text-sm">
                     {campaign.start_date || campaign.created_date
                       ? new Date(campaign.start_date || campaign.created_date).toLocaleDateString()
                       : '—'}
@@ -406,13 +407,8 @@ Return JSON with:
                   <TableCell className="text-green-400">{campaign.performance ?? 0}%</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-1">
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => handleEditClick(campaign)}
-                        className="kg-link text-green-400 hover:text-kg-btn-hover"
-                      >
-                        Edit
+                      <Button size="sm" variant="ghost" onClick={() => handleEditClick(campaign)} className="text-green-400">
+                        <Edit className="w-4 h-4" />
                       </Button>
                       <Button
                         size="sm"
@@ -453,24 +449,24 @@ Return JSON with:
                     />
                   )}
                   {campaign.media_type === 'presentation' && (
-                    <div className="w-full h-48 bg-kg-input flex items-center justify-center">
+                    <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-6xl mb-2">📄</div>
-                        <p className="text-gray-400 text-[18px]">Presentation attached</p>
+                        <p className="text-gray-400 text-sm">Presentation attached</p>
                       </div>
                     </div>
                   )}
                   {campaign.media_type === 'video_url' && (
-                    <div className="w-full h-48 bg-kg-input flex items-center justify-center">
+                    <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
                       <div className="text-center">
                         <div className="text-6xl mb-2">🎥</div>
-                        <p className="text-gray-400 text-[18px]">Video URL attached</p>
+                        <p className="text-gray-400 text-sm">Video URL attached</p>
                       </div>
                     </div>
                   )}
                 </>
               ) : (
-                <div className="w-full h-48 bg-kg-input flex items-center justify-center">
+                <div className="w-full h-48 bg-kg-raised flex items-center justify-center">
                   <ImageIcon className="w-12 h-12 text-gray-600" />
                 </div>
               )}
@@ -483,9 +479,9 @@ Return JSON with:
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEditClick(campaign)}
-                      className="kg-link text-green-400 hover:text-kg-btn-hover hover:bg-kg-btn/10 h-8 px-2"
+                      className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10 h-8 px-2"
                     >
-                      Edit
+                      <Edit className="w-4 h-4" />
                     </Button>
                     <Badge className={`${statusColors[campaign.status]} text-white border-0`}>
                       {campaign.status}
@@ -494,21 +490,21 @@ Return JSON with:
                 </div>
                 
                 <div className="space-y-2 mb-4">
-                  <p className="text-gray-400 text-[18px]">
+                  <p className="text-gray-400 text-sm">
                     <span className="text-gray-500">Language:</span> {campaign.language}
                   </p>
-                  <p className="text-gray-400 text-[18px]">
+                  <p className="text-gray-400 text-sm">
                     <span className="text-gray-500">Target:</span> {campaign.target_audience || 'Not specified'}
                   </p>
-                  <p className="text-gray-400 text-[18px]">
+                  <p className="text-gray-400 text-sm">
                     <span className="text-gray-500">Sent:</span> {campaign.sent_count || 0} emails
                   </p>
                 </div>
 
                 {campaign.email_subject && (
-                  <div className="mb-4 p-3 bg-kg-input rounded-lg">
-                    <p className="text-gray-400 text-[18px] mb-1">Subject:</p>
-                    <p className="text-white text-[18px]">{campaign.email_subject}</p>
+                  <div className="mb-4 p-3 bg-kg-raised rounded-lg">
+                    <p className="text-gray-400 text-xs mb-1">Subject:</p>
+                    <p className="text-white text-sm">{campaign.email_subject}</p>
                   </div>
                 )}
 

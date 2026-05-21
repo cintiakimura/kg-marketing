@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Building2, Plus, Search, Loader2, AlertCircle } from 'lucide-react';
+import { Building2, Plus, Search, Edit, Loader2, AlertCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import CreateClientModal from '../components/clients/CreateClientModal';
 import EditClientModal from '../components/clients/EditClientModal';
@@ -81,7 +81,7 @@ export default function Clients() {
       {isError && (
         <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
           <AlertCircle className="w-5 h-5" />
-          <p className="text-[18px]">{error?.message || 'Failed to load clients'}</p>
+          <p className="text-sm">{error?.message || 'Failed to load clients'}</p>
         </div>
       )}
 
@@ -115,7 +115,7 @@ export default function Clients() {
             </TableHeader>
             <TableBody>
               {filteredClients.map((client) => (
-                <TableRow key={client.id} className="border-green-500/25 hover:bg-kg-input">
+                <TableRow key={client.id} className="border-green-500/25 hover:bg-kg-raised">
                   <TableCell className="text-white font-medium">
                     {client.contact_name || client.name}
                   </TableCell>
@@ -134,7 +134,7 @@ export default function Clients() {
                       {client.status}
                     </Badge>
                   </TableCell>
-                  <TableCell className="text-gray-400 text-[18px]">
+                  <TableCell className="text-gray-400 text-sm">
                     {client.last_contact_at
                       ? new Date(client.last_contact_at).toLocaleDateString()
                       : '—'}
@@ -147,9 +147,9 @@ export default function Clients() {
                       size="sm"
                       variant="ghost"
                       onClick={() => handleEditClient(client)}
-                      className="kg-link text-green-400 hover:text-kg-btn-hover hover:bg-kg-btn/10"
+                      className="text-green-400 hover:text-[kg-btn-hover] hover:bg-kg-btn/10"
                     >
-                      Edit
+                      <Edit className="w-4 h-4" />
                     </Button>
                   </TableCell>
                 </TableRow>

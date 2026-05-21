@@ -317,7 +317,7 @@ export default function Leads() {
             <Send className="w-4 h-4 mr-2" />
             Campaign follow-ups
             {pendingFollowupsCount > 0 && (
-              <span className="ml-2 bg-red-500 text-white text-[18px] px-2 py-0.5 rounded-full">
+              <span className="ml-2 bg-red-500 text-white text-xs px-2 py-0.5 rounded-full">
                 {pendingFollowupsCount}
               </span>
             )}
@@ -347,7 +347,7 @@ export default function Leads() {
       </div>
 
       {isError && (
-        <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-[18px]">
+        <div className="p-4 rounded-lg bg-red-500/10 border border-red-500/30 text-red-300 text-sm">
           Could not load leads: {error?.message}. Set{' '}
           <code className="text-green-400">VITE_KG_MARKETING_API_URL</code> in .env.local.
         </div>
@@ -371,11 +371,11 @@ export default function Leads() {
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search name, company, title, notes…"
-                  className="pl-10 bg-kg-input border-green-500/20 text-white"
+                  className="pl-10 bg-kg-raised border-green-500/20 text-white"
                 />
               </div>
               <Select value={statusFilter} onValueChange={setStatusFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-input border-green-500/20 text-white">
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
                   <Filter className="w-4 h-4 mr-2 text-green-400" />
                   <SelectValue placeholder="Status" />
                 </SelectTrigger>
@@ -389,7 +389,7 @@ export default function Leads() {
                 </SelectContent>
               </Select>
               <Select value={followUpFilter} onValueChange={setFollowUpFilter}>
-                <SelectTrigger className="w-full md:w-[200px] bg-kg-input border-green-500/20 text-white">
+                <SelectTrigger className="w-full md:w-[200px] bg-kg-raised border-green-500/20 text-white">
                   <Bell className="w-4 h-4 mr-2 text-amber-400" />
                   <SelectValue placeholder="Follow-up" />
                 </SelectTrigger>

@@ -25,10 +25,10 @@ export default function LeadsBulkBar({
 
   return (
     <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 flex flex-wrap items-center gap-3 px-5 py-3 rounded-xl bg-kg-card border border-green-500/40 shadow-2xl shadow-black/50">
-      <span className="text-[18px] text-white font-medium">{count} selected</span>
+      <span className="text-sm text-white font-medium">{count} selected</span>
 
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="w-[180px] bg-kg-input border-green-500/20 text-white h-9">
+        <SelectTrigger className="w-[180px] bg-kg-raised border-green-500/20 text-white h-9">
           <Tag className="w-4 h-4 mr-2 text-green-400" />
           <SelectValue placeholder="Change status" />
         </SelectTrigger>
@@ -48,7 +48,7 @@ export default function LeadsBulkBar({
           onApplyStatus(status);
           setStatus('');
         }}
-        className="bg-kg-input hover:bg-[#444444] text-white"
+        className="bg-kg-raised hover:bg-[#444444] text-white"
       >
         Apply status
       </Button>
@@ -59,7 +59,7 @@ export default function LeadsBulkBar({
           type="date"
           value={followUpDate}
           onChange={(e) => setFollowUpDate(e.target.value)}
-          className="w-[160px] h-9 bg-kg-input border-green-500/20 text-white"
+          className="w-[160px] h-9 bg-kg-raised border-green-500/20 text-white"
         />
         <Button
           type="button"
@@ -69,7 +69,7 @@ export default function LeadsBulkBar({
             onApplyFollowUpDate(followUpDate);
             setFollowUpDate('');
           }}
-          className="bg-kg-input hover:bg-[#444444] text-white"
+          className="bg-kg-raised hover:bg-[#444444] text-white"
         >
           Set follow-up
         </Button>

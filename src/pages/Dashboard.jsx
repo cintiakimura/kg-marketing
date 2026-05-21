@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Plus,
   Sparkles,
+  ArrowRight,
   Loader2,
   AlertCircle,
 } from 'lucide-react';
@@ -90,7 +91,7 @@ export default function Dashboard() {
       {hasError && (
         <div className="flex items-center gap-3 p-4 bg-red-500/10 border border-red-500/30 rounded-xl text-red-300">
           <AlertCircle className="w-5 h-5 shrink-0" />
-          <p className="text-[18px]">
+          <p className="text-sm">
             {leadsErr?.message || 'Could not load dashboard data. Check API connection.'}
           </p>
         </div>
@@ -157,13 +158,13 @@ export default function Dashboard() {
               <h2 className="text-lg font-medium text-white">Recent Leads</h2>
               <Link
                 to="/leads"
-                className="kg-link text-green-400 hover:text-kg-btn-hover"
+                className="text-sm text-green-400 hover:text-[kg-btn-hover] flex items-center gap-1"
               >
-                View All
+                View all <ArrowRight className="w-4 h-4" />
               </Link>
             </div>
             {recentLeads.length === 0 ? (
-              <p className="p-8 text-gray-400 text-center text-[18px]">
+              <p className="p-8 text-gray-400 text-center text-sm">
                 No leads yet. Add your first lead or run Smart Lead Finder.
               </p>
             ) : (
@@ -183,7 +184,7 @@ export default function Dashboard() {
                       return (
                         <TableRow
                           key={lead.id}
-                          className="border-green-500/25 hover:bg-kg-input"
+                          className="border-green-500/25 hover:bg-kg-raised"
                         >
                           <TableCell className="text-white font-medium">
                             {lead.full_name}
@@ -198,7 +199,7 @@ export default function Dashboard() {
                               {meta.label}
                             </Badge>
                           </TableCell>
-                          <TableCell className="text-gray-400 text-[18px]">
+                          <TableCell className="text-gray-400 text-sm">
                             {lead.next_followup_date
                               ? new Date(lead.next_followup_date).toLocaleDateString()
                               : '—'}
