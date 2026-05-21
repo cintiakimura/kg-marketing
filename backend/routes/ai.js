@@ -33,40 +33,10 @@ const GROK_MODEL = () => process.env.GROK_MODEL || 'grok-4.3';
 const MAX_LEADS = 12;
 const MIN_FIT_SCORE = 7;
 
-const RESEARCH_TOOLS = [
-  {
-    type: 'function',
-    function: {
-      name: 'web_search',
-      description:
-        'Search the web for companies, LinkedIn profiles, news, press releases, and professional activity.',
-      parameters: {
-        type: 'object',
-        properties: { query: { type: 'string', description: 'Search query' } },
-        required: ['query'],
-      },
-    },
-  },
-  {
-    type: 'function',
-    function: {
-      name: 'x_keyword_search',
-      description:
-        'Search X (Twitter) for posts, threads, and mentions about a person, role, or company.',
-      parameters: {
-        type: 'object',
-        properties: {
-          query: { type: 'string', description: 'Keywords, handles, or hashtags' },
-          focus: {
-            type: 'string',
-            enum: ['posts', 'people', 'companies'],
-          },
-        },
-        required: ['query'],
-      },
-    },
-  },
-];
+/** xAI server-side agent tools (Responses API — real web + X search). */
+const AGENT_RESEARCH_TOOLS = [{ type: 'web_search' }, { type: 'x_search' }];
+
+const GROK_FETCH_TIMEOUT_MS = 120_000;
 
 const SYSTEM_PROMPT = `You are an extremely rigorous and honest B2B lead researcher for KG Marketing (precision IoT, automotive, and industrial training campaigns).
 
@@ -117,26 +87,70 @@ ANTI-HALLUCINATION & QUALITY RULES (same rigor as lead research):
 - Always end email_body with the exact signature block provided in the user message.
 - Return valid JSON only when asked. No markdown fences.`;
 
-async function callGrok(messages, { jsonMode = true, tools = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
+function extractResponsesText(data) {
+  const parts = [];
+  for (const item of data?.output || []) {
+    if (item.type !== 'message' || !Array.isArray(item.content)) continue;
+    for (const block of item.content) {
+      if (block.text) parts.push(block.text);
+    }
+  }
+  return parts.join('\n').trim();
+}
+
+function grokInputFromMessages(messages) {
+  const userParts = messages.filter((m) => m.role === 'user').map((m) => m.content);
+  if (userParts.length) return userParts.join('\n\n');
+  return messages[messages.length - 1]?.content || '';
+}
+
+async function callGrokWithAgentTools(messages, { jsonMode = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
   const apiKey = process.env.GROK_API_KEY_LUMEN?.trim();
-  if (!apiKey) {
-    const err = new Error('GROK_API_KEY_LUMEN is not set');
-    err.status = 503;
+  const body = {
+    model: GROK_MODEL(),
+    instructions: systemPrompt,
+    input: grokInputFromMessages(messages),
+    tools: AGENT_RESEARCH_TOOLS,
+    temperature,
+  };
+  if (jsonMode) body.text = { format: { type: 'json_object' } };
+
+  const res = await fetch(`${GROK_URL()}/responses`, {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(body),
+    signal: AbortSignal.timeout(GROK_FETCH_TIMEOUT_MS),
+  });
+
+  if (!res.ok) {
+    const text = await res.text();
+    const err = new Error(`Grok agent error ${res.status}: ${text.slice(0, 400)}`);
+    err.status = 502;
     throw err;
   }
 
+  const data = await res.json();
+  const text = extractResponsesText(data);
+  if (!text) {
+    const err = new Error('Grok agent returned no text output');
+    err.status = 502;
+    throw err;
+  }
+  return text;
+}
+
+async function callGrokChatCompletions(messages, { jsonMode = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
+  const apiKey = process.env.GROK_API_KEY_LUMEN?.trim();
   const body = {
     model: GROK_MODEL(),
     messages: [{ role: 'system', content: systemPrompt }, ...messages],
     temperature,
     max_tokens: 8192,
   };
-
   if (jsonMode) body.response_format = { type: 'json_object' };
-  if (tools) {
-    body.tools = RESEARCH_TOOLS;
-    body.tool_choice = 'auto';
-  }
 
   const res = await fetch(`${GROK_URL()}/chat/completions`, {
     method: 'POST',
@@ -145,6 +159,7 @@ async function callGrok(messages, { jsonMode = true, tools = true, temperature =
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(body),
+    signal: AbortSignal.timeout(60_000),
   });
 
   if (!res.ok) {
@@ -156,6 +171,20 @@ async function callGrok(messages, { jsonMode = true, tools = true, temperature =
 
   const data = await res.json();
   return data.choices?.[0]?.message?.content;
+}
+
+async function callGrok(messages, { jsonMode = true, tools = true, temperature = 0.25, systemPrompt = SYSTEM_PROMPT } = {}) {
+  const apiKey = process.env.GROK_API_KEY_LUMEN?.trim();
+  if (!apiKey) {
+    const err = new Error('GROK_API_KEY_LUMEN is not set');
+    err.status = 503;
+    throw err;
+  }
+
+  if (tools) {
+    return callGrokWithAgentTools(messages, { jsonMode, temperature, systemPrompt });
+  }
+  return callGrokChatCompletions(messages, { jsonMode, temperature, systemPrompt });
 }
 
 function parseJson(text) {
@@ -229,7 +258,7 @@ function passesQualityGate(raw) {
   if (/^DEMO/i.test(verification)) return true;
 
   if (!linkedin || isFabricatedLinkedIn(linkedin)) {
-    return confidence === 'medium' && verification.length >= 40;
+    return confidence === 'medium' && verification.length >= 25;
   }
   return confidence === 'high' || confidence === 'medium';
 }
@@ -421,14 +450,21 @@ Return JSON: { "leads": [...], "discarded_count", "quality_summary" }`,
   }
   meta.phases.push({ step: 'verified', count: list.length });
 
-  return {
-    leads: list
-      .map(normalizeLead)
-      .filter(passesQualityGate)
+  const normalized = list.map((raw, i) => normalizeLead(raw, i));
+  let leads = normalized.filter(passesQualityGate);
+  if (leads.length === 0 && normalized.length > 0) {
+    leads = normalized
+      .filter((l) => l.fitScore >= MIN_FIT_SCORE)
       .sort((a, b) => b.fitScore - a.fitScore)
-      .slice(0, MAX_LEADS),
-    meta,
-  };
+      .slice(0, MAX_LEADS);
+    meta.relaxed_quality = true;
+    meta.message =
+      'Leads included with relaxed verification — review verification notes and LinkedIn before outreach.';
+  } else {
+    leads = leads.sort((a, b) => b.fitScore - a.fitScore).slice(0, MAX_LEADS);
+  }
+
+  return { leads, meta };
 }
 
 /**
@@ -475,13 +511,16 @@ router.post('/find-leads', async (req, res, next) => {
         leadsReturned: leads.length,
       };
       if (leads.length === 0) {
+        const phases = meta.phases || [];
+        const hadResearch = phases.some((p) => (p.count ?? 0) > 0);
         leads = buildDemoLeads(icp);
         meta = {
           ...meta,
           source: 'demo',
           grok_env_set: true,
-          message:
-            'Grok ran but found no leads passing verification gates; showing demo set. Refine ICP or try again.',
+          message: hadResearch
+            ? 'Grok researched companies/candidates but none passed verification; showing demo set. Try a narrower ICP or add focus companies.'
+            : 'Grok could not complete live search for this ICP; showing demo set. Redeploy latest API build if this persists.',
         };
       }
     } else {

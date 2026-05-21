@@ -707,12 +707,19 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     </p>
                   )}
                   {meta?.source === 'grok' && (
-                    <p className="text-xs text-gray-500 mt-1">
-                      {meta.companiesResearched ?? 0} companies ·{' '}
-                      {meta.candidatesReviewed ?? 0} candidates ·{' '}
-                      {meta.leadsReturned ?? leads.length} passed verification
-                      {meta.quality_summary ? ` — ${meta.quality_summary}` : ''}
-                    </p>
+                    <>
+                      <p className="text-xs text-gray-500 mt-1">
+                        {meta.companiesResearched ?? 0} companies ·{' '}
+                        {meta.candidatesReviewed ?? 0} candidates ·{' '}
+                        {meta.leadsReturned ?? leads.length} passed verification
+                        {meta.quality_summary ? ` — ${meta.quality_summary}` : ''}
+                      </p>
+                      {meta.relaxed_quality && meta.message && (
+                        <p className="text-[16px] text-amber-400/90 mt-1 leading-relaxed">
+                          {meta.message}
+                        </p>
+                      )}
+                    </>
                   )}
                 </div>
                 <div className="flex gap-2">
