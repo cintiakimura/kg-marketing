@@ -38,8 +38,7 @@ function LeadCard({ lead, onOpen }) {
             )}
             {isSmartFinderLead(lead) && (
               <Badge
-                variant="outline"
-                className="text-[18px] border-green-500/40 text-green-400 px-1"
+                variant="kg"
               >
                 <Sparkles className="w-2.5 h-2.5 mr-0.5 inline" />
                 Smart Finder

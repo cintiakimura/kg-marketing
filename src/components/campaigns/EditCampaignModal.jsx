@@ -210,7 +210,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-image-upload').click()}
               disabled={isUploading}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Image'}
@@ -226,7 +226,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             <Button
               onClick={() => document.getElementById('edit-presentation-upload').click()}
               disabled={isUploading}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11"
             >
               <Upload className="w-4 h-4 mr-2" />
               {isUploading ? 'Uploading...' : 'Upload Presentation'}
@@ -273,7 +273,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
               />
               <Button
                 onClick={handleAddVideoUrl}
-                className="bg-kg-input hover:bg-[#444444] text-white"
+               
               >
                 Add
               </Button>
@@ -332,10 +332,10 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-green-500/25">
+          <div className="flex gap-3 pt-4 p-4 -mx-6 -mb-6 mt-4 border-t border-green-500/25 bg-kg-input">
             <Button
               onClick={() => setIsCreateLeadModalOpen(true)}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+              className="kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11"
             >
               <UserPlus className="w-4 h-4 mr-2" />
               Add Lead
@@ -360,8 +360,7 @@ export default function EditCampaignModal({ isOpen, onClose, campaign, onSuccess
             )}
             <Button
               onClick={onClose}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
             >
               Cancel
             </Button>

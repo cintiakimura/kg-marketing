@@ -104,7 +104,7 @@ Return JSON:
           type="button"
           onClick={addSequence}
           size="sm"
-          className="bg-kg-input hover:bg-[#444444] text-white"
+         
         >
           <Plus className="w-4 h-4 mr-2" />
           Add Sequence
@@ -156,7 +156,7 @@ Return JSON:
                     value={sequence.trigger_status} 
                     onValueChange={(val) => updateSequence(index, 'trigger_status', val)}
                   >
-                    <SelectTrigger className="bg-kg-card border-green-500/20 text-white h-9">
+                    <SelectTrigger className="bg-kg-input border-green-500/25 text-white text-[18px] h-11">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -175,7 +175,7 @@ Return JSON:
                     min="0"
                     value={sequence.delay_days}
                     onChange={(e) => updateSequence(index, 'delay_days', parseInt(e.target.value))}
-                    className="bg-kg-card border-green-500/20 text-white h-9"
+                    className="bg-kg-card border-green-500/25 text-white text-[18px] h-11"
                   />
                 </div>
               </div>
@@ -186,7 +186,7 @@ Return JSON:
                   value={sequence.email_subject}
                   onChange={(e) => updateSequence(index, 'email_subject', e.target.value)}
                   placeholder="Follow-up subject..."
-                  className="bg-kg-card border-green-500/20 text-white"
+                  className="bg-kg-input border-green-500/25 text-white"
                 />
               </div>
 
@@ -197,11 +197,11 @@ Return JSON:
                   onChange={(e) => updateSequence(index, 'email_body', e.target.value)}
                   placeholder="Follow-up email content..."
                   rows={4}
-                  className="bg-kg-card border-green-500/20 text-white"
+                  className="bg-kg-input border-green-500/25 text-white"
                 />
               </div>
 
-              <div className="flex items-center gap-3 p-3 bg-kg-card rounded">
+              <div className="flex items-center gap-3 p-3 bg-kg-input rounded">
                 <Checkbox
                   checked={sequence.schedule_meeting || false}
                   onCheckedChange={(checked) => updateSequence(index, 'schedule_meeting', checked)}

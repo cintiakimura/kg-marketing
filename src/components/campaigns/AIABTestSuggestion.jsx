@@ -151,7 +151,7 @@ Return JSON with 3 A/B test suggestions:
       {suggestions && (
         <div className="space-y-4">
           {/* Subject Line Test */}
-          <div className="p-3 bg-kg-card rounded border border-green-500/30">
+          <div className="p-3 bg-kg-input rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <FileText className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Subject Line Test</span>
@@ -193,7 +193,7 @@ Return JSON with 3 A/B test suggestions:
           </div>
 
           {/* Content Test */}
-          <div className="p-3 bg-kg-card rounded border border-green-500/30">
+          <div className="p-3 bg-kg-input rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Send className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Content Structure Test</span>
@@ -215,7 +215,7 @@ Return JSON with 3 A/B test suggestions:
           </div>
 
           {/* Timing Test */}
-          <div className="p-3 bg-kg-card rounded border border-green-500/30">
+          <div className="p-3 bg-kg-input rounded border border-green-500/30">
             <div className="flex items-center gap-2 mb-2">
               <Clock className="w-4 h-4 text-green-400" />
               <span className="text-white font-medium text-[18px]">Send Time Optimization</span>
@@ -239,8 +239,7 @@ Return JSON with 3 A/B test suggestions:
           <Button
             onClick={() => setSuggestions(null)}
             size="sm"
-            variant="outline"
-            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-input"
+            variant="kg"
           >
             Clear Suggestions
           </Button>

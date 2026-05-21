@@ -360,8 +360,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                 <CollapsibleTrigger asChild>
                   <Button
                     type="button"
-                    variant="outline"
-                    className="w-full border-green-500/20 text-gray-300 justify-between"
+                    variant="kg"
                   >
                     <span className="flex items-center gap-2">
                       <BookmarkPlus className="w-4 h-4" />
@@ -652,8 +651,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
                     </p>
                     {(appliedCustomPrompt || meta?.customPromptApplied) && (
                       <Badge
-                        variant="outline"
-                        className="bg-green-500/10 text-green-400 border-green-500/40 text-xs"
+                        variant="kg"
                         title={appliedCustomPrompt}
                       >
                         <ScrollText className="w-3 h-3 mr-1 inline" />
@@ -819,7 +817,7 @@ export default function SmartLeadFinder({ isOpen, onClose, onSuccess }) {
         </div>
 
         {view === 'results' && (
-          <div className="shrink-0 border-t border-green-500/25 p-4 flex flex-wrap gap-3 bg-[#252525]">
+          <div className="shrink-0 border-t border-green-500/25 p-4 flex flex-wrap gap-3 bg-kg-input">
             {importDone ? (
               <>
                 <p className="w-full text-sm text-green-400 flex items-center gap-2">

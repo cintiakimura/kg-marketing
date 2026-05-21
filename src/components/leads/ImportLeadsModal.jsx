@@ -132,10 +132,10 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
               id="file-upload-input"
               disabled={isProcessing}
             />
-            <label 
+            <label
               htmlFor="file-upload-input"
-              className={`inline-flex items-center gap-2 px-4 py-2 bg-kg-input hover:bg-[#444444] text-white rounded-md transition-colors font-medium ${
-                isProcessing ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'
+              className={`kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11 cursor-pointer ${
+                isProcessing ? 'opacity-50 cursor-not-allowed' : ''
               }`}
             >
               <Upload className="w-4 h-4" />
@@ -182,12 +182,7 @@ export default function ImportLeadsModal({ isOpen, onClose, onSuccess }) {
                 </>
               )}
             </Button>
-            <Button
-              onClick={onClose}
-              disabled={isProcessing}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
-            >
+            <Button onClick={onClose} disabled={isProcessing} variant="kg">
               Cancel
             </Button>
           </div>

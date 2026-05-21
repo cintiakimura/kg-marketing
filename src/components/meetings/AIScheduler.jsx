@@ -185,7 +185,7 @@ KG PROTECH`
           </div>
 
           {suggestions.suggestions.map((suggestion, idx) => (
-            <div key={idx} className="p-3 bg-kg-card rounded border border-green-500/30">
+            <div key={idx} className="p-3 bg-kg-input rounded border border-green-500/30">
               <div className="flex items-start justify-between mb-2">
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-1">
@@ -222,8 +222,7 @@ KG PROTECH`
           <Button
             onClick={() => setSuggestions(null)}
             size="sm"
-            variant="outline"
-            className="w-full border-green-500/20 text-gray-300 hover:bg-kg-input"
+            variant="kg"
           >
             Clear Suggestions
           </Button>

@@ -82,7 +82,7 @@ export default function Webmail() {
           <Button
             onClick={() => syncGmailMutation.mutate()}
             disabled={syncGmailMutation.isPending}
-            className="bg-kg-input hover:bg-[#444444] text-white">
+            className="kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11">
             <RefreshCw className={`w-5 h-5 mr-2 ${syncGmailMutation.isPending ? 'animate-spin' : ''}`} />
             Sync Gmail
           </Button>

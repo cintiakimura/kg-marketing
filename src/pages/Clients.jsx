@@ -74,7 +74,7 @@ export default function Clients() {
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder="Search by name, contact, industry, or status..."
-          className="pl-10 bg-kg-card border-green-500/25 text-white"
+          className="pl-10 bg-kg-input border-green-500/25 text-white"
         />
       </div>
 

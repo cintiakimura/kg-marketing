@@ -81,4 +81,7 @@
   .kg-nav-link-active {
     @apply kg-nav-link text-white border-green-500/50 bg-green-500/10 shadow-kg-border-glow;
   }
+  .kg-field {
+    @apply bg-kg-input border border-green-500/25 text-white text-[18px] font-normal rounded-lg;
+  }
 }

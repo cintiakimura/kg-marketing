@@ -109,7 +109,8 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
     }
   };
 
-  const inputClass = 'bg-kg-input border-green-500/20 text-white';
+  const inputClass =
+    'bg-kg-input border border-green-500/25 text-white text-[18px] font-normal rounded-lg';
 
   return (
     <div className="fixed inset-0 bg-black/85 flex items-center justify-center z-50 p-4">
@@ -263,22 +264,18 @@ export default function LeadDetailModal({ isOpen, onClose, lead, onSuccess }) {
           </div>
         </div>
 
-        <div className="shrink-0 border-t border-green-500/25 p-4 flex gap-3 bg-[#252525]">
+        <div className="shrink-0 border-t border-green-500/25 p-4 flex gap-3 bg-kg-input">
           <Button
             type="button"
             onClick={handleSave}
             disabled={isSaving}
-            variant="kg" className="flex-1"
+            variant="kg"
+            className="flex-1"
           >
             <Save className="w-4 h-4 mr-2" />
             {isSaving ? 'Saving…' : 'Save'}
           </Button>
-          <Button
-            type="button"
-            variant="outline"
-            onClick={onClose}
-            className="border-green-500/20 text-gray-300"
-          >
+          <Button type="button" variant="kg" onClick={onClose}>
             Close
           </Button>
         </div>

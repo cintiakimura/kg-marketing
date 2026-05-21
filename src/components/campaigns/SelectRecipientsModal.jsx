@@ -91,7 +91,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                 onChange={(e) => setEmailInput(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && addManualEmail()}
                 placeholder="Enter email address..."
-                className="bg-kg-card border-green-500/20 text-white"
+                className="bg-kg-input border-green-500/25 text-white"
               />
               <Button
                 onClick={addManualEmail}
@@ -123,8 +123,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
           <div className="mb-4">
             <Button
               onClick={toggleAll}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
             >
               {selectedLeads.length === leads.length ? 'Deselect All' : 'Select All'}
             </Button>
@@ -135,7 +134,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             <div key={company} className="bg-kg-input rounded-lg p-4">
                 <h3 className="text-white font-semibold mb-3 flex items-center gap-2">
                   {company}
-                  <Badge className="bg-[#444444] text-gray-300 border-0">
+                  <Badge className="bg-kg-input text-gray-300 border-0">
                     {companyLeads.length} leads
                   </Badge>
                 </h3>
@@ -143,7 +142,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
                   {companyLeads.map((lead) =>
                 <div
                   key={lead.id}
-                  className="flex items-center gap-3 p-3 rounded hover:bg-[#444444] transition-colors cursor-pointer"
+                  className="flex items-center gap-3 p-3 rounded hover:bg-kg-input transition-colors cursor-pointer"
                   onClick={() => toggleLead(lead.id)}>
 
                       <Checkbox
@@ -203,8 +202,7 @@ export default function SelectRecipientsModal({ isOpen, onClose, leads, onConfir
             </Button>
             <Button
               onClick={onClose}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
               disabled={isLaunching}
             >
               Cancel

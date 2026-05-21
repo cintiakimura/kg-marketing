@@ -158,8 +158,7 @@ export default function EditClientModal({ isOpen, onClose, client, onSuccess }) 
             </Button>
             <Button
               onClick={onClose}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
             >
               Cancel
             </Button>

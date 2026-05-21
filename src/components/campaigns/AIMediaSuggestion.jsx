@@ -114,7 +114,7 @@ Return JSON with:
 
       {suggestion && (
         <div className="space-y-3">
-          <div className="p-3 bg-kg-card rounded border border-green-500/30">
+          <div className="p-3 bg-kg-input rounded border border-green-500/30">
             <p className="text-green-400 font-medium text-[18px] mb-1">
               Recommended: {suggestion.recommended_media === 'none' ? 'No Media' : suggestion.recommended_media.replace('_', ' ').toUpperCase()}
             </p>
@@ -133,8 +133,7 @@ Return JSON with:
             <Button
               onClick={() => setSuggestion(null)}
               size="sm"
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
             >
               Dismiss
             </Button>

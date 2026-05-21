@@ -183,7 +183,7 @@ Return JSON:
               onChange={(e) => setDescription(e.target.value)}
               placeholder="E.g., 'Introduce new IoT training solution to fleet managers' or 'Follow up after initial contact about cost savings'"
               rows={2}
-              className="bg-kg-card border-green-500/20 text-white"
+              className="bg-kg-input border-green-500/25 text-white"
             />
           </div>
 
@@ -199,7 +199,7 @@ Return JSON:
             <Button
               onClick={generateSubjectLines}
               disabled={isGenerating}
-              className="bg-kg-input hover:bg-[#444444] text-white"
+             
             >
               <Sparkles className="w-4 h-4 mr-2" />
               {isGenerating ? 'Generating...' : 'Suggest Subject Lines'}
@@ -234,7 +234,7 @@ Return JSON:
         <div className="space-y-3">
           <Label className="text-gray-300">Suggested Subject Lines</Label>
           {subjectSuggestions.map((suggestion, index) => (
-            <div key={index} className="p-3 bg-kg-card rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
+            <div key={index} className="p-3 bg-kg-input rounded-lg border border-green-500/20 hover:border-green-500/40 transition-all">
               <div className="flex items-center justify-between mb-1">
                 <span className="text-white font-medium text-[18px]">{suggestion.text}</span>
                 <Button

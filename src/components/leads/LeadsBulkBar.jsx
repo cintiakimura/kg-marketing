@@ -28,7 +28,7 @@ export default function LeadsBulkBar({
       <span className="text-sm text-white font-medium">{count} selected</span>
 
       <Select value={status} onValueChange={setStatus}>
-        <SelectTrigger className="w-[180px] bg-kg-input border-green-500/20 text-white h-9">
+        <SelectTrigger className="w-[180px] bg-kg-input border-green-500/25 text-white text-[18px] h-11">
           <Tag className="w-4 h-4 mr-2 text-green-400" />
           <SelectValue placeholder="Change status" />
         </SelectTrigger>
@@ -43,12 +43,12 @@ export default function LeadsBulkBar({
       <Button
         type="button"
         size="sm"
+        variant="kg"
         disabled={!status || isBusy}
         onClick={() => {
           onApplyStatus(status);
           setStatus('');
         }}
-        className="bg-kg-input hover:bg-[#444444] text-white"
       >
         Apply status
       </Button>
@@ -64,12 +64,12 @@ export default function LeadsBulkBar({
         <Button
           type="button"
           size="sm"
+          variant="kg"
           disabled={!followUpDate || isBusy}
           onClick={() => {
             onApplyFollowUpDate(followUpDate);
             setFollowUpDate('');
           }}
-          className="bg-kg-input hover:bg-[#444444] text-white"
         >
           Set follow-up
         </Button>
@@ -78,10 +78,9 @@ export default function LeadsBulkBar({
       <Button
         type="button"
         size="sm"
-        variant="destructive"
+        variant="kg"
         disabled={isBusy}
         onClick={onDelete}
-        className="bg-red-600/90 hover:bg-red-600"
       >
         <Trash2 className="w-4 h-4 mr-1" />
         Delete

@@ -82,7 +82,7 @@ export default function Calendar() {
           <Button
             onClick={() => syncCalendarMutation.mutate()}
             disabled={syncCalendarMutation.isPending}
-            className="bg-kg-input hover:bg-[#444444] text-white">
+            className="kg-btn-surface inline-flex items-center gap-2 px-4 py-2 h-11">
             <RefreshCw className={`w-5 h-5 mr-2 ${syncCalendarMutation.isPending ? 'animate-spin' : ''}`} />
             Sync Calendar
           </Button>
@@ -137,7 +137,7 @@ export default function Calendar() {
                   {webinar.meeting_link &&
               <Button
                 size="sm"
-                className="flex-1 bg-kg-input hover:bg-[#444444] text-white"
+                className="flex-1"
                 onClick={() => window.open(webinar.meeting_link, '_blank')}>
 
                       <Video className="w-4 h-4 mr-2" />
@@ -284,8 +284,7 @@ export default function Calendar() {
                 </Button>
                 <Button
                 onClick={() => setIsCreateModalOpen(false)}
-                variant="outline"
-                className="border-green-500/20 text-gray-300 hover:bg-kg-input">
+                variant="kg">
 
                   Cancel
                 </Button>

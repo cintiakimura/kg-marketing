@@ -126,7 +126,7 @@ export default function CreateClientModal({ isOpen, onClose, onSuccess }) {
             />
           </div>
 
-          <div className="flex gap-3 pt-4 border-t border-green-500/25">
+          <div className="flex gap-3 pt-4 p-4 -mx-6 -mb-6 mt-4 border-t border-green-500/25 bg-kg-input">
             <Button
               type="submit"
               disabled={isSaving}
@@ -138,8 +138,7 @@ export default function CreateClientModal({ isOpen, onClose, onSuccess }) {
             <Button
               type="button"
               onClick={onClose}
-              variant="outline"
-              className="border-green-500/20 text-gray-300 hover:bg-kg-input"
+              variant="kg"
             >
               Cancel
             </Button>
