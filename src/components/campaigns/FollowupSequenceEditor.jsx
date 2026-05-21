@@ -132,7 +132,7 @@ Return JSON:
                     onClick={() => generateFollowupContent(index, sequence)}
                     disabled={generatingIndex === index}
                     size="sm"
-                    variant="kgAi" h-7 text-[18px]
+                    variant="kgAi"
                   >
                     <Sparkles className="w-3 h-3 mr-1" />
                     {generatingIndex === index ? 'Generating...' : 'AI Generate'}

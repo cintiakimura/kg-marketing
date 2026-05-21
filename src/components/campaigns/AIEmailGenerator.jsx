@@ -217,8 +217,8 @@ Return JSON:
                 <span className="text-green-400 font-medium text-[18px]">{option.label}</span>
                 <Button
                   size="sm"
+                  variant="kg"
                   onClick={() => onApplyBody(option.body)}
-                  variant="kgAi" h-7 text-[18px]
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use This
@@ -239,8 +239,8 @@ Return JSON:
                 <span className="text-white font-medium text-[18px]">{suggestion.text}</span>
                 <Button
                   size="sm"
+                  variant="kg"
                   onClick={() => onApplySubject(suggestion.text)}
-                  variant="kgAi" h-6 text-[18px]
                 >
                   <CheckCircle2 className="w-3 h-3 mr-1" />
                   Use
